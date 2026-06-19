@@ -1,0 +1,115 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 60px;
+  transition: background 0.35s;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoText {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.logoImg {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  animation: float 3s ease-in-out infinite;
+  mix-blend-mode: multiply;
+}
+
+:global([data-theme="dark"]) .logoImg {
+  mix-blend-mode: screen;
+}
+
+.links {
+  display: flex;
+  gap: 36px;
+}
+
+.link {
+  font-size: 14px;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.themeBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.themeBtn:hover {
+  background: var(--accent-bg);
+}
+
+.iconLight { display: block; }
+.iconDark  { display: none; }
+
+:global([data-theme="dark"]) .iconDark  { display: block; }
+:global([data-theme="dark"]) .iconLight { display: none; }
+
+.liveBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Noto Sans KR', sans-serif;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.liveBtn:hover {
+  background: var(--accent-d);
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: blink 1.6s ease infinite;
+}
