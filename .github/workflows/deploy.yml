@@ -27,11 +27,8 @@ jobs:
 
       - run: pnpm test
 
-      - name: Build
-        run: pnpm build
-
-      - name: Deploy
-        run: pnpm wrangler deploy --commit-dirty=true
+      - name: Build & Deploy
+        run: pnpm deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
