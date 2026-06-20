@@ -88,7 +88,7 @@
   background: #E04040;
 }
 
-/* 시작/종료 오버레이 버튼 */
+/* 시작/종료 버튼 */
 .startBtn {
   display: inline-flex;
   align-items: center;
@@ -132,12 +132,59 @@
   to   { opacity: 0; transform: translate(-50%, -200%); }
 }
 
+/* 리더보드 행 */
 .rankRow {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   transition: background 0.15s, border-color 0.15s;
+}
+
+.rankRow.mine {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+}
+
+/* 게임 + 리더보드 레이아웃 */
+.gameLayout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+}
+
+.gameArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.leaderboardPanel {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* 넓은 화면: 좌우 배치 */
+@media (min-width: 800px) {
+  .gameLayout {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .leaderboardPanel {
+    width: 200px;
+    max-width: 200px;
+    /* 리더보드를 게임 보드 좌측에 */
+    order: -1;
+    /* 게임 보드 상단에 맞춰 정렬 */
+    position: sticky;
+    top: 80px;
+  }
 }

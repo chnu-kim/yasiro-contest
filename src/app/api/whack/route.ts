@@ -11,7 +11,7 @@ interface ScoreRow {
 export async function GET() {
   const { env } = await getCloudflareContext({ async: true });
   const rows = await env.DB
-    .prepare("SELECT channel_name, score, played_at FROM whack_scores ORDER BY score DESC LIMIT 20")
+    .prepare("SELECT channel_name, score, played_at FROM whack_scores ORDER BY score DESC LIMIT 10")
     .all<ScoreRow>();
 
   return Response.json(rows.results);
