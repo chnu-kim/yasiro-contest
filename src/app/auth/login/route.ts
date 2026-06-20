@@ -1,7 +1,4 @@
-import { NextResponse } from "next/server";
 import { buildAuthorizationURL, generateState } from "@/lib/chzzk-auth";
-
-export const runtime = "edge";
 
 export function GET() {
   const state = generateState();
@@ -14,12 +11,11 @@ export function GET() {
     state,
   );
 
-  const res = NextResponse.redirect(authUrl);
-  res.cookies.set("oauth_state", state, {
-    httpOnly: true,
-    sameSite: "lax",
-    maxAge: 600,
-    path: "/",
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: authUrl,
+      "Set-Cookie": `oauth_state=${state}; Path=/; HttpOnly; SameSite=Lax; Max-Age=600`,
+    },
   });
-  return res;
 }
