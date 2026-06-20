@@ -47,7 +47,7 @@ export default function Home() {
                 letterSpacing: '0.07em',
               }}
             >
-              버라이어티 스트리머
+              고등어 통조림 애호가
             </span>
           </div>
 
@@ -87,9 +87,7 @@ export default function Home() {
               wordBreak: 'keep-all',
             }}
           >
-            스팀펑크 고글과 따뜻한 웃음으로 매일 찾아오는
-            <br />
-            야시로의 방송 세계에 오신 것을 환영합니다.
+            호기심 많은 탐험가, 벌꿀오소리 야시로
           </p>
 
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
