@@ -1,0 +1,96 @@
+/* ─── Wrapper: 핀 공간 확보 ─── */
+.wrap {
+  position: relative;
+  padding-top: 16px;
+}
+
+/* ─── 핀 ─── */
+.wrap::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  z-index: 3;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), inset 0 -1px 2px rgba(0,0,0,0.2);
+}
+
+/* 핀 색상: 포스트잇 색상별로 대비되는 색 */
+.pin0::before { background: radial-gradient(circle at 35% 35%, #fff8b0, #e0a800); }  /* 노랑 핀 */
+.pin1::before { background: radial-gradient(circle at 35% 35%, #ffd6e8, #e0457b); }  /* 핑크 핀 */
+.pin2::before { background: radial-gradient(circle at 35% 35%, #b8eaf5, #0090b8); }  /* 파랑 핀 */
+.pin3::before { background: radial-gradient(circle at 35% 35%, #c6f0cc, #3a9e4a); }  /* 초록 핀 */
+.pin4::before { background: radial-gradient(circle at 35% 35%, #ddd0f8, #7c3acf); }  /* 보라 핀 */
+.pin5::before { background: radial-gradient(circle at 35% 35%, #ffd8c5, #e05a20); }  /* 오렌지 핀 */
+.pin6::before { background: radial-gradient(circle at 35% 35%, #c5f0ea, #1a9e86); }  /* 민트 핀 */
+
+/* ─── 포스트잇 카드 ─── */
+.card {
+  position: relative;
+  padding: 20px 18px 16px;
+  border-radius: 2px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+}
+
+/* 상단 접힌 그림자 (종이 느낌) */
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px 2px 0 0;
+}
+
+.card:hover {
+  transform: rotate(0deg) translateY(-6px) scale(1.02) !important;
+  z-index: 10;
+}
+
+/* ─── 파스텔 배경 ─── */
+.color0 { background: #FFFDE7; box-shadow: 3px 4px 14px rgba(255,213,0,0.30); }   /* 버터 노랑 */
+.color1 { background: #FCE4EC; box-shadow: 3px 4px 14px rgba(233,30,99,0.20); }   /* 로즈 핑크 */
+.color2 { background: #E3F2FD; box-shadow: 3px 4px 14px rgba(33,150,243,0.20); }  /* 스카이 블루 */
+.color3 { background: #F1F8E9; box-shadow: 3px 4px 14px rgba(104,159,56,0.22); }  /* 라임 초록 */
+.color4 { background: #EDE7F6; box-shadow: 3px 4px 14px rgba(103,58,183,0.20); }  /* 라벤더 */
+.color5 { background: #FBE9E7; box-shadow: 3px 4px 14px rgba(230,74,25,0.20); }   /* 피치 */
+.color6 { background: #E0F7FA; box-shadow: 3px 4px 14px rgba(0,188,212,0.20); }   /* 민트 */
+
+/* ─── 내용 ─── */
+.message {
+  font-family: 'Gaegu', cursive;
+  font-size: 18px;
+  line-height: 1.75;
+  color: #2a2218;
+  word-break: break-all;
+  white-space: pre-wrap;
+  margin-bottom: 14px;
+  min-height: 56px;
+}
+
+.author {
+  font-family: 'Gaegu', cursive;
+  font-size: 14px;
+  color: rgba(42, 34, 24, 0.5);
+  text-align: right;
+  border-top: 1px dashed rgba(42, 34, 24, 0.15);
+  padding-top: 10px;
+}
+
+/* ─── 작은 사이즈 (메인 미리보기용) ─── */
+.sm .message {
+  font-size: 15px;
+  min-height: 40px;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.sm .author {
+  font-size: 12px;
+}

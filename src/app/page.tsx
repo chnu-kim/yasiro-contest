@@ -1,7 +1,29 @@
 import Image from 'next/image';
 import styles from './page.module.css';
+import PostIt from '@/components/PostIt';
 
-export default function Home() {
+interface GuestbookRow {
+  id: string;
+  message: string;
+  channel_name: string;
+}
+
+async function getRecentNotes(): Promise<GuestbookRow[]> {
+  try {
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare');
+    const { env } = await getCloudflareContext({ async: true });
+    const result = await env.DB
+      .prepare('SELECT id, message, channel_name FROM guestbook ORDER BY created_at DESC LIMIT 8')
+      .all<GuestbookRow>();
+    return result.results;
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const notes = await getRecentNotes();
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
 
@@ -181,6 +203,38 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ══ 한마디 보드 ══ */}
+      {notes.length > 0 && (
+        <section className={styles.notesSection}>
+          <div className={styles.notesSectionHeader}>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ width: 7, height: 7, background: 'var(--accent)', borderRadius: 1 }} />
+              <span style={{ fontSize: 12, color: 'var(--text-dim)', letterSpacing: '0.07em', fontFamily: "'Noto Sans KR', sans-serif" }}>야시로에게</span>
+            </div>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          </div>
+
+          <div className={styles.notesBoard}>
+            {notes.map((note) => (
+              <PostIt
+                key={note.id}
+                id={note.id}
+                message={note.message}
+                channelName={note.channel_name}
+                size="sm"
+              />
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 8 }}>
+            <a href="/to-yasiro" className={styles.moreBtn}>
+              더 보기 →
+            </a>
+          </div>
+        </section>
+      )}
 
       {/* ══ FOOTER ══ */}
       <footer

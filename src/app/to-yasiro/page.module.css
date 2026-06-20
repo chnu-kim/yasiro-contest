@@ -29,28 +29,33 @@
 .formWrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 48px;
+  margin-bottom: 56px;
 }
 
 .formPostit {
-  background: #FFF9C4;
+  background: #FFFDE7;
   width: 100%;
   max-width: 480px;
   padding: 24px 24px 16px;
   border-radius: 2px;
-  box-shadow: 3px 4px 16px rgba(251, 192, 45, 0.4), 0 1px 3px rgba(0,0,0,0.08);
+  box-shadow: 3px 4px 16px rgba(255, 213, 0, 0.35), 0 1px 3px rgba(0,0,0,0.08);
   position: relative;
+  margin-top: 16px;
 }
 
+/* 핀 */
 .formPostit::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: rgba(251, 192, 45, 0.5);
-  border-radius: 2px 2px 0 0;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff8b0, #e0a800);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35), inset 0 -1px 2px rgba(0,0,0,0.2);
+  z-index: 2;
 }
 
 .textarea {
@@ -62,12 +67,12 @@
   border: none;
   outline: none;
   resize: none;
-  color: #1A1814;
+  color: #2a2218;
   caret-color: var(--accent);
 }
 
 .textarea::placeholder {
-  color: rgba(26,24,20,0.38);
+  color: rgba(42, 34, 24, 0.38);
 }
 
 .formFooter {
@@ -77,20 +82,20 @@
   flex-wrap: wrap;
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px dashed rgba(26,24,20,0.18);
+  border-top: 1px dashed rgba(42, 34, 24, 0.18);
 }
 
 .counter {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 11px;
-  color: rgba(26,24,20,0.45);
+  color: rgba(42, 34, 24, 0.45);
   margin-left: auto;
 }
 
 .formAuthor {
   font-family: 'Gaegu', cursive;
   font-size: 15px;
-  color: rgba(26,24,20,0.6);
+  color: rgba(42, 34, 24, 0.6);
 }
 
 .submitBtn {
@@ -158,54 +163,8 @@
 /* ─── Board ─── */
 .board {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 24px;
-}
-
-/* ─── Post-it Card ─── */
-.postit {
-  padding: 20px 18px 16px;
-  border-radius: 2px;
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
-  will-change: transform;
-  break-inside: avoid;
-}
-
-.postit::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: rgba(0,0,0,0.07);
-  border-radius: 2px 2px 0 0;
-}
-
-.postit:hover {
-  transform: rotate(0deg) translateY(-4px) !important;
-  z-index: 1;
-}
-
-.postitMessage {
-  font-family: 'Gaegu', cursive;
-  font-size: 18px;
-  line-height: 1.7;
-  color: #1A1814;
-  word-break: break-all;
-  white-space: pre-wrap;
-  margin-bottom: 14px;
-  min-height: 60px;
-}
-
-.postitAuthor {
-  font-family: 'Gaegu', cursive;
-  font-size: 14px;
-  color: rgba(26,24,20,0.55);
-  text-align: right;
-  border-top: 1px dashed rgba(26,24,20,0.16);
-  padding-top: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 32px 24px;
 }
 
 /* ─── Empty ─── */

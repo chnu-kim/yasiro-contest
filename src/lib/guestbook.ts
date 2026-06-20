@@ -9,7 +9,7 @@ export function validateMessage(raw: string): ValidateResult {
   return { ok: true, value: trimmed };
 }
 
-const POST_IT_COLORS = 5;
+const POST_IT_COLORS = 7;
 const ROTATION_RANGE = 13; // -6 ~ +6 → 13가지 (0.5도 단위)
 
 export function getPostItStyle(id: string): { colorIndex: number; rotation: number } {
