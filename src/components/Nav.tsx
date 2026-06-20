@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Moon, Sun } from 'lucide-react';
 import styles from './Nav.module.css';
 
 interface NavUser {
@@ -50,8 +51,8 @@ export default function Nav({ initialUser }: NavProps) {
 
       <div className={styles.actions}>
         <button onClick={toggle} className={styles.themeBtn} title="테마 전환">
-          <span className={styles.iconLight}>🌙</span>
-          <span className={styles.iconDark}>☀️</span>
+          <span className={styles.iconLight}><Moon size={16} strokeWidth={1.8} /></span>
+          <span className={styles.iconDark}><Sun size={16} strokeWidth={1.8} /></span>
         </button>
 
         {user ? (
