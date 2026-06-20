@@ -1,11 +1,9 @@
 import Image from 'next/image';
-import Nav from '@/components/Nav';
 import styles from './page.module.css';
 
 export default function Home() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
-      <Nav />
 
       {/* ══ HERO ══ */}
       <section

@@ -4,23 +4,29 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "opennextjs-cloudflare build",
+    "dev": "next dev",
+    "preview": "opennextjs-cloudflare preview",
     "lint": "eslint",
-    "deploy": "next build && wrangler pages deploy out --project-name yasiro-contest"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "deploy": "opennextjs-cloudflare build && wrangler deploy"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.19.11",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260620.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "typescript": "^5",
+    "vitest": "^4.1.9",
     "wrangler": "^4.103.0"
   }
 }
