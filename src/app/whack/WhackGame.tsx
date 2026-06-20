@@ -308,7 +308,7 @@ export default function WhackGame() {
                           src={src}
                           alt="꿀붕이"
                           width={100}
-                          height={139}
+                          height={163}
                           className={`${styles.kkul} ${styles[state]}`}
                           draggable={false}
                           priority={isUp}
