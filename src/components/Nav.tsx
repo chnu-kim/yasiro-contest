@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Moon, Sun } from 'lucide-react';
@@ -36,13 +35,13 @@ export default function Nav({ initialUser }: NavProps) {
     <nav className={styles.nav}>
       <a href="#" className={styles.logo}>
         <span className={styles.logoText}>야시로</span>
-        <Image
-          src="/kkul.png"
-          alt=""
-          width={28}
-          height={28}
-          className={styles.logoImg}
-        />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" fillRule="evenodd" className={styles.logoIcon} aria-hidden="true">
+          <path d="M 0 -46 C 23 -40 37 -16 37 5 C 37 31 21 50 0 50 C -21 50 -37 31 -37 5 C -37 -16 -23 -40 0 -46 Z" transform="translate(152 220) rotate(-25) scale(0.92)"/>
+          <path d="M 0 -46 C 23 -40 37 -16 37 5 C 37 31 21 50 0 50 C -21 50 -37 31 -37 5 C -37 -16 -23 -40 0 -46 Z" transform="translate(216 168) rotate(-7) scale(1.0)"/>
+          <path d="M 0 -46 C 23 -40 37 -16 37 5 C 37 31 21 50 0 50 C -21 50 -37 31 -37 5 C -37 -16 -23 -40 0 -46 Z" transform="translate(296 168) rotate(7) scale(1.0)"/>
+          <path d="M 0 -46 C 23 -40 37 -16 37 5 C 37 31 21 50 0 50 C -21 50 -37 31 -37 5 C -37 -16 -23 -40 0 -46 Z" transform="translate(360 220) rotate(25) scale(0.92)"/>
+          <path d="M 148 300 C 154 264 198 251 224 255 C 240 258 247 265 256 265 C 265 265 272 258 288 255 C 314 251 358 264 364 300 C 374 332 356 372 320 396 C 300 409 276 416 256 416 C 236 416 212 409 192 396 C 156 372 138 332 148 300 Z"/>
+        </svg>
       </a>
 
       <div className={styles.links}>

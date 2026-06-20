@@ -26,16 +26,12 @@
   letter-spacing: 0.04em;
 }
 
-.logoImg {
-  height: 28px;
-  width: auto;
-  object-fit: contain;
+.logoIcon {
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+  flex-shrink: 0;
   animation: float 3s ease-in-out infinite;
-  mix-blend-mode: multiply;
-}
-
-:global([data-theme="dark"]) .logoImg {
-  mix-blend-mode: screen;
 }
 
 .links {
