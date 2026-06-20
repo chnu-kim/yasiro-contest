@@ -1,14 +1,34 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './Nav.module.css';
 
-export default function Nav() {
+interface NavUser {
+  channelId: string;
+  channelName: string;
+}
+
+interface NavProps {
+  initialUser: NavUser | null;
+}
+
+export default function Nav({ initialUser }: NavProps) {
+  const [user, setUser] = useState<NavUser | null>(initialUser);
+  const router = useRouter();
+
   const toggle = () => {
     const current = document.documentElement.getAttribute('data-theme') || 'light';
     const next = current === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('yashiro-theme', next);
+  };
+
+  const logout = async () => {
+    await fetch('/auth/logout', { method: 'POST' });
+    setUser(null);
+    router.refresh();
   };
 
   return (
@@ -33,6 +53,18 @@ export default function Nav() {
           <span className={styles.iconLight}>🌙</span>
           <span className={styles.iconDark}>☀️</span>
         </button>
+
+        {user ? (
+          <div className={styles.userMenu}>
+            <span className={styles.userName}>{user.channelName}</span>
+            <button onClick={logout} className={styles.logoutBtn}>로그아웃</button>
+          </div>
+        ) : (
+          <a href="/auth/login" className={styles.loginBtn}>
+            치지직 로그인
+          </a>
+        )}
+
         <a
           href="https://chzzk.naver.com"
           target="_blank"

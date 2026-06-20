@@ -113,3 +113,57 @@
   flex-shrink: 0;
   animation: blink 1.6s ease infinite;
 }
+
+.loginBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: transparent;
+  font-family: 'Noto Sans KR', sans-serif;
+  letter-spacing: 0.02em;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.loginBtn:hover {
+  background: var(--accent-bg);
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logoutBtn {
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.logoutBtn:hover {
+  color: var(--text);
+  border-color: var(--text-dim);
+}

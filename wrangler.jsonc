@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yasiro-contest",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2024-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yasiro-db",
+      "database_id": "69020930-766c-423b-8cbd-85d62eee3e02"
+    }
+  ]
+}
