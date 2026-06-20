@@ -17,12 +17,19 @@ interface FloatingPoint {
   holeIdx: number;
 }
 
+interface ScoreRow {
+  channel_name: string;
+  score: number;
+}
+
 export default function WhackGame() {
   const [phase, setPhase] = useState<'idle' | 'playing' | 'result'>('idle');
   const [score, setScore] = useState(0);
   const [holes, setHoles] = useState<HoleState[]>(Array(TOTAL_HOLES).fill('empty'));
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION_MS);
   const [floatingPoints, setFloatingPoints] = useState<FloatingPoint[]>([]);
+  const [leaderboard, setLeaderboard] = useState<ScoreRow[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const startedAt = useRef<number>(0);
   const popTimer = useRef<ReturnType<typeof setInterval>>(undefined);
@@ -30,6 +37,7 @@ export default function WhackGame() {
   const holeTimers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
   const fpCounter = useRef(0);
   const holesRef = useRef<HoleState[]>(Array(TOTAL_HOLES).fill('empty'));
+  const finalScoreRef = useRef(0);
 
   const syncHoles = useCallback((next: HoleState[]) => {
     holesRef.current = next;
@@ -62,24 +70,47 @@ export default function WhackGame() {
     holeTimers.current.clear();
   }, []);
 
+  const fetchLeaderboard = useCallback(async () => {
+    try {
+      const res = await fetch('/api/whack');
+      if (res.ok) setLeaderboard(await res.json() as ScoreRow[]);
+    } catch { /* 네트워크 오류 무시 */ }
+  }, []);
+
+  const saveScore = useCallback(async (finalScore: number) => {
+    setIsSaving(true);
+    try {
+      await fetch('/api/whack', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score: finalScore }),
+      });
+    } catch { /* 저장 실패 무시 */ } finally {
+      setIsSaving(false);
+      await fetchLeaderboard();
+    }
+  }, [fetchLeaderboard]);
+
   const endGame = useCallback(() => {
     clearAllTimers();
-    const reset: HoleState[] = Array(TOTAL_HOLES).fill('empty');
-    syncHoles(reset);
+    syncHoles(Array(TOTAL_HOLES).fill('empty'));
     setTimeLeft(0);
     setPhase('result');
-  }, [clearAllTimers, syncHoles]);
+    // finalScoreRef로 stale closure 없이 최종 점수 접근
+    saveScore(finalScoreRef.current);
+    fetchLeaderboard();
+  }, [clearAllTimers, syncHoles, saveScore, fetchLeaderboard]);
 
   const startGame = useCallback(() => {
     clearAllTimers();
-    const reset: HoleState[] = Array(TOTAL_HOLES).fill('empty');
-    syncHoles(reset);
+    syncHoles(Array(TOTAL_HOLES).fill('empty'));
     setScore(0);
+    finalScoreRef.current = 0;
     setFloatingPoints([]);
+    setLeaderboard([]);
     setPhase('playing');
 
-    const now = Date.now();
-    startedAt.current = now;
+    startedAt.current = Date.now();
     setTimeLeft(GAME_DURATION_MS);
 
     popTimer.current = setInterval(() => {
@@ -124,7 +155,6 @@ export default function WhackGame() {
     next[idx] = nextState;
     syncHoles(next);
 
-    // 기존 낙하 타이머 취소 후 히트 애니메이션으로 교체
     const existing = holeTimers.current.get(idx);
     if (existing) clearTimeout(existing);
 
@@ -136,7 +166,11 @@ export default function WhackGame() {
     }, HIT_ANIM_MS);
     holeTimers.current.set(idx, hitTimer);
 
-    setScore(s => s + 1);
+    setScore(s => {
+      const next = s + 1;
+      finalScoreRef.current = next;
+      return next;
+    });
 
     const fpId = ++fpCounter.current;
     setFloatingPoints(pts => [...pts, { id: fpId, holeIdx: idx }]);
@@ -204,15 +238,8 @@ export default function WhackGame() {
           </div>
         )}
 
-        {/* 게임 보드 (구멍 격자) */}
-        <div
-          style={{
-            background: '#EAE0D0',
-            borderRadius: 16,
-            padding: 24,
-            marginBottom: 36,
-          }}
-        >
+        {/* 게임 보드 */}
+        <div style={{ background: '#EAE0D0', borderRadius: 16, padding: 24, marginBottom: 36 }}>
           <div className={styles.grid}>
             {holes.map((state, idx) => {
               const isUp = state === 'up' || state === 'rising';
@@ -258,16 +285,68 @@ export default function WhackGame() {
 
         {/* 종료 화면 */}
         {phase === 'result' && (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ marginBottom: 24 }}>
+          <div style={{ width: '100%', maxWidth: 400 }}>
+            {/* 최종 점수 */}
+            <div style={{ textAlign: 'center', marginBottom: 32 }}>
               <div style={{ fontSize: 13, color: 'var(--text-dim)', letterSpacing: '0.05em', marginBottom: 6 }}>최종 점수</div>
               <div style={{ fontFamily: "'Cinzel', serif", fontSize: 64, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
                 {score}
               </div>
+              {isSaving && (
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 8 }}>점수 저장 중…</div>
+              )}
             </div>
-            <button className={styles.startBtn} onClick={startGame}>
-              다시 하기
-            </button>
+
+            {/* 구분선 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+              <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+              <span style={{ width: 7, height: 7, background: 'var(--accent)', borderRadius: 1, flexShrink: 0, display: 'inline-block' }} />
+              <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+            </div>
+
+            {/* 리더보드 */}
+            {leaderboard.length > 0 && (
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: '0.08em', marginBottom: 12, textAlign: 'center' }}>
+                  TOP 20
+                </div>
+                <ol style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {leaderboard.map((row, i) => {
+                    const isMine = row.channel_name === leaderboard.find(r => r.score === score)?.channel_name && row.score === score;
+                    return (
+                      <li
+                        key={i}
+                        className={styles.rankRow}
+                        style={isMine ? { background: 'var(--accent-bg)', borderColor: 'var(--accent)' } : undefined}
+                      >
+                        <span style={{
+                          fontFamily: "'Cinzel', serif",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: i < 3 ? 'var(--accent)' : 'var(--text-dim)',
+                          width: 24,
+                          flexShrink: 0,
+                        }}>
+                          {i + 1}
+                        </span>
+                        <span style={{ fontSize: 13, color: 'var(--text)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {row.channel_name}
+                        </span>
+                        <span style={{ fontFamily: "'Cinzel', serif", fontSize: 14, fontWeight: 700, color: 'var(--accent)', flexShrink: 0 }}>
+                          {row.score}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+            )}
+
+            <div style={{ textAlign: 'center' }}>
+              <button className={styles.startBtn} onClick={startGame}>
+                다시 하기
+              </button>
+            </div>
           </div>
         )}
 

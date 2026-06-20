@@ -3,6 +3,7 @@ import {
   pickRandomHole,
   clickHole,
   calcTimeLeft,
+  validateScore,
 } from './whack';
 
 describe('pickRandomHole', () => {
@@ -61,5 +62,35 @@ describe('calcTimeLeft', () => {
 
   it('정확히 종료 시점 → 0 반환', () => {
     expect(calcTimeLeft(1000, 30000, 31000)).toBe(0);
+  });
+});
+
+describe('validateScore', () => {
+  it('0점은 유효', () => {
+    expect(validateScore(0)).toEqual({ ok: true, value: 0 });
+  });
+
+  it('양수 정수는 유효', () => {
+    expect(validateScore(42)).toEqual({ ok: true, value: 42 });
+  });
+
+  it('최대치(999)는 유효', () => {
+    expect(validateScore(999)).toEqual({ ok: true, value: 999 });
+  });
+
+  it('음수는 거부', () => {
+    expect(validateScore(-1).ok).toBe(false);
+  });
+
+  it('소수는 거부', () => {
+    expect(validateScore(1.5).ok).toBe(false);
+  });
+
+  it('최대치 초과(1000)는 거부', () => {
+    expect(validateScore(1000).ok).toBe(false);
+  });
+
+  it('문자열은 거부', () => {
+    expect(validateScore('10' as unknown as number).ok).toBe(false);
   });
 });
