@@ -256,7 +256,7 @@ export default async function Home() {
               letterSpacing: '0.08em',
             }}
           >
-            YASHIRO
+            YASIRO
           </span>
           <Image
             src="/kkul.png"
