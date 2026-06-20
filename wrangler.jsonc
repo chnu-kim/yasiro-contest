@@ -12,8 +12,7 @@
     {
       "binding": "DB",
       "database_name": "yasiro-db",
-      // `wrangler d1 create yasiro-db` 실행 후 출력되는 id 입력
-      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+      "database_id": "69020930-766c-423b-8cbd-85d62eee3e02"
     }
   ]
 }
