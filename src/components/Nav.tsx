@@ -66,7 +66,7 @@ export default function Nav({ initialUser }: NavProps) {
           </a>
         )}
 
-        <
+        <a
           href="https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3"
           target="_blank"
           rel="noreferrer"
