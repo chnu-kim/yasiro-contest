@@ -169,22 +169,25 @@
   max-width: 420px;
 }
 
-/* 넓은 화면: 좌우 배치 */
+/* 넓은 화면: 3열 그리드 — 리더보드(좌) / 게임(중앙) / 빈칸(우) */
 @media (min-width: 800px) {
   .gameLayout {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 200px auto 200px;
     gap: 40px;
+    align-items: flex-start;
+    flex-direction: unset;
   }
 
   .leaderboardPanel {
+    grid-column: 1;
     width: 200px;
     max-width: 200px;
-    /* 리더보드를 게임 보드 좌측에 */
-    order: -1;
-    /* 게임 보드 상단에 맞춰 정렬 */
     position: sticky;
     top: 80px;
+  }
+
+  .gameArea {
+    grid-column: 2;
   }
 }
