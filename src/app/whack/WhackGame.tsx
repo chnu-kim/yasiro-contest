@@ -22,6 +22,47 @@ interface ScoreRow {
   score: number;
 }
 
+function LeaderboardPanel({ rows, myScore, phase }: { rows: ScoreRow[]; myScore: number; phase: string }) {
+  return (
+    <div className={styles.leaderboardPanel}>
+      <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: '0.08em', marginBottom: 12, textAlign: 'center' }}>
+        TOP 10
+      </div>
+      {rows.length === 0 ? (
+        <div style={{ fontSize: 12, color: 'var(--text-dim)', textAlign: 'center', padding: '16px 0' }}>
+          아직 기록이 없습니다
+        </div>
+      ) : (
+        <ol style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 5 }}>
+          {rows.map((row, i) => {
+            const isMine = phase === 'result' && row.score === myScore && i === rows.findIndex(r => r.score === myScore);
+            return (
+              <li key={i} className={`${styles.rankRow} ${isMine ? styles.mine : ''}`}>
+                <span style={{
+                  fontFamily: "'Cinzel', serif",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: i < 3 ? 'var(--accent)' : 'var(--text-dim)',
+                  width: 20,
+                  flexShrink: 0,
+                }}>
+                  {i + 1}
+                </span>
+                <span style={{ fontSize: 12, color: 'var(--text)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {row.channel_name}
+                </span>
+                <span style={{ fontFamily: "'Cinzel', serif", fontSize: 13, fontWeight: 700, color: 'var(--accent)', flexShrink: 0 }}>
+                  {row.score}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </div>
+  );
+}
+
 export default function WhackGame() {
   const [phase, setPhase] = useState<'idle' | 'playing' | 'result'>('idle');
   const [score, setScore] = useState(0);
@@ -77,6 +118,9 @@ export default function WhackGame() {
     } catch { /* 네트워크 오류 무시 */ }
   }, []);
 
+  // 마운트 시 리더보드 초기 로드
+  useEffect(() => { fetchLeaderboard(); }, [fetchLeaderboard]);
+
   const saveScore = useCallback(async (finalScore: number) => {
     setIsSaving(true);
     try {
@@ -96,10 +140,8 @@ export default function WhackGame() {
     syncHoles(Array(TOTAL_HOLES).fill('empty'));
     setTimeLeft(0);
     setPhase('result');
-    // finalScoreRef로 stale closure 없이 최종 점수 접근
     saveScore(finalScoreRef.current);
-    fetchLeaderboard();
-  }, [clearAllTimers, syncHoles, saveScore, fetchLeaderboard]);
+  }, [clearAllTimers, syncHoles, saveScore]);
 
   const startGame = useCallback(() => {
     clearAllTimers();
@@ -107,7 +149,6 @@ export default function WhackGame() {
     setScore(0);
     finalScoreRef.current = 0;
     setFloatingPoints([]);
-    setLeaderboard([]);
     setPhase('playing');
 
     startedAt.current = Date.now();
@@ -179,6 +220,7 @@ export default function WhackGame() {
 
   const timerPercent = (timeLeft / GAME_DURATION_MS) * 100;
   const isWarning = timeLeft < 8000;
+  const top10 = leaderboard.slice(0, 10);
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', display: 'flex', flexDirection: 'column' }}>
@@ -187,9 +229,7 @@ export default function WhackGame() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
         padding: '48px 24px',
-        gap: 0,
       }}>
 
         {/* 배지 */}
@@ -218,137 +258,100 @@ export default function WhackGame() {
           구멍에서 튀어나오는 꿀붕이를 잡으세요!
         </p>
 
-        {/* 점수 + 타이머 (게임 중) */}
-        {phase === 'playing' && (
-          <div style={{ width: '100%', maxWidth: 400, marginBottom: 32 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-              <span style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 700, color: 'var(--accent)' }}>
-                {score}
-              </span>
-              <span style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 600, color: isWarning ? '#E04040' : 'var(--text)', transition: 'color 0.3s' }}>
-                {Math.ceil(timeLeft / 1000)}s
-              </span>
-            </div>
-            <div className={styles.timerBar}>
-              <div
-                className={`${styles.timerFill} ${isWarning ? styles.warning : ''}`}
-                style={{ width: `${timerPercent}%` }}
-              />
-            </div>
-          </div>
-        )}
+        {/* 게임 + 리더보드 레이아웃 */}
+        <div className={styles.gameLayout}>
 
-        {/* 게임 보드 */}
-        <div style={{ background: '#EAE0D0', borderRadius: 16, padding: 24, marginBottom: 36 }}>
-          <div className={styles.grid}>
-            {holes.map((state, idx) => {
-              const isUp = state === 'up' || state === 'rising';
-              const src = (state === 'hit' || state === 'falling') ? '/kkul-back.png' : '/kkul-front.png';
-              const holeFloating = floatingPoints.filter(p => p.holeIdx === idx);
+          {/* 리더보드 패널 (항상 표시) */}
+          <LeaderboardPanel rows={top10} myScore={score} phase={phase} />
 
-              return (
-                <div
-                  key={idx}
-                  className={styles.hole}
-                  onClick={() => handleHoleClick(idx)}
-                  role="button"
-                  aria-label={`구멍 ${idx + 1}`}
-                >
-                  {state !== 'empty' && (
-                    <Image
-                      src={src}
-                      alt="꿀붕이"
-                      width={100}
-                      height={139}
-                      className={`${styles.kkul} ${styles[state]}`}
-                      draggable={false}
-                      priority={isUp}
-                    />
-                  )}
-                  {holeFloating.map(fp => (
-                    <span key={fp.id} className={styles.floatingPoint} style={{ left: '50%', top: '30%' }}>
-                      +1
-                    </span>
-                  ))}
+          {/* 게임 영역 */}
+          <div className={styles.gameArea}>
+
+            {/* 점수 + 타이머 (게임 중) */}
+            {phase === 'playing' && (
+              <div style={{ width: 408, marginBottom: 24 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                  <span style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 700, color: 'var(--accent)' }}>
+                    {score}
+                  </span>
+                  <span style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 600, color: isWarning ? '#E04040' : 'var(--text)', transition: 'color 0.3s' }}>
+                    {Math.ceil(timeLeft / 1000)}s
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 시작 화면 */}
-        {phase === 'idle' && (
-          <button className={styles.startBtn} onClick={startGame}>
-            게임 시작
-          </button>
-        )}
-
-        {/* 종료 화면 */}
-        {phase === 'result' && (
-          <div style={{ width: '100%', maxWidth: 400 }}>
-            {/* 최종 점수 */}
-            <div style={{ textAlign: 'center', marginBottom: 32 }}>
-              <div style={{ fontSize: 13, color: 'var(--text-dim)', letterSpacing: '0.05em', marginBottom: 6 }}>최종 점수</div>
-              <div style={{ fontFamily: "'Cinzel', serif", fontSize: 64, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
-                {score}
-              </div>
-              {isSaving && (
-                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 8 }}>점수 저장 중…</div>
-              )}
-            </div>
-
-            {/* 구분선 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
-              <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-              <span style={{ width: 7, height: 7, background: 'var(--accent)', borderRadius: 1, flexShrink: 0, display: 'inline-block' }} />
-              <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-            </div>
-
-            {/* 리더보드 */}
-            {leaderboard.length > 0 && (
-              <div style={{ marginBottom: 28 }}>
-                <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: '0.08em', marginBottom: 12, textAlign: 'center' }}>
-                  TOP 20
+                <div className={styles.timerBar}>
+                  <div
+                    className={`${styles.timerFill} ${isWarning ? styles.warning : ''}`}
+                    style={{ width: `${timerPercent}%` }}
+                  />
                 </div>
-                <ol style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {leaderboard.map((row, i) => {
-                    const isMine = row.channel_name === leaderboard.find(r => r.score === score)?.channel_name && row.score === score;
-                    return (
-                      <li
-                        key={i}
-                        className={styles.rankRow}
-                        style={isMine ? { background: 'var(--accent-bg)', borderColor: 'var(--accent)' } : undefined}
-                      >
-                        <span style={{
-                          fontFamily: "'Cinzel', serif",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: i < 3 ? 'var(--accent)' : 'var(--text-dim)',
-                          width: 24,
-                          flexShrink: 0,
-                        }}>
-                          {i + 1}
-                        </span>
-                        <span style={{ fontSize: 13, color: 'var(--text)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {row.channel_name}
-                        </span>
-                        <span style={{ fontFamily: "'Cinzel', serif", fontSize: 14, fontWeight: 700, color: 'var(--accent)', flexShrink: 0 }}>
-                          {row.score}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ol>
               </div>
             )}
 
-            <div style={{ textAlign: 'center' }}>
-              <button className={styles.startBtn} onClick={startGame}>
-                다시 하기
-              </button>
+            {/* 게임 보드 */}
+            <div style={{ background: '#EAE0D0', borderRadius: 16, padding: 24, marginBottom: 28 }}>
+              <div className={styles.grid}>
+                {holes.map((state, idx) => {
+                  const isUp = state === 'up' || state === 'rising';
+                  const src = (state === 'hit' || state === 'falling') ? '/kkul-back.png' : '/kkul-front.png';
+                  const holeFloating = floatingPoints.filter(p => p.holeIdx === idx);
+
+                  return (
+                    <div
+                      key={idx}
+                      className={styles.hole}
+                      onClick={() => handleHoleClick(idx)}
+                      role="button"
+                      aria-label={`구멍 ${idx + 1}`}
+                    >
+                      {state !== 'empty' && (
+                        <Image
+                          src={src}
+                          alt="꿀붕이"
+                          width={100}
+                          height={139}
+                          className={`${styles.kkul} ${styles[state]}`}
+                          draggable={false}
+                          priority={isUp}
+                        />
+                      )}
+                      {holeFloating.map(fp => (
+                        <span key={fp.id} className={styles.floatingPoint} style={{ left: '50%', top: '30%' }}>
+                          +1
+                        </span>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
+
+            {/* 시작 화면 */}
+            {phase === 'idle' && (
+              <button className={styles.startBtn} onClick={startGame}>
+                게임 시작
+              </button>
+            )}
+
+            {/* 종료 화면 */}
+            {phase === 'result' && (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 13, color: 'var(--text-dim)', letterSpacing: '0.05em', marginBottom: 4 }}>최종 점수</div>
+                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: 56, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
+                    {score}
+                  </div>
+                  {isSaving && (
+                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 6 }}>점수 저장 중…</div>
+                  )}
+                </div>
+                <button className={styles.startBtn} onClick={startGame}>
+                  다시 하기
+                </button>
+              </div>
+            )}
+
           </div>
-        )}
+        </div>
 
       </main>
 
