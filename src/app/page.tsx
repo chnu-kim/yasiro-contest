@@ -126,6 +126,36 @@ export default function Home() {
             }}
           />
 
+          {/* 키 표시 */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '5%',
+              left: 0,
+              right: 0,
+              display: 'flex',
+              alignItems: 'center',
+              pointerEvents: 'none',
+              zIndex: 2,
+            }}
+          >
+            <div style={{ flex: 1, height: 1, background: 'var(--accent)', opacity: 0.7 }} />
+            <span
+              style={{
+                fontSize: 11,
+                fontFamily: "'Cinzel', serif",
+                fontWeight: 600,
+                color: 'var(--accent)',
+                letterSpacing: '0.08em',
+                padding: '0 10px',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              149.8 cm
+            </span>
+            <div style={{ flex: 1, height: 1, background: 'var(--accent)', opacity: 0.7 }} />
+          </div>
+
           {/* 꿀붕이 */}
           <div
             style={{
