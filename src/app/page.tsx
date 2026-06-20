@@ -94,7 +94,7 @@ export default function Home() {
 
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <a
-              href="https://chzzk.naver.com"
+              href="https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3"
               target="_blank"
               rel="noreferrer"
               className={styles.heroBtnPrimary}

@@ -45,7 +45,7 @@ export default function Nav({ initialUser }: NavProps) {
       </a>
 
       <div className={styles.links}>
-        <a href="https://chzzk.naver.com" target="_blank" rel="noreferrer" className={styles.link}>스트리밍</a>
+        <a href="https://chzzk.naver.com/d6e680f5b17eba0b078f978dd722c0f3" target="_blank" rel="noreferrer" className={styles.link}>스트리밍</a>
       </div>
 
       <div className={styles.actions}>
@@ -66,7 +66,7 @@ export default function Nav({ initialUser }: NavProps) {
         )}
 
         <a
-          href="https://chzzk.naver.com"
+          href="https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3"
           target="_blank"
           rel="noreferrer"
           className={styles.liveBtn}
