@@ -3,6 +3,8 @@ import { cookies } from 'next/headers';
 import './globals.css';
 import Nav from '@/components/Nav';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: '야시로',
   description: '스팀펑크 고글과 따뜻한 웃음으로 매일 찾아오는 야시로의 방송 세계',
