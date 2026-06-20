@@ -14,5 +14,9 @@
       "database_name": "yasiro-db",
       "database_id": "69020930-766c-423b-8cbd-85d62eee3e02"
     }
+  ],
+  "routes": [
+    { "pattern": "yasiro.stream", "custom_domain": true },
+    { "pattern": "www.yasiro.stream", "custom_domain": true }
   ]
 }
