@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect, useRef } from 'react';
 import styles from './page.module.css';
 import PostIt from '@/components/PostIt';
 
@@ -18,11 +18,24 @@ interface Props {
 
 export default function GuestbookBoard({ initialNotes, user }: Props) {
   const [notes, setNotes] = useState<Note[]>(initialNotes);
+  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isPending, startTransition] = useTransition();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const remaining = 200 - message.length;
+
+  useEffect(() => {
+    if (open) textareaRef.current?.focus();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
   const submit = () => {
     if (!message.trim()) return;
@@ -49,6 +62,7 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
       };
       setNotes((prev) => [newNote, ...prev]);
       setMessage('');
+      setOpen(false);
     });
   };
 
@@ -61,60 +75,11 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
           borderRadius: 1, background: 'var(--accent-bg)', marginBottom: 16,
         }}>
           <span style={{ width: 7, height: 7, background: 'var(--accent)', display: 'inline-block', borderRadius: 1 }} />
-          <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.07em', fontFamily: "'Cinzel', serif" }}>GUESTBOOK</span>
+          <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.07em', fontFamily: "'Cinzel', serif" }}>TO YASHIRO</span>
         </div>
-        <h1 className={styles.title}>야시로에게 한마디</h1>
-        <p className={styles.subtitle}>포스트잇에 담아 보드에 붙여두세요</p>
+        <h1 className={styles.title}>야시로에게</h1>
+        <p className={styles.subtitle}>팬들이 야시로에게 남긴 한마디</p>
       </header>
-
-      {user ? (
-        <div className={styles.formWrap}>
-          <div className={styles.formPostit}>
-            <textarea
-              className={styles.textarea}
-              placeholder="야시로에게 하고 싶은 말을 적어주세요..."
-              value={message}
-              onChange={(e) => {
-                if (e.target.value.length <= 200) setMessage(e.target.value);
-              }}
-              rows={5}
-              disabled={isPending}
-            />
-            <div className={styles.formFooter}>
-              {error && <span className={styles.errorMsg}>{error}</span>}
-              <span className={styles.counter} style={{ color: remaining < 20 ? '#e53935' : undefined }}>
-                {remaining}자 남음
-              </span>
-              <span className={styles.formAuthor}>— {user.channelName}</span>
-              <button
-                className={styles.submitBtn}
-                onClick={submit}
-                disabled={isPending || !message.trim()}
-              >
-                {isPending ? '붙이는 중...' : '보드에 붙이기'}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className={styles.loginPrompt}>
-          <p style={{ fontFamily: "'Gaegu', cursive", fontSize: 20, color: 'var(--text-dim)', marginBottom: 16 }}>
-            치지직 닉네임으로 한마디 남겨보세요 ✏️
-          </p>
-          <a href="/auth/login" className={styles.loginBtn}>
-            치지직으로 로그인
-          </a>
-        </div>
-      )}
-
-      <div className={styles.divider}>
-        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ width: 7, height: 7, background: 'var(--accent)', borderRadius: 1 }} />
-          <span style={{ fontSize: 12, color: 'var(--text-dim)', letterSpacing: '0.07em' }}>{notes.length}개의 메모</span>
-        </div>
-        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-      </div>
 
       {notes.length === 0 ? (
         <p className={styles.empty}>아직 남겨진 메모가 없어요. 첫 번째로 한마디 남겨보세요!</p>
@@ -128,6 +93,69 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
               channelName={note.channel_name}
             />
           ))}
+        </div>
+      )}
+
+      {/* ─── 플로팅 버튼 ─── */}
+      <button
+        className={styles.fab}
+        onClick={() => setOpen(true)}
+        title="한마디 남기기"
+        aria-label="한마디 남기기"
+      >
+        ✏️
+        <span className={styles.fabLabel}>한마디 남기기</span>
+      </button>
+
+      {/* ─── 작성 모달 ─── */}
+      {open && (
+        <div className={styles.overlay} onClick={() => setOpen(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            {user ? (
+              <>
+                <div className={styles.modalPin} />
+                <p className={styles.modalTitle}>야시로에게 한마디</p>
+                <textarea
+                  ref={textareaRef}
+                  className={styles.textarea}
+                  placeholder="야시로에게 하고 싶은 말을 적어주세요..."
+                  value={message}
+                  onChange={(e) => { if (e.target.value.length <= 200) setMessage(e.target.value); }}
+                  rows={5}
+                  disabled={isPending}
+                />
+                <div className={styles.modalFooter}>
+                  {error && <span className={styles.errorMsg}>{error}</span>}
+                  <span
+                    className={styles.counter}
+                    style={{ color: remaining < 20 ? '#e53935' : undefined }}
+                  >
+                    {remaining}자 남음
+                  </span>
+                  <span className={styles.formAuthor}>— {user.channelName}</span>
+                  <div className={styles.modalActions}>
+                    <button className={styles.cancelBtn} onClick={() => setOpen(false)}>취소</button>
+                    <button
+                      className={styles.submitBtn}
+                      onClick={submit}
+                      disabled={isPending || !message.trim()}
+                    >
+                      {isPending ? '붙이는 중...' : '보드에 붙이기'}
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className={styles.loginPrompt}>
+                <p style={{ fontFamily: "'Gaegu', cursive", fontSize: 20, color: 'var(--text-dim)', marginBottom: 16 }}>
+                  치지직 닉네임으로 한마디 남겨보세요 ✏️
+                </p>
+                <a href="/auth/login" className={styles.loginBtn}>
+                  치지직으로 로그인
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </main>
