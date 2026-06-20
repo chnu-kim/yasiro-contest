@@ -46,6 +46,7 @@ export default function Nav({ initialUser }: NavProps) {
 
       <div className={styles.links}>
         <a href="https://chzzk.naver.com/d6e680f5b17eba0b078f978dd722c0f3" target="_blank" rel="noreferrer" className={styles.link}>치지직</a>
+        <a href="/guestbook" className={styles.link}>방명록</a>
       </div>
 
       <div className={styles.actions}>
