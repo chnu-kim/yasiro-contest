@@ -211,7 +211,7 @@ export default async function Home() {
             <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ width: 7, height: 7, background: 'var(--accent)', borderRadius: 1 }} />
-              <span style={{ fontSize: 12, color: 'var(--text-dim)', letterSpacing: '0.07em', fontFamily: "'Noto Sans KR', sans-serif" }}>팬들의 한마디</span>
+              <span style={{ fontSize: 12, color: 'var(--text-dim)', letterSpacing: '0.07em', fontFamily: "'Noto Sans KR', sans-serif" }}>야시로에게</span>
             </div>
             <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
           </div>
@@ -229,7 +229,7 @@ export default async function Home() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: 8 }}>
-            <a href="/guestbook" className={styles.moreBtn}>
+            <a href="/to-yasiro" className={styles.moreBtn}>
               더 보기 →
             </a>
           </div>
