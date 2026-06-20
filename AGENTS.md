@@ -12,8 +12,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - **Stack:** Next.js 16.2.9 (App Router) · TypeScript · pnpm · CSS Modules + inline styles
 - **폰트:** Google Fonts `<link>` (next/font 사용 안 함 — 한국어 subset 호환성 문제)
-- **배포:** Cloudflare Pages (정적 export) · `pnpm deploy`
-- **프로덕션:** https://yasiro-contest.pages.dev
+- **배포:** Cloudflare Workers (`@opennextjs/cloudflare`) · `pnpm run deploy`
+- **프로덕션:** https://yasiro-contest.chanwoos-account.workers.dev
+- **DB:** Cloudflare D1 `yasiro-db` (id: `69020930-766c-423b-8cbd-85d62eee3e02`)
 
 ---
 
@@ -180,25 +181,65 @@ Noto Serif KR  700·900  ← 야시로 타이틀 헤드라인
 
 ---
 
-## static export 설정 (`next.config.ts`)
+## Next.js 설정 (`next.config.ts`)
 
 ```ts
 const nextConfig: NextConfig = {
-  output: "export",
   images: { unoptimized: true },
 };
 ```
 
-`next/image`의 `fill` prop과 `sizes` 사용 가능. `loader` 커스터마이징 불필요.
+`output: "export"` 없음 — Cloudflare Workers에서 Server Components/Route Handlers 사용.
 
 ---
 
 ## 배포
 
 ```bash
-pnpm build    # out/ 생성
-pnpm deploy   # wrangler pages deploy out --project-name yasiro-contest
+pnpm run deploy   # opennextjs-cloudflare build && wrangler deploy
 ```
 
-CI/CD: GitHub Actions (`.github/workflows/deploy.yml`) — main push 시 자동 실행.
-wrangler 4.x는 Node.js 22+ 필요.
+- 빌드 산출물: `.open-next/` (gitignored)
+- CI/CD: GitHub Actions (`.github/workflows/deploy.yml`) — main push 시 자동 실행
+- wrangler 4.x는 Node.js 22+ 필요
+
+## Cloudflare 인프라
+
+| 항목 | 값 |
+|---|---|
+| Worker 이름 | `yasiro-contest` |
+| 프로덕션 URL | https://yasiro-contest.chanwoos-account.workers.dev |
+| Account ID | `fc7323801136ae087db0b88ab4d07b53` |
+| D1 DB 이름 | `yasiro-db` |
+| D1 DB ID | `69020930-766c-423b-8cbd-85d62eee3e02` |
+
+### D1 바인딩
+
+`wrangler.jsonc`에서 `env.DB`로 바인딩. Route Handler 및 Server Component에서는 `getCloudflareContext({ async: true })`로 접근:
+
+```ts
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+const { env } = await getCloudflareContext({ async: true });
+await env.DB.prepare("SELECT ...").run();
+```
+
+### Route Handler 주의사항
+
+`NextResponse` / `export const runtime = "edge"` 사용 금지 — opennextjs/cloudflare 번들링 시 에러 발생.
+네이티브 `Request` / `Response` 사용.
+
+### Worker 환경 변수 (Secrets)
+
+```bash
+wrangler secret put KEY_NAME   # 프로덕션 시크릿 등록
+```
+
+등록된 시크릿: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI`
+
+### D1 마이그레이션
+
+```bash
+wrangler d1 migrations apply yasiro-db --remote
+```
+
+마이그레이션 파일: `migrations/` 디렉토리 (Flyway 스타일 아님, wrangler 직접 관리)
