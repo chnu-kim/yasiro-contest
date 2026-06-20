@@ -33,7 +33,7 @@ export default function Nav({ initialUser }: NavProps) {
 
   return (
     <nav className={styles.nav}>
-      <a href="#" className={styles.logo}>
+      <a href="/" className={styles.logo}>
         <span className={styles.logoText}>야시로</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" fillRule="evenodd" className={styles.logoIcon} aria-hidden="true">
           <path d="M 0 -46 C 23 -40 37 -16 37 5 C 37 31 21 50 0 50 C -21 50 -37 31 -37 5 C -37 -16 -23 -40 0 -46 Z" transform="translate(152 220) rotate(-25) scale(0.92)"/>
