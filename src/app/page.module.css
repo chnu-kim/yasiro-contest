@@ -24,6 +24,41 @@
   border-color: var(--accent);
 }
 
+/* ─── 한마디 보드 섹션 ─── */
+.notesSection {
+  padding: 64px var(--gutter) 72px;
+  background: var(--surface);
+}
+
+.notesSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.notesBoard {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 28px 20px;
+  margin-bottom: 32px;
+}
+
+.moreBtn {
+  font-family: 'Gaegu', cursive;
+  font-size: 16px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 8px 24px;
+  border-radius: var(--radius-sm);
+  transition: background 0.18s;
+  display: inline-block;
+}
+
+.moreBtn:hover {
+  background: var(--accent-bg);
+}
+
 /* Footer logo blend mode */
 .footerLogoImg {
   mix-blend-mode: multiply;

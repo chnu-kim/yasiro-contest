@@ -2,40 +2,13 @@
 
 import { useState, useTransition } from 'react';
 import styles from './page.module.css';
-import { getPostItStyle } from '@/lib/guestbook';
+import PostIt from '@/components/PostIt';
 
 interface Note {
   id: string;
   message: string;
   channel_name: string;
   created_at: number;
-}
-
-const POST_IT_COLORS = [
-  { bg: '#FFF176', shadow: 'rgba(251,192,45,0.35)' },   // 노랑
-  { bg: '#F8BBD0', shadow: 'rgba(233,30,99,0.25)' },    // 핑크
-  { bg: '#B3E5FC', shadow: 'rgba(3,169,244,0.25)' },    // 파랑
-  { bg: '#C8E6C9', shadow: 'rgba(76,175,80,0.25)' },    // 초록
-  { bg: '#E1BEE7', shadow: 'rgba(156,39,176,0.25)' },   // 보라
-];
-
-function PostIt({ note }: { note: Note }) {
-  const { colorIndex, rotation } = getPostItStyle(note.id);
-  const color = POST_IT_COLORS[colorIndex];
-
-  return (
-    <div
-      className={styles.postit}
-      style={{
-        background: color.bg,
-        transform: `rotate(${rotation}deg)`,
-        boxShadow: `3px 4px 12px ${color.shadow}`,
-      }}
-    >
-      <p className={styles.postitMessage}>{note.message}</p>
-      <p className={styles.postitAuthor}>— {note.channel_name}</p>
-    </div>
-  );
 }
 
 interface Props {
@@ -148,7 +121,12 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
       ) : (
         <div className={styles.board}>
           {notes.map((note) => (
-            <PostIt key={note.id} note={note} />
+            <PostIt
+              key={note.id}
+              id={note.id}
+              message={note.message}
+              channelName={note.channel_name}
+            />
           ))}
         </div>
       )}

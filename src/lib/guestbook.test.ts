@@ -32,11 +32,11 @@ describe("getPostItStyle", () => {
     expect(a.rotation).toBe(b.rotation);
   });
 
-  it("colorIndex는 0~4 범위 내에 있다", () => {
+  it("colorIndex는 0~6 범위 내에 있다", () => {
     ["a", "z", "0", "zzz", "hello"].forEach((id) => {
       const { colorIndex } = getPostItStyle(id);
       expect(colorIndex).toBeGreaterThanOrEqual(0);
-      expect(colorIndex).toBeLessThan(5);
+      expect(colorIndex).toBeLessThan(7);
     });
   });
 
