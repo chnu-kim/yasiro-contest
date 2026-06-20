@@ -45,7 +45,6 @@ export default function Nav({ initialUser }: NavProps) {
       </a>
 
       <div className={styles.links}>
-        <a href="https://chzzk.naver.com/d6e680f5b17eba0b078f978dd722c0f3" target="_blank" rel="noreferrer" className={styles.link}>치지직</a>
         <a href="/to-yasiro" className={styles.link}>야시로에게</a>
         <a href="/whack" className={styles.link}>꿀붕이 잡기</a>
       </div>
@@ -66,6 +65,8 @@ export default function Nav({ initialUser }: NavProps) {
             치지직 로그인
           </a>
         )}
+
+        <a href="https://chzzk.naver.com/d6e680f5b17eba0b078f978dd722c0f3" target="_blank" rel="noreferrer" className={styles.link}>치지직</a>
 
         <a
           href="https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3"
