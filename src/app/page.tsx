@@ -53,13 +53,13 @@ export default function Home() {
 
           <h1
             style={{
-              fontFamily: "'Noto Serif KR', serif",
+              fontFamily: "'Jua', sans-serif",
               fontSize: 100,
-              fontWeight: 900,
+              fontWeight: 400,
               lineHeight: 0.95,
               color: 'var(--text)',
               marginBottom: 20,
-              letterSpacing: '-0.02em',
+              letterSpacing: '0em',
               whiteSpace: 'nowrap',
             }}
           >
@@ -165,11 +165,11 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span
             style={{
-              fontFamily: "'Cinzel', serif",
+              fontFamily: "'Comfortaa', sans-serif",
               fontSize: 14,
               fontWeight: 700,
               color: 'var(--text)',
-              letterSpacing: '0.14em',
+              letterSpacing: '0.08em',
             }}
           >
             YASHIRO
