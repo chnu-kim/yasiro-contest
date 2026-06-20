@@ -1,0 +1,218 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px var(--gutter) 96px;
+}
+
+/* ─── Header ─── */
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-family: 'Gaegu', cursive;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-family: 'Gaegu', cursive;
+  font-size: 18px;
+  color: var(--text-dim);
+}
+
+/* ─── Write Form ─── */
+.formWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.formPostit {
+  background: #FFF9C4;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px 24px 16px;
+  border-radius: 2px;
+  box-shadow: 3px 4px 16px rgba(251, 192, 45, 0.4), 0 1px 3px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.formPostit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: rgba(251, 192, 45, 0.5);
+  border-radius: 2px 2px 0 0;
+}
+
+.textarea {
+  font-family: 'Gaegu', cursive;
+  font-size: 19px;
+  line-height: 1.75;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: #1A1814;
+  caret-color: var(--accent);
+}
+
+.textarea::placeholder {
+  color: rgba(26,24,20,0.38);
+}
+
+.formFooter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(26,24,20,0.18);
+}
+
+.counter {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  color: rgba(26,24,20,0.45);
+  margin-left: auto;
+}
+
+.formAuthor {
+  font-family: 'Gaegu', cursive;
+  font-size: 15px;
+  color: rgba(26,24,20,0.6);
+}
+
+.submitBtn {
+  font-family: 'Gaegu', cursive;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background 0.18s, opacity 0.18s;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--accent-d);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.errorMsg {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  color: #e53935;
+  flex-basis: 100%;
+}
+
+/* ─── Login Prompt ─── */
+.loginPrompt {
+  text-align: center;
+  margin-bottom: 48px;
+  padding: 36px 24px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.loginBtn {
+  display: inline-block;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  transition: background 0.18s;
+}
+
+.loginBtn:hover {
+  background: var(--accent-d);
+}
+
+/* ─── Section Divider ─── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+/* ─── Board ─── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+/* ─── Post-it Card ─── */
+.postit {
+  padding: 20px 18px 16px;
+  border-radius: 2px;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  will-change: transform;
+  break-inside: avoid;
+}
+
+.postit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: rgba(0,0,0,0.07);
+  border-radius: 2px 2px 0 0;
+}
+
+.postit:hover {
+  transform: rotate(0deg) translateY(-4px) !important;
+  z-index: 1;
+}
+
+.postitMessage {
+  font-family: 'Gaegu', cursive;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #1A1814;
+  word-break: break-all;
+  white-space: pre-wrap;
+  margin-bottom: 14px;
+  min-height: 60px;
+}
+
+.postitAuthor {
+  font-family: 'Gaegu', cursive;
+  font-size: 14px;
+  color: rgba(26,24,20,0.55);
+  text-align: right;
+  border-top: 1px dashed rgba(26,24,20,0.16);
+  padding-top: 10px;
+}
+
+/* ─── Empty ─── */
+.empty {
+  font-family: 'Gaegu', cursive;
+  font-size: 18px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 64px 0;
+}
