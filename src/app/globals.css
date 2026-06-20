@@ -61,3 +61,20 @@ a {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0%); }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(0%); }
+  to { transform: translateY(100%); }
+}
+
+@keyframes hitBounce {
+  0%   { transform: translateY(0%) scale(1); }
+  30%  { transform: translateY(-8%) scale(0.92); }
+  60%  { transform: translateY(20%); }
+  100% { transform: translateY(100%); }
+}
+
