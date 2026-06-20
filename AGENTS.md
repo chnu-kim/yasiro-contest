@@ -13,7 +13,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **Stack:** Next.js 16.2.9 (App Router) · TypeScript · pnpm · CSS Modules + inline styles
 - **폰트:** Google Fonts `<link>` (next/font 사용 안 함 — 한국어 subset 호환성 문제)
 - **배포:** Cloudflare Workers (`@opennextjs/cloudflare`) · `pnpm run deploy`
-- **프로덕션:** https://yasiro-contest.chanwoos-account.workers.dev
+- **프로덕션:** https://yasiro.stream (구: https://yasiro-contest.chanwoos-account.workers.dev)
 - **DB:** Cloudflare D1 `yasiro-db` (id: `69020930-766c-423b-8cbd-85d62eee3e02`)
 
 ---
@@ -208,7 +208,7 @@ pnpm run deploy   # opennextjs-cloudflare build && wrangler deploy
 | 항목 | 값 |
 |---|---|
 | Worker 이름 | `yasiro-contest` |
-| 프로덕션 URL | https://yasiro-contest.chanwoos-account.workers.dev |
+| 프로덕션 URL | https://yasiro.stream |
 | Account ID | `fc7323801136ae087db0b88ab4d07b53` |
 | D1 DB 이름 | `yasiro-db` |
 | D1 DB ID | `69020930-766c-423b-8cbd-85d62eee3e02` |
