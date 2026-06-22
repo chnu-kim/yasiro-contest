@@ -25,9 +25,9 @@ interface ScoreRow {
 function LeaderboardPanel({ rows, myScore, phase }: { rows: ScoreRow[]; myScore: number; phase: string }) {
   return (
     <div className={styles.leaderboardPanel}>
-      <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: '0.08em', marginBottom: 12, textAlign: 'center' }}>
+      <h2 style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: '0.08em', marginBottom: 12, textAlign: 'center', fontWeight: 600 }}>
         TOP 10
-      </div>
+      </h2>
       {rows.length === 0 ? (
         <div style={{ fontSize: 12, color: 'var(--text-dim)', textAlign: 'center', padding: '16px 0' }}>
           아직 기록이 없습니다
@@ -300,8 +300,10 @@ export default function WhackGame() {
                       key={idx}
                       className={styles.hole}
                       onClick={() => handleHoleClick(idx)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleHoleClick(idx); } }}
                       role="button"
-                      aria-label={`구멍 ${idx + 1}`}
+                      tabIndex={phase === 'playing' ? 0 : -1}
+                      aria-label={`구멍 ${idx + 1}${holes[idx] !== 'empty' ? ' — 꿀붕이 출현!' : ''}`}
                     >
                       {state !== 'empty' && (
                         <Image

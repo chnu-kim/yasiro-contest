@@ -84,7 +84,7 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
       {notes.length === 0 ? (
         <p className={styles.empty}>아직 남겨진 메모가 없어요. 첫 번째로 한마디 남겨보세요!</p>
       ) : (
-        <div className={styles.board}>
+        <section className={styles.board} aria-label="팬 한마디 목록">
           {notes.map((note) => (
             <PostIt
               key={note.id}
@@ -93,7 +93,7 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
               channelName={note.channel_name}
             />
           ))}
-        </div>
+        </section>
       )}
 
       {/* ─── 플로팅 버튼 ─── */}
@@ -110,11 +110,17 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
       {/* ─── 작성 모달 ─── */}
       {open && (
         <div className={styles.overlay} onClick={() => setOpen(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <div
+              className={styles.modal}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-title"
+              onClick={(e) => e.stopPropagation()}
+            >
             {user ? (
               <>
-                <div className={styles.modalPin} />
-                <p className={styles.modalTitle}>야시로에게 한마디</p>
+                <div className={styles.modalPin} aria-hidden="true" />
+                <p id="modal-title" className={styles.modalTitle}>야시로에게 한마디</p>
                 <textarea
                   ref={textareaRef}
                   className={styles.textarea}
