@@ -69,6 +69,11 @@
   box-shadow: 0 6px 20px rgba(196, 122, 10, 0.5);
 }
 
+.fab:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
 .fabLabel {
   letter-spacing: 0.01em;
 }
@@ -123,6 +128,30 @@
   z-index: 2;
 }
 
+.modalClose {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  color: rgba(42, 34, 24, 0.45);
+  padding: 4px 6px;
+  border-radius: 2px;
+  transition: color 0.15s;
+}
+
+.modalClose:hover {
+  color: rgba(42, 34, 24, 0.8);
+}
+
+.modalClose:focus-visible {
+  outline: 2px solid rgba(42, 34, 24, 0.6);
+  outline-offset: 2px;
+}
+
 .modalTitle {
   font-family: 'Gaegu', cursive;
   font-size: 20px;
@@ -138,12 +167,18 @@
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px dashed rgba(42, 34, 24, 0.2);
+  border-bottom: 1px dashed rgba(42, 34, 24, 0.4);
   outline: none;
   resize: none;
   color: #2a2218;
   caret-color: var(--accent);
   padding-bottom: 8px;
+  transition: border-color 0.15s;
+}
+
+.textarea:focus {
+  border-bottom-color: #c47a0a;
+  border-bottom-style: solid;
 }
 
 .textarea::placeholder {
@@ -194,6 +229,11 @@
   border-color: rgba(42, 34, 24, 0.45);
 }
 
+.cancelBtn:focus-visible {
+  outline: 2px solid rgba(42, 34, 24, 0.6);
+  outline-offset: 2px;
+}
+
 .submitBtn {
   flex: 1;
   font-family: 'Gaegu', cursive;
@@ -210,6 +250,11 @@
 
 .submitBtn:hover:not(:disabled) {
   background: var(--accent-d);
+}
+
+.submitBtn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .submitBtn:disabled {
@@ -244,4 +289,9 @@
 
 .loginBtn:hover {
   background: var(--accent-d);
+}
+
+.loginBtn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }

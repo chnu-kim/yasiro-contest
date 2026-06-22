@@ -28,7 +28,7 @@ export default async function Home() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
 
       {/* ══ HERO ══ */}
-      <section className={styles.heroSection}>
+      <section className={styles.heroSection} aria-labelledby="hero-title">
         {/* Left */}
         <div className={styles.heroLeft}>
           <div
@@ -67,6 +67,7 @@ export default async function Home() {
           </div>
 
           <h1
+            id="hero-title"
             style={{
               fontFamily: "'Jua', sans-serif",
               fontSize: 'clamp(52px, 14vw, 100px)',
@@ -110,6 +111,7 @@ export default async function Home() {
               target="_blank"
               rel="noreferrer"
               className={styles.heroBtnPrimary}
+              aria-label="야시로 방송 입장하기 (새 탭에서 열림)"
             >
               방송 입장하기
             </a>
@@ -120,7 +122,7 @@ export default async function Home() {
         <div className={styles.heroCharPanel}>
           <Image
             src="/yashiro1.png"
-            alt="야시로"
+            alt="스팀펑크 고글을 쓴 야시로 캐릭터 전신 일러스트"
             fill
             sizes="50vw"
             priority
@@ -189,7 +191,7 @@ export default async function Home() {
 
       {/* ══ 한마디 보드 ══ */}
       {notes.length > 0 && (
-        <section className={styles.notesSection}>
+        <section className={styles.notesSection} aria-label="야시로에게 남긴 한마디 보드">
           <div className={styles.notesSectionHeader}>
             <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

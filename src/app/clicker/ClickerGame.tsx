@@ -132,17 +132,22 @@ export default function ClickerGame({ initialCount }: { initialCount: number }) 
 
         {/* 세션 카운터 */}
         <div style={{ marginBottom: 40, textAlign: 'center' }}>
-          <div style={{
-            fontFamily: "'Cinzel', serif",
-            fontSize: 72,
-            fontWeight: 700,
-            color: 'var(--accent)',
-            lineHeight: 1,
-            letterSpacing: '-0.02em',
-          }}>
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label={`내가 찌른 횟수: ${sessionCount.toLocaleString()}번`}
+            style={{
+              fontFamily: "'Cinzel', serif",
+              fontSize: 72,
+              fontWeight: 700,
+              color: 'var(--accent)',
+              lineHeight: 1,
+              letterSpacing: '-0.02em',
+            }}
+          >
             {sessionCount.toLocaleString()}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-dim)', marginTop: 6, letterSpacing: '0.05em' }}>
+          <div style={{ fontSize: 13, color: 'var(--text-dim)', marginTop: 6, letterSpacing: '0.05em' }} aria-hidden="true">
             내가 찌른 횟수
           </div>
         </div>
@@ -156,9 +161,10 @@ export default function ClickerGame({ initialCount }: { initialCount: number }) 
           <div className={`${styles.kkulWrap} ${isPopping ? styles.popping : ''}`}>
             <Image
               src="/kkul.png"
-              alt="꿀붕이"
+              alt=""
               width={180}
               height={180}
+              priority
               style={{ objectFit: 'contain', mixBlendMode: 'multiply', display: 'block' }}
               draggable={false}
             />
@@ -183,16 +189,19 @@ export default function ClickerGame({ initialCount }: { initialCount: number }) 
 
         {/* 전체 카운터 */}
         <div style={{ textAlign: 'center' }}>
-          <div style={{
-            fontFamily: "'Cinzel', serif",
-            fontSize: 28,
-            fontWeight: 600,
-            color: 'var(--text)',
-            letterSpacing: '-0.01em',
-          }}>
+          <div
+            aria-label={`모두가 찌른 총 횟수: ${globalCount.toLocaleString()}번`}
+            style={{
+              fontFamily: "'Cinzel', serif",
+              fontSize: 28,
+              fontWeight: 600,
+              color: 'var(--text)',
+              letterSpacing: '-0.01em',
+            }}
+          >
             {globalCount.toLocaleString()}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-dim)', marginTop: 4, letterSpacing: '0.05em' }}>
+          <div style={{ fontSize: 13, color: 'var(--text-dim)', marginTop: 4, letterSpacing: '0.05em' }} aria-hidden="true">
             모두가 찌른 총 횟수
           </div>
         </div>
