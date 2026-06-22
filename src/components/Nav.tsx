@@ -45,13 +45,10 @@ export default function Nav({ initialUser }: NavProps) {
       </a>
 
       <div className={styles.links}>
-        <a href="/to-yasiro" className={styles.link}>
-          <span className={styles.linkTextFull}>야시로에게</span>
-          <span className={styles.linkTextShort}>야시로에게</span>
-        </a>
+        <a href="/to-yasiro" className={styles.link}>야시로에게</a>
         <a href="/whack" className={styles.link}>
-          <span className={styles.linkTextFull}>꿀붕이 잡기</span>
-          <span className={styles.linkTextShort}>꿀붕이</span>
+          <span className={styles.textFull}>꿀붕이 잡기</span>
+          <span className={styles.textShort}>꿀붕이</span>
         </a>
       </div>
 
@@ -68,8 +65,8 @@ export default function Nav({ initialUser }: NavProps) {
           </div>
         ) : (
           <a href="/auth/login" className={styles.loginBtn}>
-            <span className={styles.loginTextFull}>치지직 로그인</span>
-            <span className={styles.loginTextShort}>로그인</span>
+            <span className={styles.textFull}>치지직 로그인</span>
+            <span className={styles.textShort}>로그인</span>
           </a>
         )}
 
