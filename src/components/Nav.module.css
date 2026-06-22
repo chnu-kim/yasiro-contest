@@ -49,6 +49,12 @@
   color: var(--text);
 }
 
+.link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 .actions {
   display: flex;
   gap: 10px;
@@ -75,6 +81,11 @@
   background: var(--accent-bg);
 }
 
+.themeBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .iconLight { display: block; }
 .iconDark  { display: none; }
 
@@ -99,6 +110,11 @@
 
 .liveBtn:hover {
   background: var(--accent-d);
+}
+
+.liveBtn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .liveDot {
@@ -128,6 +144,11 @@
 
 .loginBtn:hover {
   background: var(--accent-bg);
+}
+
+.loginBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .userMenu {
@@ -162,4 +183,9 @@
 .logoutBtn:hover {
   color: var(--text);
   border-color: var(--text-dim);
+}
+
+.logoutBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

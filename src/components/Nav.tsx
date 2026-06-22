@@ -50,9 +50,9 @@ export default function Nav({ initialUser }: NavProps) {
       </div>
 
       <div className={styles.actions}>
-        <button onClick={toggle} className={styles.themeBtn} title="테마 전환">
-          <span className={styles.iconLight}><Moon size={16} strokeWidth={1.8} /></span>
-          <span className={styles.iconDark}><Sun size={16} strokeWidth={1.8} /></span>
+        <button onClick={toggle} className={styles.themeBtn} aria-label="테마 전환 (라이트/다크 모드)">
+          <span className={styles.iconLight} aria-hidden="true"><Moon size={16} strokeWidth={1.8} /></span>
+          <span className={styles.iconDark} aria-hidden="true"><Sun size={16} strokeWidth={1.8} /></span>
         </button>
 
         {user ? (
@@ -71,8 +71,9 @@ export default function Nav({ initialUser }: NavProps) {
           target="_blank"
           rel="noreferrer"
           className={styles.liveBtn}
+          aria-label="야시로 라이브 방송 입장 (새 탭에서 열림)"
         >
-          <span className={styles.liveDot} />
+          <span className={styles.liveDot} aria-hidden="true" />
           LIVE
         </a>
       </div>

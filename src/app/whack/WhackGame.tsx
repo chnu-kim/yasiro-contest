@@ -25,9 +25,9 @@ interface ScoreRow {
 function LeaderboardPanel({ rows, myScore, phase }: { rows: ScoreRow[]; myScore: number; phase: string }) {
   return (
     <div className={styles.leaderboardPanel}>
-      <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: '0.08em', marginBottom: 12, textAlign: 'center' }}>
+      <h2 style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: '0.08em', marginBottom: 12, textAlign: 'center', fontWeight: 600 }}>
         TOP 10
-      </div>
+      </h2>
       {rows.length === 0 ? (
         <div style={{ fontSize: 12, color: 'var(--text-dim)', textAlign: 'center', padding: '16px 0' }}>
           아직 기록이 없습니다
@@ -271,10 +271,18 @@ export default function WhackGame() {
             {phase === 'playing' && (
               <div style={{ width: 408, marginBottom: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-                  <span style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 700, color: 'var(--accent)' }}>
+                  <span
+                    aria-live="off"
+                    aria-label={`현재 점수: ${score}점`}
+                    style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 700, color: 'var(--accent)' }}
+                  >
                     {score}
                   </span>
-                  <span style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 600, color: isWarning ? '#E04040' : 'var(--text)', transition: 'color 0.3s' }}>
+                  <span
+                    aria-live="off"
+                    aria-label={`남은 시간: ${Math.ceil(timeLeft / 1000)}초`}
+                    style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 600, color: isWarning ? '#E04040' : 'var(--text)', transition: 'color 0.3s' }}
+                  >
                     {Math.ceil(timeLeft / 1000)}s
                   </span>
                 </div>
@@ -296,12 +304,13 @@ export default function WhackGame() {
                   const holeFloating = floatingPoints.filter(p => p.holeIdx === idx);
 
                   return (
-                    <div
+                    <button
                       key={idx}
+                      type="button"
                       className={styles.hole}
                       onClick={() => handleHoleClick(idx)}
-                      role="button"
-                      aria-label={`구멍 ${idx + 1}`}
+                      tabIndex={phase === 'playing' ? 0 : -1}
+                      aria-label={`구멍 ${idx + 1}${holes[idx] !== 'empty' ? ' — 꿀붕이 출현!' : ''}`}
                     >
                       {state !== 'empty' && (
                         <Image
@@ -319,7 +328,7 @@ export default function WhackGame() {
                           +1
                         </span>
                       ))}
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -337,7 +346,10 @@ export default function WhackGame() {
               <div style={{ textAlign: 'center' }}>
                 <div style={{ marginBottom: 20 }}>
                   <div style={{ fontSize: 13, color: 'var(--text-dim)', letterSpacing: '0.05em', marginBottom: 4 }}>최종 점수</div>
-                  <div style={{ fontFamily: "'Cinzel', serif", fontSize: 56, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
+                  <div
+                    aria-label={`최종 점수: ${score}점`}
+                    style={{ fontFamily: "'Cinzel', serif", fontSize: 56, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}
+                  >
                     {score}
                   </div>
                   {isSaving && (

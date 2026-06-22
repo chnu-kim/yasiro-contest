@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import './globals.css';
 import Nav from '@/components/Nav';
+import SkipLink from '@/components/SkipLink';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,8 +52,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body>
+        <SkipLink />
         <Nav initialUser={user} />
-        {children}
+        <div id="main-content">
+          {children}
+        </div>
       </body>
     </html>
   );

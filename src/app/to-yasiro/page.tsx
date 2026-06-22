@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
+
+export const metadata: Metadata = {
+  title: '야시로에게 - 팬의 한마디',
+  description: '야시로 팬들이 남긴 한마디 방명록. 치지직 로그인 후 메모를 남겨보세요.',
+};
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import GuestbookBoard from './GuestbookBoard';
 
