@@ -304,12 +304,11 @@ export default function WhackGame() {
                   const holeFloating = floatingPoints.filter(p => p.holeIdx === idx);
 
                   return (
-                    <div
+                    <button
                       key={idx}
+                      type="button"
                       className={styles.hole}
                       onClick={() => handleHoleClick(idx)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleHoleClick(idx); } }}
-                      role="button"
                       tabIndex={phase === 'playing' ? 0 : -1}
                       aria-label={`구멍 ${idx + 1}${holes[idx] !== 'empty' ? ' — 꿀붕이 출현!' : ''}`}
                     >
@@ -329,7 +328,7 @@ export default function WhackGame() {
                           +1
                         </span>
                       ))}
-                    </div>
+                    </button>
                   );
                 })}
               </div>
