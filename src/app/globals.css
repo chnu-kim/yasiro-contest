@@ -30,6 +30,12 @@ body {
   --radius-sm: 3px;
 }
 
+@media (max-width: 640px) {
+  :root {
+    --gutter: 20px;
+  }
+}
+
 [data-theme="dark"] {
   --bg: #1A1814;
   --surface: #2C2118;

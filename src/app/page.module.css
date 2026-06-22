@@ -1,4 +1,38 @@
 /* Hero */
+.heroSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+.heroCharPanel {
+  position: relative;
+  overflow: hidden;
+  background: #EAE0D0;
+  background-image:
+    linear-gradient(rgba(130,100,70,0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(130,100,70,0.09) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+@media (max-width: 640px) {
+  .heroSection {
+    grid-template-columns: 1fr;
+    grid-template-rows: 40vh auto;
+    min-height: unset;
+  }
+
+  .heroCharPanel {
+    grid-row: 1;
+  }
+
+  .heroLeft {
+    grid-row: 2;
+    padding: 32px 24px 40px;
+  }
+}
+
 .heroLeft {
   display: flex;
   flex-direction: column;

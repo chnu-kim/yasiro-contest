@@ -203,3 +203,18 @@
     grid-column: 2;
   }
 }
+
+@media (max-width: 420px) {
+  .grid {
+    gap: 10px;
+  }
+
+  .hole {
+    width: 96px;
+    height: 96px;
+  }
+
+  .kkul {
+    width: 80px;
+  }
+}
