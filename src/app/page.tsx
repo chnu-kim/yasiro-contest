@@ -29,6 +29,7 @@ export default async function Home() {
 
       {/* ══ HERO ══ */}
       <section
+        aria-labelledby="hero-title"
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
@@ -74,6 +75,7 @@ export default async function Home() {
           </div>
 
           <h1
+            id="hero-title"
             style={{
               fontFamily: "'Jua', sans-serif",
               fontSize: 100,

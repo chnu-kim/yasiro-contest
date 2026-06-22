@@ -46,6 +46,25 @@ a {
   color: inherit;
 }
 
+/* 키보드 사용자용 본문 바로가기 링크 */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 10px 20px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: top 0.1s;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.25; }

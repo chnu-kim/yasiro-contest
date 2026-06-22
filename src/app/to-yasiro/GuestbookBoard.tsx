@@ -120,6 +120,13 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
             {user ? (
               <>
                 <div className={styles.modalPin} aria-hidden="true" />
+                <button
+                  className={styles.modalClose}
+                  onClick={() => setOpen(false)}
+                  aria-label="모달 닫기"
+                >
+                  ×
+                </button>
                 <p id="modal-title" className={styles.modalTitle}>야시로에게 한마디</p>
                 <textarea
                   ref={textareaRef}
