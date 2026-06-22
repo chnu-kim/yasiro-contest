@@ -28,14 +28,7 @@ export default async function Home() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
 
       {/* ══ HERO ══ */}
-      <section
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          minHeight: 'calc(100vh - 60px)',
-          overflow: 'hidden',
-        }}
-      >
+      <section className={styles.heroSection}>
         {/* Left */}
         <div className={styles.heroLeft}>
           <div
@@ -76,13 +69,12 @@ export default async function Home() {
           <h1
             style={{
               fontFamily: "'Jua', sans-serif",
-              fontSize: 100,
+              fontSize: 'clamp(52px, 14vw, 100px)',
               fontWeight: 400,
               lineHeight: 0.95,
               color: 'var(--text)',
               marginBottom: 20,
               letterSpacing: '0em',
-              whiteSpace: 'nowrap',
             }}
           >
             야시로
@@ -125,16 +117,7 @@ export default async function Home() {
         </div>
 
         {/* Right: Character Panel */}
-        <div
-          style={{
-            position: 'relative',
-            overflow: 'hidden',
-            background: '#EAE0D0',
-            backgroundImage:
-              'linear-gradient(rgba(130,100,70,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(130,100,70,0.09) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        >
+        <div className={styles.heroCharPanel}>
           <Image
             src="/yashiro1.png"
             alt="야시로"
