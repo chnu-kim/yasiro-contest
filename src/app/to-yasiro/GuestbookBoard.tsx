@@ -114,7 +114,7 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
               className={styles.modal}
               role="dialog"
               aria-modal="true"
-              aria-labelledby="modal-title"
+              aria-label={user ? '야시로에게 한마디 작성' : '로그인 필요'}
               onClick={(e) => e.stopPropagation()}
             >
             {user ? (
@@ -127,7 +127,7 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
                 >
                   ×
                 </button>
-                <p id="modal-title" className={styles.modalTitle}>야시로에게 한마디</p>
+                <p className={styles.modalTitle} aria-hidden="true">야시로에게 한마디</p>
                 <textarea
                   ref={textareaRef}
                   className={styles.textarea}

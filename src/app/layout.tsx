@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import './globals.css';
 import Nav from '@/components/Nav';
+import SkipLink from '@/components/SkipLink';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,7 +52,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body>
-        <a href="#main-content" className="skip-link">본문으로 바로 가기</a>
+        <SkipLink />
         <Nav initialUser={user} />
         <div id="main-content">
           {children}
