@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Moon, Sun, Menu, X } from 'lucide-react';
 import styles from './Nav.module.css';
@@ -17,18 +17,7 @@ interface NavProps {
 export default function Nav({ initialUser }: NavProps) {
   const [user, setUser] = useState<NavUser | null>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, []);
 
   const toggle = () => {
     const current = document.documentElement.getAttribute('data-theme') || 'light';
@@ -37,6 +26,8 @@ export default function Nav({ initialUser }: NavProps) {
     localStorage.setItem('yashiro-theme', next);
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
   const logout = async () => {
     await fetch('/auth/logout', { method: 'POST' });
     setUser(null);
@@ -44,7 +35,7 @@ export default function Nav({ initialUser }: NavProps) {
   };
 
   return (
-    <nav className={styles.nav} ref={navRef}>
+    <nav className={styles.nav}>
       <a href="/" className={styles.logo} aria-label="야시로 홈">
         <span className={styles.logoText}>야시로</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" fillRule="evenodd" className={styles.logoIcon} aria-hidden="true">
@@ -104,12 +95,15 @@ export default function Nav({ initialUser }: NavProps) {
         </button>
       </div>
 
-      {/* 모바일 전용: 드롭다운 (페이지 링크만) */}
+      {/* 모바일 전용: backdrop + 드롭다운 */}
       {menuOpen && (
-        <div className={styles.mobileMenu} role="menu">
-          <a href="/to-yasiro" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>야시로에게</a>
-          <a href="/whack" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>꿀붕이 잡기</a>
-        </div>
+        <>
+          <div className={styles.backdrop} onClick={closeMenu} aria-hidden="true" />
+          <div className={styles.mobileMenu} role="menu">
+            <a href="/to-yasiro" className={styles.mobileMenuItem} role="menuitem" onClick={closeMenu}>야시로에게</a>
+            <a href="/whack" className={styles.mobileMenuItem} role="menuitem" onClick={closeMenu}>꿀붕이 잡기</a>
+          </div>
+        </>
       )}
 
       {/* 모바일 전용: Floating LIVE FAB */}

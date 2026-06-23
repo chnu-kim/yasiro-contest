@@ -291,6 +291,13 @@
   .hamburgerBtn {
     display: flex;
   }
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: 60px;
+    z-index: 100;
+  }
   .mobileMenu {
     display: flex;
     flex-direction: column;
