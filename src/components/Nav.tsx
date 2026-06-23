@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Menu, X } from 'lucide-react';
 import styles from './Nav.module.css';
 
 interface NavUser {
@@ -16,7 +16,19 @@ interface NavProps {
 
 export default function Nav({ initialUser }: NavProps) {
   const [user, setUser] = useState<NavUser | null>(initialUser);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
 
   const toggle = () => {
     const current = document.documentElement.getAttribute('data-theme') || 'light';
@@ -32,7 +44,7 @@ export default function Nav({ initialUser }: NavProps) {
   };
 
   return (
-    <nav className={styles.nav}>
+    <nav className={styles.nav} ref={navRef}>
       <a href="/" className={styles.logo}>
         <span className={styles.logoText}>야시로</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" fillRule="evenodd" className={styles.logoIcon} aria-hidden="true">
@@ -81,6 +93,45 @@ export default function Nav({ initialUser }: NavProps) {
           LIVE
         </a>
       </div>
+
+      {/* 모바일 전용: 햄버거 버튼 */}
+      <button
+        className={styles.hamburgerBtn}
+        onClick={() => setMenuOpen(o => !o)}
+        aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
+        aria-expanded={menuOpen}
+      >
+        {menuOpen ? <X size={20} strokeWidth={1.8} /> : <Menu size={20} strokeWidth={1.8} />}
+      </button>
+
+      {/* 모바일 전용: 드롭다운 메뉴 */}
+      {menuOpen && (
+        <div className={styles.mobileMenu} role="menu">
+          <a href="/to-yasiro" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>야시로에게</a>
+          <a href="/whack" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>꿀붕이 잡기</a>
+          <div className={styles.mobileDivider} />
+          <button onClick={() => { toggle(); setMenuOpen(false); }} className={styles.mobileMenuBtn} role="menuitem">테마 전환</button>
+          {user ? (
+            <button onClick={() => { logout(); setMenuOpen(false); }} className={styles.mobileMenuBtn} role="menuitem">
+              {user.channelName} · 로그아웃
+            </button>
+          ) : (
+            <a href="/auth/login" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>치지직 로그인</a>
+          )}
+        </div>
+      )}
+
+      {/* 모바일 전용: Floating LIVE FAB */}
+      <a
+        href="https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3"
+        target="_blank"
+        rel="noreferrer"
+        className={styles.liveFab}
+        aria-label="야시로 라이브 방송 입장 (새 탭에서 열림)"
+      >
+        <span className={styles.liveDot} aria-hidden="true" />
+        LIVE
+      </a>
     </nav>
   );
 }
