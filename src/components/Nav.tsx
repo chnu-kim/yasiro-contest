@@ -26,6 +26,8 @@ export default function Nav({ initialUser }: NavProps) {
     localStorage.setItem('yashiro-theme', next);
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
   const logout = async () => {
     await fetch('/auth/logout', { method: 'POST' });
     setUser(null);
@@ -96,10 +98,10 @@ export default function Nav({ initialUser }: NavProps) {
       {/* 모바일 전용: backdrop + 드롭다운 */}
       {menuOpen && (
         <>
-          <div className={styles.backdrop} onClick={() => setMenuOpen(false)} aria-hidden="true" />
+          <div className={styles.backdrop} onClick={closeMenu} aria-hidden="true" />
           <div className={styles.mobileMenu} role="menu">
-            <a href="/to-yasiro" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>야시로에게</a>
-            <a href="/whack" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>꿀붕이 잡기</a>
+            <a href="/to-yasiro" className={styles.mobileMenuItem} role="menuitem" onClick={closeMenu}>야시로에게</a>
+            <a href="/whack" className={styles.mobileMenuItem} role="menuitem" onClick={closeMenu}>꿀붕이 잡기</a>
           </div>
         </>
       )}

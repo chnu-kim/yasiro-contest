@@ -216,11 +216,6 @@
   outline-offset: 2px;
 }
 
-/* backdrop — 모바일에서만 표시 */
-.backdrop {
-  display: none;
-}
-
 /* 모바일 드롭다운 — 기본 숨김 */
 .mobileMenu {
   display: none;
