@@ -5,6 +5,7 @@
   background: var(--bg);
   border-bottom: 1px solid var(--border);
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
   padding: 0 48px;
@@ -221,4 +222,17 @@
   }
   .textFull { display: none; }
   .textShort { display: inline; }
+}
+
+/* 소형 모바일 (≤480px): 링크 숨김, actions 간격 축소 */
+@media (max-width: 480px) {
+  .links {
+    display: none;
+  }
+  .actions {
+    gap: 4px;
+  }
+  .liveBtn {
+    padding: 6px 10px;
+  }
 }
