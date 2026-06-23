@@ -224,15 +224,23 @@
   .textShort { display: inline; }
 }
 
-/* 소형 모바일 (≤480px): 링크 숨김, actions 간격 축소 */
+/* 소형 모바일 (≤480px): 링크·버튼 축소 */
 @media (max-width: 480px) {
   .links {
-    display: none;
+    gap: 4px;
+  }
+  .link {
+    font-size: 11px;
   }
   .actions {
     gap: 4px;
   }
   .liveBtn {
     padding: 6px 10px;
+    font-size: 11px;
+  }
+  .loginBtn {
+    padding: 5px 8px;
+    font-size: 11px;
   }
 }
