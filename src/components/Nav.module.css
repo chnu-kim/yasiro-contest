@@ -235,30 +235,6 @@
   color: var(--accent);
 }
 
-.mobileMenuBtn {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 13px 20px;
-  font-size: 14px;
-  color: var(--text);
-  font-family: 'Noto Sans KR', sans-serif;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.mobileMenuBtn:hover {
-  background: var(--accent-bg);
-  color: var(--accent);
-}
-
-.mobileDivider {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0;
-}
 
 /* Floating LIVE FAB — 모바일에서만 표시 */
 .liveFab {
@@ -300,11 +276,17 @@
 
 /* 소형 모바일 (≤480px): 햄버거 메뉴로 전환 */
 @media (max-width: 480px) {
+  .logoText {
+    display: none;
+  }
   .links {
     display: none;
   }
-  .actions {
+  .liveBtn {
     display: none;
+  }
+  .actions {
+    gap: 6px;
   }
   .hamburgerBtn {
     display: flex;

@@ -45,7 +45,7 @@ export default function Nav({ initialUser }: NavProps) {
 
   return (
     <nav className={styles.nav} ref={navRef}>
-      <a href="/" className={styles.logo}>
+      <a href="/" className={styles.logo} aria-label="야시로 홈">
         <span className={styles.logoText}>야시로</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" fillRule="evenodd" className={styles.logoIcon} aria-hidden="true">
           <path d="M 0 -46 C 23 -40 37 -16 37 5 C 37 31 21 50 0 50 C -21 50 -37 31 -37 5 C -37 -16 -23 -40 0 -46 Z" transform="translate(152 220) rotate(-25) scale(0.92)"/>
@@ -92,32 +92,23 @@ export default function Nav({ initialUser }: NavProps) {
           <span className={styles.liveDot} aria-hidden="true" />
           LIVE
         </a>
+
+        {/* 모바일 전용: 햄버거 버튼 */}
+        <button
+          className={styles.hamburgerBtn}
+          onClick={() => setMenuOpen(o => !o)}
+          aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
+          aria-expanded={menuOpen}
+        >
+          {menuOpen ? <X size={20} strokeWidth={1.8} /> : <Menu size={20} strokeWidth={1.8} />}
+        </button>
       </div>
 
-      {/* 모바일 전용: 햄버거 버튼 */}
-      <button
-        className={styles.hamburgerBtn}
-        onClick={() => setMenuOpen(o => !o)}
-        aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
-        aria-expanded={menuOpen}
-      >
-        {menuOpen ? <X size={20} strokeWidth={1.8} /> : <Menu size={20} strokeWidth={1.8} />}
-      </button>
-
-      {/* 모바일 전용: 드롭다운 메뉴 */}
+      {/* 모바일 전용: 드롭다운 (페이지 링크만) */}
       {menuOpen && (
         <div className={styles.mobileMenu} role="menu">
           <a href="/to-yasiro" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>야시로에게</a>
           <a href="/whack" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>꿀붕이 잡기</a>
-          <div className={styles.mobileDivider} />
-          <button onClick={() => { toggle(); setMenuOpen(false); }} className={styles.mobileMenuBtn} role="menuitem">테마 전환</button>
-          {user ? (
-            <button onClick={() => { logout(); setMenuOpen(false); }} className={styles.mobileMenuBtn} role="menuitem">
-              {user.channelName} · 로그아웃
-            </button>
-          ) : (
-            <a href="/auth/login" className={styles.mobileMenuItem} role="menuitem" onClick={() => setMenuOpen(false)}>치지직 로그인</a>
-          )}
         </div>
       )}
 
