@@ -1,3 +1,5 @@
+/* 공유 레이어: 리셋 · 토큰 · keyframe · reduced-motion만 둔다. 유틸리티 클래스는 넣지 않는다. */
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -6,6 +8,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* sticky Nav 아래로 앵커 대상이 숨지 않게 */
+  scroll-padding-top: calc(var(--nav-h) + 8px);
 }
 
 body {
@@ -17,34 +21,133 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ═══════════════════ 토큰 (라이트) ═══════════════════
+   대비는 WCAG 2.x 계산값. 괄호 안 숫자는 --bg / --surface / --paper-hi 위 */
 :root {
-  --bg: #F5F0E8;
-  --surface: #E8DFD0;
-  --border: rgba(26, 24, 20, 0.14);
-  --text: #1A1814;
-  --text-dim: #7A6550;
-  --accent: #C47A0A;
-  --accent-d: #9E6008;
-  --accent-bg: rgba(196, 122, 10, 0.10);
+  /* 면 */
+  --bg: #EFE6D2;               /* 페이지 바탕 */
+  --surface: #E4D7BC;          /* 패널 */
+  --paper-hi: #F7F0DE;         /* 카드·라벨 종이 */
+  --tile: #EAE0D0;             /* 캐릭터 패널. 다크는 --surface */
+  --border: rgba(60, 40, 20, 0.22);
+  --border-strong: rgba(60, 40, 20, 0.45);
+
+  /* 글자 */
+  --text: #2A1F14;             /* 12.97 / 11.30 */
+  --text-dim: #6B5640;         /* 5.58 / 4.87 / 6.10 */
+
+  /* 앰버 — 역할별로 나눈다 */
+  --accent: #B8680A;           /* 비텍스트(아이콘·큰 도형). 텍스트·흰 글씨 배경 금지 (흰 글씨 4.18) */
+  --accent-d: #8A4E08;         /* 라이트 주 버튼 배경 (흰 글씨 6.62) */
+  --accent-text: #7A4E08;      /* 작은 앰버 텍스트 전용 (5.79 / 5.05 / 6.32) */
+  --accent-bg: rgba(184, 104, 10, 0.12);
+  --brass: #97752F;            /* 링·도트·프레임. 텍스트 금지 (비텍스트 3.45 / 3.01) */
+  --route: #7A4A22;            /* 허브 waypoint 점선 경로 전용 */
+  --stamp: #A8452A;            /* 원형 스탬프. 사이트 전체 1곳 (4.77) */
+  --eye: #F2B33D;              /* 호박색 포인트. 화면당 3곳 이하, 텍스트 금지 */
+  --tape: rgba(214, 190, 140, 0.75);  /* --text 라벨 9.45 이상 */
+  --focus: #8A4E08;            /* 포커스 링 (--surface 위 4.65) */
+
+  /* 주 버튼·LIVE pill — 테마별 값이 토큰에 들어 있어 :global 셀렉터 없이 inline으로 쓴다 */
+  --btn-primary-bg: var(--accent-d);
+  --btn-primary-bg-hover: #74420A;
+  --btn-primary-fg: #FFFFFF;
+  --live-border: var(--brass);
+
+  /* 타입 스케일 */
+  --fs-xs: 12px;               /* Fredoka 대문자 라벨 하한 */
+  --fs-sm: 14px;               /* 보조 텍스트 하한 */
+  --fs-base: 16px;             /* 본문 */
+  --fs-md: 18px;               /* 리드 문단, Gaegu 하한 */
+  --fs-lg: 20px;               /* 부제, 카드 제목 */
+  --fs-xl: 28px;               /* h3 */
+  --fs-2xl: clamp(28px, 4vw, 44px);       /* h2 */
+  --fs-display: clamp(56px, 11vw, 112px); /* 히어로 h1 */
+  --lh-tight: 1.15;
+  --lh-body: 1.75;
+  --tracking-label: 0.14em;    /* Fredoka 대문자 라벨 */
+
+  /* 간격 — 4px 리듬 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --section-gap: 96px;
   --gutter: 48px;
+  --container: 1200px;
+
+  /* 모서리 */
   --radius-sm: 3px;
+  --radius-md: 4px;            /* 카드 */
+  --radius-pill: 999px;
+
+  /* 그림자 */
+  --shadow-sm: 0 2px 6px rgba(40, 25, 10, 0.15);
+  --shadow-md: 0 8px 20px rgba(40, 25, 10, 0.20);
+  --shadow-lg: 0 12px 32px rgba(40, 25, 10, 0.25);
+
+  /* 레이어 — 모달은 항상 Nav 위 */
+  --z-raised: 10;
+  --z-nav: 100;
+  --z-fab: 110;
+  --z-overlay: 200;
+  --z-modal: 210;
+  --z-skip: 1000;
+
+  /* 크기 */
+  --nav-h: 64px;
+  --tap: 44px;                 /* 최소 터치 타깃 */
+  --fab-clearance: calc(56px + 16px + env(safe-area-inset-bottom, 0px));
+
+  /* 모션 */
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 600ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @media (max-width: 640px) {
   :root {
     --gutter: 20px;
+    --section-gap: 64px;
+    --nav-h: 56px;
   }
 }
 
+/* ═══════════════════ 토큰 (다크) ═══════════════════ */
 [data-theme="dark"] {
-  --bg: #1A1814;
-  --surface: #2C2118;
-  --border: rgba(245, 240, 232, 0.12);
-  --text: #F0E8D8;
-  --text-dim: #9E8A6E;
-  --accent: #F5A623;
-  --accent-d: #D4891A;
-  --accent-bg: rgba(245, 166, 35, 0.10);
+  --bg: #17120D;
+  --surface: #241B13;
+  --paper-hi: #2E2318;
+  --tile: var(--surface);
+  --border: rgba(240, 226, 196, 0.14);
+  --border-strong: rgba(240, 226, 196, 0.32);
+
+  --text: #F0E4C8;             /* 14.74 / 13.40 / 12.15 */
+  --text-dim: #B39C7A;         /* 7.05 / 6.41 / 5.81 */
+
+  --accent: #F2A93B;           /* 다크 주 버튼 배경 (--bg 글씨 9.31) */
+  --accent-d: #D18A1F;
+  --accent-text: #F0B84A;      /* 10.33 / 9.39 / 8.51 */
+  --accent-bg: rgba(242, 169, 59, 0.12);
+  --brass: #C9A24E;
+  --route: #D9B87A;
+  --stamp: #D9684A;
+  --eye: #FFC857;
+  --tape: rgba(201, 165, 92, 0.42);   /* --text 라벨 5.22 이상 */
+  --focus: #F2A93B;
+
+  --btn-primary-bg: var(--accent);
+  --btn-primary-bg-hover: #F7BC5E;
+  --btn-primary-fg: #17120D;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
 a {
@@ -52,6 +155,7 @@ a {
   color: inherit;
 }
 
+/* ═══════════════════ keyframe ═══════════════════ */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.25; }
@@ -67,4 +171,29 @@ a {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pinDrop {
+  from { opacity: 0; transform: translateY(-10px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
+/* ═══════════════════ 모션 줄이기 ═══════════════════
+   모든 애니메이션을 최종 상태로 즉시 끝낸다. delay도 0으로 — fill: both인
+   fadeUp이 delay 동안 투명하게 남지 않게 한다. inline style의 animation도
+   여기서 꺼지지만, 새 코드는 animation을 CSS Module에 둔다. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur-base: 0.01ms;
+    --dur-slow: 0.01ms;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}

@@ -2,10 +2,10 @@
   position: absolute;
   top: -100%;
   left: 16px;
-  z-index: 9999;
+  z-index: var(--z-skip);
   padding: 10px 20px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
   font-size: 14px;
   font-weight: 600;
   border-radius: var(--radius-sm);
@@ -14,4 +14,6 @@
 
 .skipLink:focus {
   top: 8px;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }

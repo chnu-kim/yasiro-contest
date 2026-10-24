@@ -1,126 +1,544 @@
-/* Hero */
-.heroSection {
+/* ═════ 공통 ═════ */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
+.h2 {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-tight);
+  margin: var(--space-2) 0 0;
+  word-break: keep-all;
+}
+
+.sectionLead {
+  margin: var(--space-3) 0 0;
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--text-dim);
+  word-break: keep-all;
+}
+
+.kicker {
+  font-family: 'Fredoka', sans-serif;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+/* ═════ HERO ═════ */
+.hero {
+  padding: var(--space-7) var(--gutter) var(--space-8);
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  align-items: center;
+}
+
+.heroInner {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: calc(100vh - 60px);
-  overflow: hidden;
-}
-
-.heroCharPanel {
-  position: relative;
-  overflow: hidden;
-  background: #EAE0D0;
-  background-image:
-    linear-gradient(rgba(130,100,70,0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(130,100,70,0.09) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-@media (max-width: 640px) {
-  .heroSection {
-    grid-template-columns: 1fr;
-    grid-template-rows: 40vh auto;
-    min-height: unset;
-  }
-
-  .heroCharPanel {
-    grid-row: 1;
-  }
-
-  .heroLeft {
-    grid-row: 2;
-    padding: 32px 24px 40px;
-  }
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-areas:
+    'text panel'
+    'facts panel';
+  grid-template-rows: auto auto;
+  column-gap: var(--space-8);
+  row-gap: var(--space-7);
+  align-items: center;
 }
 
 .heroLeft {
+  grid-area: text;
+  align-self: end;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 60px 56px;
-  animation: fadeUp 0.7s ease both;
+  align-items: flex-start;
+  animation: fadeUp var(--dur-slow) var(--ease-out) both;
 }
 
-.heroBtnPrimary {
+.badge {
   display: inline-flex;
   align-items: center;
-  /* 흰 글씨 명암비: accent(#C47A0A)는 3.4:1로 AA 미달, accent-d는 5.1:1 */
-  background: var(--accent-d);
-  padding: 12px 28px;
+  gap: var(--space-2);
+  padding: 6px 14px;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
-  font-size: 15px;
+  background: var(--accent-bg);
+  margin-bottom: var(--space-5);
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  background: var(--brass);
+  flex-shrink: 0;
+}
+
+.badgeText {
+  font-size: var(--fs-sm);
   font-weight: 500;
-  color: #fff;
-  font-family: 'Noto Sans KR', sans-serif;
-  box-shadow: 0 4px 16px rgba(196, 122, 10, 0.25);
-  transition: background 0.2s, transform 0.2s;
+  color: var(--accent-text);
+  letter-spacing: 0.04em;
 }
 
-.heroBtnPrimary:hover {
-  transform: translateY(-2px);
+.title {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: var(--fs-display);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
-/* 다크 accent(#F5A623)는 밝아서 흰 글씨 명암비가 약 2:1 — 어두운 글씨로 바꾼다 (8.8:1) */
-:global([data-theme="dark"]) .heroBtnPrimary {
-  background: var(--accent);
-  color: var(--bg);
+.lead {
+  margin: 0 0 var(--space-6);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-body);
+  color: var(--text-dim);
+  word-break: keep-all;
+  max-width: 420px;
 }
 
-:global([data-theme="dark"]) .heroBtnPrimary:hover {
-  background: var(--accent-d);
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
 }
 
-.heroBtnPrimary:focus-visible {
-  outline: 2px solid var(--accent);
+.facts {
+  grid-area: facts;
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+  margin: 0;
+  animation: fadeUp var(--dur-slow) var(--ease-out) 80ms both;
+}
+
+.facts > div {
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--brass);
+}
+
+.facts dt {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+
+.facts dd {
+  margin: 0;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-md);
+  letter-spacing: 0.04em;
+}
+
+.heroRight {
+  grid-area: panel;
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 520px;
+  animation: fadeUp var(--dur-slow) var(--ease-out) 120ms both;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background:
+    radial-gradient(ellipse at 50% 38%, var(--accent-bg), transparent 62%),
+    var(--tile);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+:global([data-theme="dark"]) .panel {
+  border-color: var(--border-strong);
+  background:
+    radial-gradient(circle at 50% 24%, rgba(242, 179, 61, 0.16), transparent 34%),
+    radial-gradient(ellipse at 50% 60%, rgba(240, 226, 196, 0.06), transparent 70%),
+    var(--tile);
+}
+
+/* 캐릭터 시트는 여백이 넓다. 확대해서 인물이 패널을 채우게 한다 */
+.char {
+  object-fit: contain;
+  object-position: center;
+  transform: scale(1.16);
+  transform-origin: 50% 52%;
+}
+
+.kkulHero {
+  position: absolute;
+  left: -28px;
+  bottom: -14px;
+  animation: float 3.5s ease-in-out infinite;
+  animation-delay: 0.5s;
+  z-index: var(--z-raised);
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.18));
+}
+
+/* ═════ 다음 목적지 ═════ */
+.waypoints {
+  padding: var(--space-8) var(--gutter) var(--section-gap);
+  border-top: 1px dashed var(--border-strong);
+  scroll-margin-top: var(--nav-h);
+}
+
+/* 출발점(좁은 열) + 출품작 카드. 핀 높이에 점선 한 줄이 지나간다 */
+.route {
+  --pin-y: 20px;
+  --start-w: 120px;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--start-w) minmax(0, 1fr);
+  margin-top: var(--space-7);
+}
+
+/* 점선은 한 요소로 그려 점 간격이 이음매에서 어긋나지 않게: 꿀붕이 중심 → 마지막 핀 중심 */
+.route::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--start-w) / 2);
+  right: calc((100% - var(--start-w)) / var(--stops) / 2);
+  top: var(--pin-y);
+  border-top: 3px dotted var(--route);
+}
+
+.start {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.kkulRoute {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--pin-y) - 48px);
+  animation: float 3.5s ease-in-out infinite;
+}
+
+.stops {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--stops), minmax(0, 1fr));
+}
+
+.stop {
+  position: relative;
+  padding: 64px var(--space-3) 0;
+}
+
+.pin {
+  position: absolute;
+  top: calc(var(--pin-y) - 20px);
+  left: 50%;
+  margin-left: -20px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--paper-hi);
+  border: 2px solid var(--brass);
+  box-shadow: var(--shadow-sm);
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  z-index: 1;
+  animation: pinDrop var(--dur-base) var(--ease-out) 0.3s both;
+}
+
+.entryCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-5) var(--space-5) var(--space-7);
+  background: var(--paper-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast), box-shadow var(--dur-fast), border-color var(--dur-fast);
+}
+
+.entryCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+}
+
+.entryCard:focus-visible {
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
-/* ─── 한마디 보드 섹션 ─── */
-.notesSection {
-  padding: 64px var(--gutter) 72px;
-  background: var(--surface);
+.entryTitle {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
+  word-break: keep-all;
 }
 
-.notesSectionHeader {
+.entryDesc {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.entryArrow {
+  position: absolute;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  color: var(--accent-text);
+  display: inline-flex;
+  transition: transform var(--dur-fast);
+}
+
+.entryCard:hover .entryArrow {
+  transform: translateX(4px);
+}
+
+/* ═════ 한마디 ═════ */
+.notesSection {
+  padding: var(--section-gap) var(--gutter);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.notesHeader {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 40px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-7);
 }
 
 .notesBoard {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 28px 20px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--space-6) var(--space-5);
 }
 
-.moreBtn {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  color: var(--accent);
-  border: 1px solid var(--accent);
-  padding: 8px 24px;
-  border-radius: var(--radius-sm);
-  transition: background 0.18s;
-  display: inline-block;
+/* ═════ 푸터 ═════ */
+.footer {
+  padding: var(--space-6) var(--gutter);
+  border-top: 1px solid var(--border);
 }
 
-.moreBtn:hover {
-  background: var(--accent-bg);
+.footerInner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-5);
 }
 
-.moreBtn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-/* Footer logo blend mode */
-.footerLogoImg {
-  mix-blend-mode: multiply;
+.kkulFooter {
+  position: relative;
   animation: float 3.5s ease-in-out infinite;
 }
 
-:global([data-theme="dark"]) .footerLogoImg {
-  mix-blend-mode: screen;
+.footerWord {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-base);
+  letter-spacing: var(--tracking-label);
+}
+
+.footerLinks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--space-5);
+}
+
+.footerLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: color var(--dur-fast), text-decoration-color var(--dur-fast);
+}
+
+.footerLinks a:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+.footerLinks a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.copy {
+  justify-self: end;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+/* ═════ 태블릿·모바일 ═════ */
+@media (max-width: 860px) {
+  .hero {
+    min-height: unset;
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-7);
+  }
+
+  .heroInner {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'text'
+      'panel'
+      'facts';
+    row-gap: var(--space-6);
+  }
+
+  .heroRight {
+    max-width: 440px;
+    width: 100%;
+  }
+
+  .facts {
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+  }
+
+  .facts > div {
+    padding-left: 10px;
+  }
+
+  .footerInner {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .copy {
+    justify-self: start;
+  }
+}
+
+/* waypoint: 좁은 화면에서는 카드를 쌓고 점선은 세로로 */
+@media (max-width: 720px) {
+  .route {
+    grid-template-columns: 1fr;
+    margin-top: var(--space-6);
+  }
+
+  .start {
+    flex-direction: row;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  /* 세로 점선: 꿀붕이 → 01 → 02. 핀 사이 구간만 잇는다 */
+  .route::before {
+    display: none;
+  }
+
+  .stop::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: calc(-1 * var(--space-4));
+    height: var(--space-4);
+    border-left: 3px dotted var(--route);
+  }
+
+  .stop:first-child::before {
+    top: calc(-1 * var(--space-3) - 8px);
+    height: calc(var(--space-3) + 8px);
+  }
+
+  .stop:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: 0;
+    border-left: 3px dotted var(--route);
+  }
+
+  .kkulRoute {
+    margin: 0 -6px;
+  }
+
+  .stops {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .stop {
+    padding: 0 0 0 56px;
+  }
+
+  .pin {
+    top: 0;
+    left: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .facts dd {
+    font-size: var(--fs-base);
+  }
+
+  .title {
+    font-size: 64px;
+  }
+
+  .badge {
+    margin-bottom: var(--space-4);
+  }
+
+  .lead {
+    margin-bottom: var(--space-5);
+  }
+
+  .panel {
+    aspect-ratio: 5 / 6;
+  }
+
+  .kkulHero {
+    left: -6px;
+  }
+
+  .notesBoard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-3);
+  }
 }

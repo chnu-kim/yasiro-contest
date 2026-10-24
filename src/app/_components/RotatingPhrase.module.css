@@ -1,0 +1,23 @@
+/* 문구가 배지 밖으로 삐져나오지 않게 세로로 자른다 */
+.window {
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.in {
+  animation: phraseIn 450ms var(--ease-out) both;
+}
+
+.out {
+  animation: phraseOut 350ms ease-in both;
+}
+
+@keyframes phraseIn {
+  from { opacity: 0; transform: translateY(80%); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes phraseOut {
+  from { opacity: 1; transform: translateY(0); filter: blur(0); }
+  to { opacity: 0; transform: translateY(-80%); filter: blur(2px); }
+}

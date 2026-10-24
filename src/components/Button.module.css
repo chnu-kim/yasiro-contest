@@ -1,0 +1,102 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background var(--dur-fast),
+    border-color var(--dur-fast),
+    color var(--dur-fast),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.md { height: 44px; padding: 0 var(--space-5); font-size: 15px; }
+.lg { height: 52px; padding: 0 var(--space-5); font-size: var(--fs-base); }
+.block { display: flex; width: 100%; }
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* 주 버튼: 라이트 --accent-d + 흰 글씨(6.62), 다크 --accent + --bg 글씨(9.31) */
+.primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  box-shadow: var(--shadow-sm);
+}
+
+.primary:hover {
+  background: var(--btn-primary-bg-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* 보조: 종이 카드 위 테두리 */
+.secondary {
+  background: var(--paper-hi);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.secondary:hover {
+  border-color: var(--text-dim);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.secondary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* 고스트: 바탕 없이 글자만. 밑줄로 hover */
+.ghost {
+  background: transparent;
+  color: var(--text);
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.ghost:hover {
+  text-decoration-color: currentColor;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

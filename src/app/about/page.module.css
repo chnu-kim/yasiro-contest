@@ -1,0 +1,237 @@
+/* ─── 기록 카드 ─── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-7);
+  align-items: stretch;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: var(--space-7) var(--gutter) var(--section-gap);
+  min-height: calc(100svh - var(--nav-h));
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 0 var(--space-6) 0 0;
+  background: var(--tile);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.figure {
+  position: relative;
+  width: 420px;
+  max-width: calc(100% - 96px); /* 왼쪽 눈금자와 149.8 cm 라벨 자리 */
+  margin-top: -40px;
+  aspect-ratio: 1600 / 2277;
+}
+
+.callouts {
+  list-style: none;
+  position: absolute;
+  inset: 0;
+}
+
+.calloutLine {
+  position: absolute;
+  height: 1px;
+  background: var(--brass);
+}
+
+.calloutDot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--brass);
+  border: 2px solid var(--paper-hi);
+  box-sizing: content-box;
+  transform: translate(-50%, -50%);
+}
+
+.calloutText {
+  position: absolute;
+  transform: translateY(-50%);
+  font-family: 'Gaegu', cursive;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.card {
+  position: relative;
+  padding: var(--space-7) var(--space-6) var(--space-6);
+  background: var(--paper-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: fadeUp var(--dur-slow) var(--ease-out) both;
+}
+
+.keyFacts {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: var(--space-4) var(--space-5);
+}
+
+.keyFact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--brass);
+}
+
+.profileList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-5);
+}
+
+/* 5개라 마지막(소속)은 한 줄을 다 쓴다 */
+.profileList > :last-child {
+  grid-column: 1 / -1;
+}
+
+/* ─── 섹션 공통 ─── */
+.section {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter) var(--section-gap);
+}
+
+/* ─── 채널 ─── */
+.primaryList {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.secondaryList {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.channelCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 100%;
+  min-height: var(--tap);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--dur-fast),
+    background var(--dur-fast),
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.channelLarge {
+  padding: var(--space-6);
+  background: var(--paper-hi);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.channelCard:hover {
+  border-color: var(--brass);
+  background: var(--accent-bg);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.channelCard:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.channelArrow {
+  color: var(--text-dim);
+  flex-shrink: 0;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.channelCard:hover .channelArrow {
+  transform: translate(2px, -2px);
+}
+
+/* ─── 마무리 ─── */
+.outro {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter) var(--section-gap);
+}
+
+.outroRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
+/* ─── 반응형 ─── */
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: unset;
+    gap: var(--space-6);
+    padding-top: var(--space-7);
+  }
+
+  .stage {
+    order: 2;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .figure {
+    width: min(100%, 340px);
+    max-width: 100%;
+    margin-top: -40px;
+  }
+
+  .rulerWrap {
+    display: none;
+  }
+
+  .card {
+    padding: var(--space-7) var(--space-5) var(--space-5);
+  }
+
+  .primaryList,
+  .secondaryList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .keyFacts {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .outroRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

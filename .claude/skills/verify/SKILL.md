@@ -35,12 +35,11 @@ pnpm wrangler d1 migrations apply yasiro-db --local
 
 ## 3. 브라우저 확인
 
-Claude in Chrome으로 바뀐 페이지를 열고 다음 네 조합을 스크린샷으로 확인한다:
+서버를 띄운 채 `pnpm shots http://localhost:<port> [바뀐 경로...]`를 실행한다. 경로를 빼면 `/`, `/about`, `/to-yasiro` 전부를 라이트/다크 × 1280/390 전체 페이지로 찍는다(설치된 Chrome 사용, dev 오버레이·애니메이션 제거). 결과 PNG를 Read로 원본 크기 그대로 보고, 사용자에게는 `screenshots/index.html` 절대 경로를 준다(`open`으로 열어도 된다).
 
-- 라이트 / 다크: `localStorage.setItem('yashiro-theme','dark')` 후 새로고침
-- 데스크톱(1280) / 모바일(390). Nav를 건드렸다면 ≤480px 햄버거 메뉴를 열고, 바깥을 눌렀을 때 닫히는지도 본다
+상호작용은 스크린샷으로 안 잡히니 Claude in Chrome으로 따로 본다. Nav를 건드렸다면 ≤480px 햄버거 메뉴를 열고, 바깥을 눌렀을 때 닫히는지 확인한다.
 
-함께 볼 것: 콘솔 에러와 hydration 경고, 캐릭터 이미지 블렌드가 다크 모드에서 뭉개지지 않는지, 폰트가 폴백되지 않았는지(computed `font-family`).
+함께 볼 것: 콘솔 에러와 hydration 경고, 다크 모드 캐릭터 패널, ≤480px LIVE FAB이 마지막 요소를 가리지 않는지, 폰트가 폴백되지 않았는지(computed `font-family`).
 
 ## 4. 보고
 

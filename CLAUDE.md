@@ -17,6 +17,7 @@ pnpm dev            # UI 개발. D1 바인딩 없음 → 세션 null, API 실패
 pnpm test           # vitest run
 pnpm lint
 pnpm preview        # Workers 런타임으로 로컬 미리보기
+pnpm shots [url] [경로...]  # 페이지 × 라이트/다크 × 1280/390 전체 스크린샷 → screenshots/index.html
 pnpm run deploy     # 수동 배포. `pnpm deploy`는 pnpm 예약어라 동작 안 함
 ```
 
@@ -27,7 +28,8 @@ main에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 `pnpm test`
 ```
 src/app/
   layout.tsx            세션 조회(D1) + Nav + 테마 초기화 스크립트. force-dynamic
-  page.tsx              랜딩(/) 출품작
+  page.tsx              허브(/) — 히어로, 출품작 바로가기 카드, 최근 한마디
+  about/                소개 — 프로필, 주요 콘텐츠, 채널 링크
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
   auth/{login,callback,logout}/route.ts   치지직 OAuth
   api/guestbook/route.ts
@@ -39,25 +41,30 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ## 출품작 규칙
 
-- 새 출품작은 `src/app/<name>/page.tsx` + `page.module.css`로 만든다. 랜딩(`/`)에 섹션을 추가하지 않는다.
+- 새 출품작은 `src/app/<name>/page.tsx` + `page.module.css`로 만든다. 허브(`/`)에는 바로가기 카드(`ENTRIES`) 한 장만 더하고, 내용 섹션은 넣지 않는다.
 - 공유 레이어는 `globals.css`의 토큰·keyframe과 `src/components/`뿐. `globals.css`에 유틸리티 클래스를 넣지 않는다.
-- 새 출품작을 추가하면 `Nav.tsx`의 데스크톱 링크와 모바일 메뉴 두 곳에 링크를 넣는다.
+- 새 출품작을 추가하면 `Nav.tsx`의 데스크톱 링크와 모바일 메뉴, 허브의 `ENTRIES` 세 곳에 넣는다.
+- 디자인 변경은 `pnpm shots`로 찍은 스크린샷을 직접 보고 확인한 뒤 사용자에게 보여 준다. 축소된 브라우저 화면만 보고 판단하지 않는다.
 - 검증·계산 로직은 `src/lib/`에 순수 함수로 빼고 테스트를 붙인다. 컴포넌트와 Route Handler는 얇게 유지한다.
 
 ## 스타일
 
 - hover·transition·animation·blend-mode 같은 효과는 CSS Module에, layout·spacing·color 같은 정적 스타일은 inline style로 쓴다.
-- 토큰: `--bg --surface --border --text --text-dim --accent --accent-d --accent-bg --gutter(48px, ≤640px에서 20px) --radius-sm(3px)`. 다크 값은 `[data-theme="dark"]`에서 덮어쓴다.
-- keyframe: `blink`(LIVE 도트), `float`(꿀붕이 부유), `fadeUp`(히어로 진입).
-- 폰트는 `layout.tsx`의 Google Fonts `<link>` 한 줄로 로드한다. 현재 로드되는 폰트는 Comfortaa, Fredoka(500–700), Gaegu, Jua, Noto Sans KR, Noto Serif KR(700). 한국어 subset 문제 때문에 `next/font`는 쓰지 않는다. 새 폰트는 같은 URL에 추가하고, URL에 없는 폰트를 코드에 쓰지 않는다(조용히 폴백된다).
-  - Fredoka: 영문 레이블과 숫자(배지, 키 표기)
-  - Gaegu: 손글씨 제목·포스트잇 / Noto Sans KR: 본문·UI / Noto Serif KR: 헤드라인
-- 이미지 블렌드: 밝은 배경 위에는 `multiply`, 어두운 배경 위에는 `screen`. 캐릭터 패널 배경 `#EAE0D0`은 다크 모드에서도 고정한다. 배경을 어둡게 하면 multiply가 캐릭터를 뭉갠다.
+- 토큰은 `globals.css`가 정본이다(색·type `--fs-*`·간격 `--space-*`·shadow·z-index·motion). 다크 값은 `[data-theme="dark"]`에서 덮어쓴다. `prefers-reduced-motion`은 globals에서 일괄 처리한다.
+- keyframe: `blink`, `float`(꿀붕이 부유), `fadeUp`(진입), `pinDrop`.
+- 폰트는 `layout.tsx`의 Google Fonts `<link>` 한 줄로 로드한다. 현재 로드되는 폰트는 Gaegu, Fredoka(500–700), Noto Sans KR, Noto Serif KR(600·700). 한국어 subset 문제 때문에 `next/font`는 쓰지 않는다. 새 폰트는 같은 URL에 추가하고, URL에 없는 폰트를 코드에 쓰지 않는다(조용히 폴백된다).
+  - Noto Serif KR: 헤드라인·로고 / Noto Sans KR: 본문·UI / Fredoka: 영문 라벨과 숫자(한글 글리프 없음)
+  - Gaegu: 포스트잇 본문과 /about 장비 콜아웃만. `letter-spacing: 0`, 18px 이상
+- 컨셉은 "호기심 많은 탐험가". 탐험가 느낌은 캐릭터 장비(고글·쌍안경·두루마리·파우치·부츠)와 현장 기록(기록 카드, 콜아웃, 눈금자, 스탬프, 테이프)으로 낸다. 지도 모티프는 허브의 "다음 목적지" 경로 한 곳만 쓴다. 장식은 화면당 스탬프 1개, 테이프 4개 이하.
+- 색: 작은 앰버 텍스트는 `--accent-text`, 주 버튼·FAB는 `--btn-primary-*`, `--accent`·`--brass`·`--eye`는 텍스트에 쓰지 않는다(AA 미달).
+- 공유 컴포넌트(`src/components/`): Button, SectionLabel, StitchRule, TapeStrip, RoundStamp, HeightRuler, ChannelGlyph, PawMark, icons. 장식 SVG는 `aria-hidden`.
+- 고정 버튼은 페이지당 1개. LIVE는 Nav 안의 pill이고 모바일 FAB가 없다.
+- 캐릭터·꿀붕이 PNG는 투명 배경이라 블렌드 없이 올린다. 캐릭터 패널은 `--tile`(라이트 `#EAE0D0`, 다크 `--surface`).
 - 강조 배지·구분선의 작은 사각 도트는 `borderRadius: 1`이 의도된 값이다.
 
 ## 테마
 
-`localStorage['yashiro-theme']` → `<html data-theme>`. `layout.tsx`의 inline script가 hydration 전에 설정한다. 테마별 아이콘은 두 개를 모두 렌더링하고 `:global([data-theme="dark"])` CSS로 전환한다. React state로 바꾸면 hydration 불일치가 난다.
+`localStorage['yasiro-theme']` → `<html data-theme>`. `layout.tsx`의 inline script가 hydration 전에 설정한다. 테마별 아이콘은 두 개를 모두 렌더링하고 `:global([data-theme="dark"])` CSS로 전환한다. React state로 바꾸면 hydration 불일치가 난다.
 
 ## 모바일 드롭다운
 
