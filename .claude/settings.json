@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(pnpm test*)",
+      "Bash(pnpm lint*)",
+      "Bash(pnpm dev*)",
+      "Bash(pnpm build*)",
+      "Bash(pnpm preview*)",
+      "Bash(pnpm exec tsc --noEmit*)",
+      "Bash(pnpm wrangler d1 migrations list *)",
+      "Bash(pnpm wrangler d1 migrations apply yasiro-db --local*)",
+      "Bash(pnpm wrangler d1 execute yasiro-db --local *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git worktree list*)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list*)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list*)",
+      "mcp__chzzk__*"
+    ],
+    "ask": [
+      "Bash(pnpm run deploy*)",
+      "Bash(pnpm wrangler deploy*)",
+      "Bash(pnpm wrangler d1 migrations apply * --remote*)",
+      "Bash(pnpm wrangler d1 execute * --remote*)",
+      "Bash(pnpm wrangler secret *)",
+      "Bash(git push*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-migrations.sh" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-route-handler.sh" }
+        ]
+      }
+    ]
+  }
+}

@@ -13,7 +13,7 @@
 ## 명령
 
 ```bash
-pnpm dev            # 로컬 개발 (D1 없음 — 세션 조회는 null로 폴백)
+pnpm dev            # UI 개발. D1 바인딩 없음 → 세션 null, API 실패 (D1이 필요하면 pnpm preview)
 pnpm test           # vitest run
 pnpm lint
 pnpm preview        # Workers 런타임으로 로컬 미리보기
@@ -82,6 +82,12 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 - 야시로 채널 ID `d6e680f5b17eba0b078f978dd722c0f3`. 라이브 주소는 `https://chzzk.naver.com/live/<id>`
 - 치지직 Open API 레퍼런스는 `chzzk` MCP 서버(user 범위, `~/bin/chzzk-mcp-server`)로 조회한다.
+
+## 하네스 (`.claude/`)
+
+- 스킬: `new-entry`(새 출품작), `verify`(PR 전 검증), `d1-migration`(스키마 변경)
+- hook: 기존 `migrations/*.sql` 수정 차단, Route Handler의 `NextResponse`·`runtime` 선언 감지
+- 권한: 테스트·lint·로컬 D1은 허용. 배포, 원격 D1, secret, `git push`는 매번 확인
 
 ## 워크플로우
 
