@@ -44,18 +44,25 @@
 .heroBtnPrimary {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border);
-  padding: 11px 28px;
+  background: var(--accent);
+  padding: 12px 28px;
   border-radius: var(--radius-sm);
-  font-size: 14px;
-  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
   font-family: 'Noto Sans KR', sans-serif;
-  transition: background 0.2s, border-color 0.2s;
+  box-shadow: 0 4px 16px rgba(196, 122, 10, 0.25);
+  transition: background 0.2s, transform 0.2s;
 }
 
 .heroBtnPrimary:hover {
-  background: var(--surface);
-  border-color: var(--accent);
+  background: var(--accent-d);
+  transform: translateY(-2px);
+}
+
+/* 다크 accent(#F5A623)는 밝아서 흰 글씨 명암비가 약 2:1 — 어두운 글씨로 바꾼다 */
+:global([data-theme="dark"]) .heroBtnPrimary {
+  color: var(--bg);
 }
 
 .heroBtnPrimary:focus-visible {
@@ -84,8 +91,8 @@
 }
 
 .moreBtn {
-  font-family: 'Gaegu', cursive;
-  font-size: 16px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
   color: var(--accent);
   border: 1px solid var(--accent);
   padding: 8px 24px;

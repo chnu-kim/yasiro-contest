@@ -20,8 +20,9 @@
 }
 
 .subtitle {
-  font-family: 'Gaegu', cursive;
-  font-size: 18px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
   color: var(--text-dim);
 }
 
@@ -34,8 +35,9 @@
 
 /* ─── Empty ─── */
 .empty {
-  font-family: 'Gaegu', cursive;
-  font-size: 18px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  word-break: keep-all;
   color: var(--text-dim);
   text-align: center;
   padding: 96px 0;
@@ -53,10 +55,10 @@
   color: #fff;
   border: none;
   border-radius: 999px;
-  padding: 14px 22px 14px 18px;
-  font-family: 'Gaegu', cursive;
-  font-size: 17px;
-  font-weight: 700;
+  padding: 13px 22px 13px 18px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(196, 122, 10, 0.45);
   transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
@@ -76,6 +78,14 @@
 
 .fabLabel {
   letter-spacing: 0.01em;
+}
+
+/* LIVE FAB(Nav, ≤640px)와 같은 자리를 쓰지 않도록 그 위로 올린다 */
+@media (max-width: 640px) {
+  .fab {
+    bottom: 80px;
+    right: 20px;
+  }
 }
 
 /* ─── 오버레이 ─── */
