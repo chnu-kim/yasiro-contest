@@ -44,14 +44,14 @@ const SECONDARY_CHANNELS: Channel[] = [
 ];
 
 // 위치는 yasiro4.png(1600×2277)에서 직접 잰 값. x·y는 그림 상자 대비 %.
-// 원화를 잘라 확인해서 장비가 분명히 보이는 4가지만 단다(두루마리는 왼쪽 허리 가죽 홀더에 꽂힌 종이 말이).
+// 원화를 잘라 확인해서 장비가 분명히 보이는 4가지만 단다(지도 두루마리는 왼쪽 허리 가죽 홀더에 꽂힌 종이 말이).
 const CALLOUTS: { label: string; x: number; y: number; side: 'left' | 'right' }[] = [
   { label: '고글', x: 54.5, y: 13, side: 'right' },
-  { label: '두루마리', x: 41.6, y: 41.7, side: 'left' },
+  { label: '지도\n두루마리', x: 41.6, y: 41.7, side: 'left' },
   { label: '쌍안경', x: 58, y: 47.8, side: 'right' },
   { label: '파우치', x: 59.3, y: 62.3, side: 'right' },
 ];
-const EDGE = 22; // 지시선이 끝나는 좌우 위치(%)
+const EDGE = 22; // 지시선이 끝나는 좌우 위치(%). 긴 라벨은 \n으로 줄을 나눠 눈금자와 겹치지 않게 한다
 
 const h2Style: CSSProperties = {
   fontFamily: "'Noto Serif KR', serif",
@@ -197,7 +197,7 @@ function Callout({ label, x, y, side }: { label: string; x: number; y: number; s
     <>
       <span aria-hidden="true" className={styles.calloutLine} style={{ top: `${y}%`, ...line }} />
       <span aria-hidden="true" className={styles.calloutDot} style={{ top: `${y}%`, left: `${x}%` }} />
-      <span className={styles.calloutText} style={{ top: `${y}%`, ...text }}>
+      <span className={styles.calloutText} style={{ top: `${y}%`, textAlign: isRight ? 'left' : 'right', ...text }}>
         {label}
       </span>
     </>
