@@ -75,7 +75,7 @@ export default function GuestbookBoard({ initialNotes, user }: Props) {
           borderRadius: 1, background: 'var(--accent-bg)', marginBottom: 16,
         }}>
           <span style={{ width: 7, height: 7, background: 'var(--accent)', display: 'inline-block', borderRadius: 1 }} />
-          <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.07em', fontFamily: "'Cinzel', serif" }}>TO YASHIRO</span>
+          <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.07em', fontFamily: "'Fredoka', sans-serif" }}>TO YASHIRO</span>
         </div>
         <h1 className={styles.title}>야시로에게</h1>
         <p className={styles.subtitle}>팬들이 야시로에게 남긴 한마디</p>

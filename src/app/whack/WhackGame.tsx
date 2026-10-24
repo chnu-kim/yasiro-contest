@@ -39,7 +39,7 @@ function LeaderboardPanel({ rows, myScore, phase }: { rows: ScoreRow[]; myScore:
             return (
               <li key={i} className={`${styles.rankRow} ${isMine ? styles.mine : ''}`}>
                 <span style={{
-                  fontFamily: "'Cinzel', serif",
+                  fontFamily: "'Fredoka', sans-serif",
                   fontSize: 12,
                   fontWeight: 700,
                   color: i < 3 ? 'var(--accent)' : 'var(--text-dim)',
@@ -51,7 +51,7 @@ function LeaderboardPanel({ rows, myScore, phase }: { rows: ScoreRow[]; myScore:
                 <span style={{ fontSize: 12, color: 'var(--text)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {row.channel_name}
                 </span>
-                <span style={{ fontFamily: "'Cinzel', serif", fontSize: 13, fontWeight: 700, color: 'var(--accent)', flexShrink: 0 }}>
+                <span style={{ fontFamily: "'Fredoka', sans-serif", fontSize: 13, fontWeight: 700, color: 'var(--accent)', flexShrink: 0 }}>
                   {row.score}
                 </span>
               </li>
@@ -274,14 +274,14 @@ export default function WhackGame() {
                   <span
                     aria-live="off"
                     aria-label={`현재 점수: ${score}점`}
-                    style={{ fontFamily: "'Cinzel', serif", fontSize: 36, fontWeight: 700, color: 'var(--accent)' }}
+                    style={{ fontFamily: "'Fredoka', sans-serif", fontSize: 36, fontWeight: 700, color: 'var(--accent)' }}
                   >
                     {score}
                   </span>
                   <span
                     aria-live="off"
                     aria-label={`남은 시간: ${Math.ceil(timeLeft / 1000)}초`}
-                    style={{ fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 600, color: isWarning ? '#E04040' : 'var(--text)', transition: 'color 0.3s' }}
+                    style={{ fontFamily: "'Fredoka', sans-serif", fontSize: 22, fontWeight: 600, color: isWarning ? '#E04040' : 'var(--text)', transition: 'color 0.3s' }}
                   >
                     {Math.ceil(timeLeft / 1000)}s
                   </span>
@@ -348,7 +348,7 @@ export default function WhackGame() {
                   <div style={{ fontSize: 13, color: 'var(--text-dim)', letterSpacing: '0.05em', marginBottom: 4 }}>최종 점수</div>
                   <div
                     aria-label={`최종 점수: ${score}점`}
-                    style={{ fontFamily: "'Cinzel', serif", fontSize: 56, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}
+                    style={{ fontFamily: "'Fredoka', sans-serif", fontSize: 56, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}
                   >
                     {score}
                   </div>

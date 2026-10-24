@@ -50,7 +50,9 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - hover·transition·animation·blend-mode 같은 효과는 CSS Module에, layout·spacing·color 같은 정적 스타일은 inline style로 쓴다.
 - 토큰: `--bg --surface --border --text --text-dim --accent --accent-d --accent-bg --gutter(48px, ≤640px에서 20px) --radius-sm(3px)`. 다크 값은 `[data-theme="dark"]`에서 덮어쓴다.
 - keyframe: `blink`(LIVE 도트), `float`(꿀붕이 부유), `fadeUp`(히어로 진입).
-- 폰트는 `layout.tsx`의 Google Fonts `<link>` 한 줄로 로드한다. 현재 로드되는 폰트는 Comfortaa, Gaegu, Jua, Noto Sans KR, Noto Serif KR(700). 한국어 subset 문제 때문에 `next/font`는 쓰지 않는다. 새 폰트는 같은 URL에 추가한다. 코드에 `Cinzel`이 쓰인 곳이 있지만 로드되지 않아 폴백된다.
+- 폰트는 `layout.tsx`의 Google Fonts `<link>` 한 줄로 로드한다. 현재 로드되는 폰트는 Comfortaa, Fredoka(500–700), Gaegu, Jua, Noto Sans KR, Noto Serif KR(700). 한국어 subset 문제 때문에 `next/font`는 쓰지 않는다. 새 폰트는 같은 URL에 추가하고, URL에 없는 폰트를 코드에 쓰지 않는다(조용히 폴백된다).
+  - Fredoka: 영문 레이블과 숫자(배지, 키 표기, 게임 점수·타이머·순위)
+  - Gaegu: 손글씨 제목·포스트잇 / Noto Sans KR: 본문·UI / Noto Serif KR: 헤드라인
 - 이미지 블렌드: 밝은 배경 위에는 `multiply`, 어두운 배경 위에는 `screen`. 캐릭터 패널 배경 `#EAE0D0`은 다크 모드에서도 고정한다. 배경을 어둡게 하면 multiply가 캐릭터를 뭉갠다.
 - 강조 배지·구분선의 작은 사각 도트는 `borderRadius: 1`이 의도된 값이다.
 

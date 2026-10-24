@@ -150,7 +150,7 @@ export default async function Home() {
             <span
               style={{
                 fontSize: 11,
-                fontFamily: "'Cinzel', serif",
+                fontFamily: "'Fredoka', sans-serif",
                 fontWeight: 600,
                 color: 'var(--accent)',
                 letterSpacing: '0.08em',
