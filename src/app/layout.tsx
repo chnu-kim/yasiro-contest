@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: '야시로',
-  description: '스팀펑크 고글과 따뜻한 웃음으로 매일 찾아오는 야시로의 방송 세계',
+  description: '치지직 스트리머 야시로 팬사이트 · 테라포레 소속, 호기심 많은 탐험가 벌꿀오소리',
 };
 
 async function getSessionUser() {
@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Gaegu:wght@300;400;700&family=Fredoka:wght@500;600;700&family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&family=Fredoka:wght@500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap"
           rel="stylesheet"
         />
         <script
@@ -54,9 +54,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <SkipLink />
         <Nav initialUser={user} />
-        <div id="main-content">
+        {/* 스킵 링크 대상. tabIndex -1이어야 Safari에서도 포커스가 실제로 옮겨 온다 */}
+        <main id="main-content" tabIndex={-1} style={{ outline: 'none' }}>
           {children}
-        </div>
+        </main>
       </body>
     </html>
   );
