@@ -7,7 +7,11 @@ import StitchRule from '@/components/StitchRule';
 import TapeStrip from '@/components/TapeStrip';
 import PawMark from '@/components/PawMark';
 import { ArrowIcon } from '@/components/icons';
+import RotatingPhrase from './_components/RotatingPhrase';
 import KkulCrop from './_components/KkulCrop';
+
+// 히어로 배지에서 돌아가며 보이는 문구
+const BADGE_PHRASES = ['고등어 통조림 애호가', '호기심 많은 탐험가', '테라포레 소속 벌꿀오소리', '종합게임 스트리머'] as const;
 
 interface GuestbookRow {
   id: string;
@@ -21,7 +25,7 @@ const CHZZK_LIVE = 'https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f
 // navLabel은 Nav·푸터와 같은 이름
 const ENTRIES: { href: string; kicker: string; title: string; navLabel: string; desc: string }[] = [
   { href: '/about', kicker: 'ABOUT', title: '야시로 소개', navLabel: '소개', desc: '프로필 · 채널' },
-  { href: '/to-yasiro', kicker: 'TO YASHIRO', title: '야시로에게', navLabel: '야시로에게', desc: '팬들이 남긴 한마디' },
+  { href: '/to-yasiro', kicker: 'TO YASIRO', title: '야시로에게', navLabel: '야시로에게', desc: '팬들이 남긴 한마디' },
 ];
 
 async function getRecentNotes(): Promise<GuestbookRow[]> {
@@ -48,7 +52,7 @@ export default async function Home() {
           <div className={styles.heroLeft}>
             <div className={styles.badge}>
               <span className={styles.badgeDot} />
-              <span className={styles.badgeText}>고등어 통조림 애호가</span>
+              <RotatingPhrase phrases={BADGE_PHRASES} className={styles.badgeText} />
             </div>
 
             <h1 id="hero-title" className={styles.title}>야시로</h1>
@@ -90,7 +94,7 @@ export default async function Home() {
           <div className={styles.heroRight}>
             <div className={styles.panel}>
               <Image
-                src="/yashiro1.png"
+                src="/yasiro1.png"
                 alt="고글을 이마에 올리고 탐험 장비를 갖춘 야시로 캐릭터 전신 일러스트"
                 fill
                 sizes="(max-width: 860px) 100vw, 560px"
@@ -113,7 +117,7 @@ export default async function Home() {
       <section id="waypoints" className={styles.waypoints} aria-labelledby="wp-title">
         <div className={styles.container}>
           <h2 id="wp-title" className={styles.h2}>다음 목적지</h2>
-          <p className={styles.sectionLead}>꿀붕이가 길을 안내해요. 어디부터 둘러볼까요?</p>
+          <p className={styles.sectionLead}>어디부터 둘러볼까요?</p>
 
           <div className={styles.route} style={{ ['--stops' as string]: ENTRIES.length }}>
             <div className={styles.start} aria-hidden="true">
@@ -188,7 +192,7 @@ export default async function Home() {
               </li>
             </ul>
           </nav>
-          <span className={styles.copy}>© 2026 야시로 · All rights reserved</span>
+          <span className={styles.copy}>© 2026 야시로 · 비공식 팬 사이트</span>
         </div>
       </footer>
     </div>

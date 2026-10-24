@@ -43,7 +43,7 @@ const SECONDARY_CHANNELS: Channel[] = [
   { name: '팬카페', desc: '방송 일정 공지', href: 'https://cafe.naver.com/terafore', kind: 'community' },
 ];
 
-// 위치는 yashiro4.png(1600×2277)에서 직접 잰 값. x·y는 그림 상자 대비 %.
+// 위치는 yasiro4.png(1600×2277)에서 직접 잰 값. x·y는 그림 상자 대비 %.
 // 원화를 잘라 확인해서 장비가 분명히 보이는 4가지만 단다(두루마리는 왼쪽 허리 가죽 홀더에 꽂힌 종이 말이).
 const CALLOUTS: { label: string; x: number; y: number; side: 'left' | 'right' }[] = [
   { label: '고글', x: 54.5, y: 13, side: 'right' },
@@ -70,7 +70,7 @@ export default function About() {
         <div className={styles.stage}>
           <div className={styles.figure}>
             <Image
-              src="/yashiro4.png"
+              src="/yasiro4.png"
               alt="스팀펑크 고글을 머리에 얹고 정면을 보는 야시로 전신 일러스트"
               fill
               sizes="(max-width: 860px) 340px, 420px"

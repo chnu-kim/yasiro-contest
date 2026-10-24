@@ -32,7 +32,7 @@ try {
           reducedMotion: 'reduce',
         });
         // layout.tsx의 inline script가 hydration 전에 읽는 값이라 goto 전에 심는다
-        await context.addInitScript((t) => localStorage.setItem('yashiro-theme', t), theme);
+        await context.addInitScript((t) => localStorage.setItem('yasiro-theme', t), theme);
         const page = await context.newPage();
         await page.goto(new URL(path, baseURL).href, { waitUntil: 'networkidle' });
         const applied = await page.getAttribute('html', 'data-theme');

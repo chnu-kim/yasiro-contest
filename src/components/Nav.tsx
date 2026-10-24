@@ -48,7 +48,7 @@ export default function Nav({ initialUser }: NavProps) {
     const next = current === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     try {
-      localStorage.setItem('yashiro-theme', next);
+      localStorage.setItem('yasiro-theme', next);
     } catch {}
   };
 
