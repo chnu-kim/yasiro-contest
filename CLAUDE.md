@@ -27,7 +27,7 @@ main에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 `pnpm test`
 ```
 src/app/
   layout.tsx            세션 조회(D1) + Nav + 테마 초기화 스크립트. force-dynamic
-  page.tsx              랜딩(/) 출품작
+  page.tsx              랜딩(/) 출품작 — 히어로, 프로필, 채널 링크, 최근 한마디
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
   auth/{login,callback,logout}/route.ts   치지직 OAuth
   api/guestbook/route.ts
@@ -52,7 +52,8 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 폰트는 `layout.tsx`의 Google Fonts `<link>` 한 줄로 로드한다. 현재 로드되는 폰트는 Comfortaa, Fredoka(500–700), Gaegu, Jua, Noto Sans KR, Noto Serif KR(700). 한국어 subset 문제 때문에 `next/font`는 쓰지 않는다. 새 폰트는 같은 URL에 추가하고, URL에 없는 폰트를 코드에 쓰지 않는다(조용히 폴백된다).
   - Fredoka: 영문 레이블과 숫자(배지, 키 표기)
   - Gaegu: 손글씨 제목·포스트잇 / Noto Sans KR: 본문·UI / Noto Serif KR: 헤드라인
-- 이미지 블렌드: 밝은 배경 위에는 `multiply`, 어두운 배경 위에는 `screen`. 캐릭터 패널 배경 `#EAE0D0`은 다크 모드에서도 고정한다. 배경을 어둡게 하면 multiply가 캐릭터를 뭉갠다.
+- 캐릭터·꿀붕이 PNG는 투명 배경이라 블렌드 없이 올린다. 캐릭터 패널은 라이트 `#EAE0D0`, 다크 `--surface`. 푸터 로고만 밝은 배경에서 `multiply`, 어두운 배경에서 `screen`을 쓴다.
+- accent 버튼 글씨: 라이트는 `--accent-d` 배경 + 흰 글씨, 다크는 `--accent` 배경 + `var(--bg)` 글씨. 라이트 `--accent` 위 흰 글씨는 3.4:1로 AA 미달이다.
 - 강조 배지·구분선의 작은 사각 도트는 `borderRadius: 1`이 의도된 값이다.
 
 ## 테마

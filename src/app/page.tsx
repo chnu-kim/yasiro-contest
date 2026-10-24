@@ -8,6 +8,24 @@ interface GuestbookRow {
   channel_name: string;
 }
 
+const PROFILE: { label: string; value: string }[] = [
+  { label: '나이', value: '20살 (지구 기준)' },
+  { label: '생일', value: '3월 21일' },
+  { label: '키', value: '149.8cm' },
+  { label: 'MBTI', value: 'ISFJ' },
+  { label: '종족', value: '벌꿀오소리' },
+  { label: '직업', value: '호기심 많은 탐험가' },
+  { label: '소속', value: '테라포레 (TERRAFORET)' },
+];
+
+const CHANNELS: { name: string; desc: string; href: string }[] = [
+  { name: '치지직', desc: '라이브 방송', href: 'https://chzzk.naver.com/d6e680f5b17eba0b078f978dd722c0f3' },
+  { name: '유튜브', desc: '@yasiro0321', href: 'https://www.youtube.com/@yasiro0321' },
+  { name: '시로의 탐험일지', desc: '다시보기 유튜브', href: 'https://www.youtube.com/@시로의탐험일지' },
+  { name: 'X', desc: '@yasiro__', href: 'https://x.com/yasiro__' },
+  { name: '팬카페', desc: '방송 일정 공지', href: 'https://cafe.naver.com/terafore' },
+];
+
 async function getRecentNotes(): Promise<GuestbookRow[]> {
   try {
     const { getCloudflareContext } = await import('@opennextjs/cloudflare');
@@ -126,11 +144,7 @@ export default async function Home() {
             fill
             sizes="50vw"
             priority
-            style={{
-              objectFit: 'contain',
-              objectPosition: 'bottom center',
-              mixBlendMode: 'multiply',
-            }}
+            style={{ objectFit: 'contain', objectPosition: 'bottom center' }}
           />
 
           {/* 키 표시 */}
@@ -149,7 +163,7 @@ export default async function Home() {
             <div style={{ flex: 1, height: 1, background: 'var(--accent)', opacity: 0.7 }} />
             <span
               style={{
-                fontSize: 11,
+                fontSize: 15,
                 fontFamily: "'Fredoka', sans-serif",
                 fontWeight: 600,
                 color: 'var(--accent)',
@@ -181,12 +195,86 @@ export default async function Home() {
             <Image
               src="/kkul.png"
               alt="꿀붕이"
-              width={72}
-              height={72}
-              style={{ objectFit: 'contain', mixBlendMode: 'multiply' }}
+              width={104}
+              height={104}
+              style={{ objectFit: 'contain' }}
             />
           </div>
         </div>
+      </section>
+
+      {/* ══ 프로필 ══ */}
+      <section className={styles.infoSection} aria-labelledby="profile-title">
+        <div>
+          <SectionLabel>PROFILE</SectionLabel>
+          <h2 id="profile-title" style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 28, fontWeight: 700, marginBottom: 24 }}>
+            탐험가 프로필
+          </h2>
+          <dl className={styles.profileList}>
+            {PROFILE.map((item) => (
+              <div key={item.label} style={{ display: 'contents' }}>
+                <dt style={{ fontSize: 13, color: 'var(--text-dim)' }}>{item.label}</dt>
+                <dd style={{ fontSize: 15, wordBreak: 'keep-all' }}>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div>
+          <SectionLabel>CONTENTS</SectionLabel>
+          <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 28, fontWeight: 700, marginBottom: 24 }}>
+            주요 콘텐츠
+          </h2>
+          <p
+            style={{
+              fontFamily: "'Gaegu', cursive",
+              fontSize: 40,
+              fontWeight: 700,
+              color: 'var(--accent)',
+              lineHeight: 1.2,
+              marginBottom: 8,
+            }}
+          >
+            종합게임
+          </p>
+          <p style={{ fontSize: 14, color: 'var(--text-dim)', lineHeight: 1.8, wordBreak: 'keep-all' }}>
+            방송 일정은{' '}
+            <a
+              href="https://cafe.naver.com/terafore"
+              target="_blank"
+              rel="noreferrer"
+              className={styles.inlineLink}
+              aria-label="팬카페 (새 탭에서 열림)"
+            >
+              팬카페
+            </a>
+            에 공지됩니다.
+          </p>
+        </div>
+      </section>
+
+      {/* ══ 채널 ══ */}
+      <section className={styles.channelSection} aria-labelledby="channel-title">
+        <SectionLabel>CHANNELS</SectionLabel>
+        <h2 id="channel-title" style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 28, fontWeight: 700, marginBottom: 24 }}>
+          야시로 찾아가기
+        </h2>
+        <ul className={styles.channelList}>
+          {CHANNELS.map((ch) => (
+            <li key={ch.href}>
+              <a
+                href={ch.href}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.channelCard}
+                aria-label={`${ch.name} ${ch.desc} (새 탭에서 열림)`}
+              >
+                <span style={{ fontSize: 16, fontWeight: 500 }}>{ch.name}</span>
+                <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>{ch.desc}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* ══ 한마디 보드 ══ */}
@@ -223,9 +311,9 @@ export default async function Home() {
 
       {/* ══ FOOTER ══ */}
       <footer
+        className={styles.footer}
         style={{
           borderTop: '1px solid var(--border)',
-          padding: `24px var(--gutter)`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -263,6 +351,25 @@ export default async function Home() {
           © 2026 야시로 · All rights reserved
         </span>
       </footer>
+    </div>
+  );
+}
+
+function SectionLabel({ children }: { children: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+      <span style={{ width: 7, height: 7, background: 'var(--accent)', borderRadius: 1 }} />
+      <span
+        style={{
+          fontFamily: "'Fredoka', sans-serif",
+          fontSize: 12,
+          fontWeight: 600,
+          color: 'var(--accent)',
+          letterSpacing: '0.12em',
+        }}
+      >
+        {children}
+      </span>
     </div>
   );
 }
