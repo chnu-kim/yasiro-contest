@@ -36,6 +36,7 @@
 .empty {
   font-family: 'Gaegu', cursive;
   font-size: 18px;
+  word-break: keep-all;
   color: var(--text-dim);
   text-align: center;
   padding: 96px 0;
@@ -76,6 +77,14 @@
 
 .fabLabel {
   letter-spacing: 0.01em;
+}
+
+/* LIVE FAB(Nav, ≤640px)와 같은 자리를 쓰지 않도록 그 위로 올린다 */
+@media (max-width: 640px) {
+  .fab {
+    bottom: 80px;
+    right: 20px;
+  }
 }
 
 /* ─── 오버레이 ─── */
