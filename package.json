@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy"
+    "deploy": "opennextjs-cloudflare build && wrangler deploy",
+    "shots": "node scripts/screenshot.mjs"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "playwright": "^1.64.1",
     "typescript": "^5",
     "vitest": "^4.1.9",
     "wrangler": "^4.103.0"

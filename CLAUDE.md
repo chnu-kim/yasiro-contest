@@ -17,6 +17,7 @@ pnpm dev            # UI 개발. D1 바인딩 없음 → 세션 null, API 실패
 pnpm test           # vitest run
 pnpm lint
 pnpm preview        # Workers 런타임으로 로컬 미리보기
+pnpm shots [url] [경로...]  # 페이지 × 라이트/다크 × 1280/390 전체 스크린샷 → screenshots/index.html
 pnpm run deploy     # 수동 배포. `pnpm deploy`는 pnpm 예약어라 동작 안 함
 ```
 
@@ -27,7 +28,8 @@ main에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 `pnpm test`
 ```
 src/app/
   layout.tsx            세션 조회(D1) + Nav + 테마 초기화 스크립트. force-dynamic
-  page.tsx              랜딩(/) 출품작 — 히어로, 프로필, 채널 링크, 최근 한마디
+  page.tsx              허브(/) — 히어로, 출품작 바로가기 카드, 최근 한마디
+  about/                소개 — 프로필, 주요 콘텐츠, 채널 링크
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
   auth/{login,callback,logout}/route.ts   치지직 OAuth
   api/guestbook/route.ts
@@ -39,9 +41,10 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ## 출품작 규칙
 
-- 새 출품작은 `src/app/<name>/page.tsx` + `page.module.css`로 만든다. 랜딩(`/`)에 섹션을 추가하지 않는다.
+- 새 출품작은 `src/app/<name>/page.tsx` + `page.module.css`로 만든다. 허브(`/`)에는 바로가기 카드(`ENTRIES`) 한 장만 더하고, 내용 섹션은 넣지 않는다.
 - 공유 레이어는 `globals.css`의 토큰·keyframe과 `src/components/`뿐. `globals.css`에 유틸리티 클래스를 넣지 않는다.
-- 새 출품작을 추가하면 `Nav.tsx`의 데스크톱 링크와 모바일 메뉴 두 곳에 링크를 넣는다.
+- 새 출품작을 추가하면 `Nav.tsx`의 데스크톱 링크와 모바일 메뉴, 허브의 `ENTRIES` 세 곳에 넣는다.
+- 디자인 변경은 `pnpm shots`로 찍은 스크린샷을 직접 보고 확인한 뒤 사용자에게 보여 준다. 축소된 브라우저 화면만 보고 판단하지 않는다.
 - 검증·계산 로직은 `src/lib/`에 순수 함수로 빼고 테스트를 붙인다. 컴포넌트와 Route Handler는 얇게 유지한다.
 
 ## 스타일

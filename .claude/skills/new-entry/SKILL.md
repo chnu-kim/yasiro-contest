@@ -12,7 +12,7 @@ description: yasiro-contest에 새 출품작 페이지(/<name>)를 추가할 때
 시작 전에 사용자와 다음을 확정한다:
 - 경로 이름(`/<name>`, kebab-case)과 Nav에 보일 이름. 모바일(≤480px)에서 축약할 이름이 필요한지
 - 로그인이 필요한지, D1에 저장할 데이터가 있는지
-- 기존 출품작 중 가장 가까운 것: 정적 페이지면 `/`(랜딩), 사용자 입력 + 목록이면 `/to-yasiro`
+- 기존 출품작 중 가장 가까운 것: 정적 페이지면 `/about`, 사용자 입력 + 목록이면 `/to-yasiro`
 
 ## 2. 파일 구성
 
@@ -40,7 +40,7 @@ src/app/api/<name>/route.ts      D1이 필요할 때만
 
 ## 5. Nav 연결
 
-`src/components/Nav.tsx`에서 데스크톱 링크(`styles.link`)와 모바일 메뉴(`styles.mobileMenuItem`, `onClick={closeMenu}`) **두 곳 모두**에 추가한다. 링크가 늘면 ≤480px에서 줄바꿈되지 않는지 `verify` 스킬로 확인한다.
+`src/components/Nav.tsx`에서 데스크톱 링크(`styles.link`)와 모바일 메뉴(`styles.mobileMenuItem`, `onClick={closeMenu}`) **두 곳 모두**에 추가하고, 허브 `src/app/page.tsx`의 `ENTRIES`에 카드(kicker·title·desc)를 한 줄 더한다. 링크가 늘면 ≤480px에서 줄바꿈되지 않는지 `verify` 스킬로 확인한다.
 
 ## 6. 마무리
 

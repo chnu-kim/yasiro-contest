@@ -48,6 +48,7 @@ export default function Nav({ initialUser }: NavProps) {
       </a>
 
       <div className={styles.links}>
+        <a href="/about" className={styles.link}>소개</a>
         <a href="/to-yasiro" className={styles.link}>야시로에게</a>
       </div>
 
@@ -96,6 +97,7 @@ export default function Nav({ initialUser }: NavProps) {
         <>
           <div className={styles.backdrop} onClick={closeMenu} aria-hidden="true" />
           <div className={styles.mobileMenu} role="menu">
+            <a href="/about" className={styles.mobileMenuItem} role="menuitem" onClick={closeMenu}>소개</a>
             <a href="/to-yasiro" className={styles.mobileMenuItem} role="menuitem" onClick={closeMenu}>야시로에게</a>
           </div>
         </>
