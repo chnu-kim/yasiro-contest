@@ -87,7 +87,6 @@
   font-weight: 500;
   color: var(--accent-text);
   letter-spacing: 0.04em;
-  animation: fadeUp var(--dur-base) var(--ease-out) both;
 }
 
 .title {
