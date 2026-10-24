@@ -12,7 +12,7 @@ description: yasiro-contest에 새 출품작 페이지(/<name>)를 추가할 때
 시작 전에 사용자와 다음을 확정한다:
 - 경로 이름(`/<name>`, kebab-case)과 Nav에 보일 이름. 모바일(≤480px)에서 축약할 이름이 필요한지
 - 로그인이 필요한지, D1에 저장할 데이터가 있는지
-- 기존 출품작 중 가장 가까운 것: 정적 페이지면 `/`(랜딩), 사용자 입력 + 목록이면 `/to-yasiro`, 인터랙션 + 리더보드면 `/whack`
+- 기존 출품작 중 가장 가까운 것: 정적 페이지면 `/`(랜딩), 사용자 입력 + 목록이면 `/to-yasiro`
 
 ## 2. 파일 구성
 
@@ -24,19 +24,19 @@ src/lib/<name>.ts + .test.ts     검증·점수·상태 전이 같은 순수 로
 src/app/api/<name>/route.ts      D1이 필요할 때만
 ```
 
-- `whack/page.tsx` + `WhackGame.tsx`가 기본 형태다. 새로 만들기 전에 이 두 파일과 `src/lib/whack.ts`를 읽는다.
+- `to-yasiro/page.tsx` + `GuestbookBoard.tsx`가 기본 형태다. 새로 만들기 전에 이 두 파일과 `src/lib/guestbook.ts`를 읽는다.
 - 정적 스타일은 inline, 효과는 CSS Module. 색·간격은 `var(--*)` 토큰만 쓰고 hex를 새로 만들지 않는다. 예외는 캐릭터 패널 `#EAE0D0`뿐이다.
 - 다크 모드는 토큰이 처리한다. 페이지에서 `[data-theme]`을 직접 분기해야 하면 CSS Module에서 `:global([data-theme="dark"])`를 쓴다.
 - 이미지를 배경 위에 얹을 때는 CLAUDE.md의 블렌드 규칙을 따른다.
 
 ## 3. TDD
 
-`src/lib/<name>.ts`의 동작부터 `src/lib/<name>.test.ts`에 테스트로 쓰고 `pnpm test`로 실패를 확인한 뒤 구현한다. 사용자 입력을 받는 API라면 입력 검증 함수(`validateScore`, guestbook 검증 같은)를 lib에 두고 경계값을 테스트한다.
+`src/lib/<name>.ts`의 동작부터 `src/lib/<name>.test.ts`에 테스트로 쓰고 `pnpm test`로 실패를 확인한 뒤 구현한다. 사용자 입력을 받는 API라면 입력 검증 함수(`validateMessage` 같은)를 lib에 두고 경계값을 테스트한다.
 
 ## 4. API와 D1 (필요할 때)
 
 - 테이블이 필요하면 `d1-migration` 스킬로 마이그레이션부터 만든다.
-- Route Handler는 `src/app/api/whack/route.ts`를 따라 쓴다: 네이티브 `Response.json`, `session_id` 쿠키 → `sessions` 조회 → 401, body 파싱 실패 → 400, lib 검증 실패 → 400.
+- Route Handler는 `src/app/api/guestbook/route.ts`를 따라 쓴다: 네이티브 `Response.json`, `session_id` 쿠키 → `sessions` 조회 → 401, body 파싱 실패 → 400, lib 검증 실패 → 400.
 
 ## 5. Nav 연결
 

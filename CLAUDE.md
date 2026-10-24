@@ -29,11 +29,10 @@ src/app/
   layout.tsx            세션 조회(D1) + Nav + 테마 초기화 스크립트. force-dynamic
   page.tsx              랜딩(/) 출품작
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
-  whack/                꿀붕이 잡기 미니게임 + D1 리더보드
   auth/{login,callback,logout}/route.ts   치지직 OAuth
-  api/{guestbook,whack}/route.ts
+  api/guestbook/route.ts
 src/components/         Nav, PostIt, SkipLink (공유)
-src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook, whack)
+src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook)
 migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
 ```
@@ -51,7 +50,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 토큰: `--bg --surface --border --text --text-dim --accent --accent-d --accent-bg --gutter(48px, ≤640px에서 20px) --radius-sm(3px)`. 다크 값은 `[data-theme="dark"]`에서 덮어쓴다.
 - keyframe: `blink`(LIVE 도트), `float`(꿀붕이 부유), `fadeUp`(히어로 진입).
 - 폰트는 `layout.tsx`의 Google Fonts `<link>` 한 줄로 로드한다. 현재 로드되는 폰트는 Comfortaa, Fredoka(500–700), Gaegu, Jua, Noto Sans KR, Noto Serif KR(700). 한국어 subset 문제 때문에 `next/font`는 쓰지 않는다. 새 폰트는 같은 URL에 추가하고, URL에 없는 폰트를 코드에 쓰지 않는다(조용히 폴백된다).
-  - Fredoka: 영문 레이블과 숫자(배지, 키 표기, 게임 점수·타이머·순위)
+  - Fredoka: 영문 레이블과 숫자(배지, 키 표기)
   - Gaegu: 손글씨 제목·포스트잇 / Noto Sans KR: 본문·UI / Noto Serif KR: 헤드라인
 - 이미지 블렌드: 밝은 배경 위에는 `multiply`, 어두운 배경 위에는 `screen`. 캐릭터 패널 배경 `#EAE0D0`은 다크 모드에서도 고정한다. 배경을 어둡게 하면 multiply가 캐릭터를 뭉갠다.
 - 강조 배지·구분선의 작은 사각 도트는 `borderRadius: 1`이 의도된 값이다.
@@ -69,7 +68,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - Worker `yasiro-contest` · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
 - D1 `yasiro-db` (`69020930-766c-423b-8cbd-85d62eee3e02`) → `env.DB`. 타입은 `src/types/cloudflare.d.ts`
 - 접근: `const { env } = await getCloudflareContext({ async: true })` (`@opennextjs/cloudflare`)
-- 테이블: `sessions`, `guestbook`, `whack_scores`. 스키마 변경은 `d1-migration` 스킬로 한다.
+- 테이블: `sessions`, `guestbook`. 스키마 변경은 `d1-migration` 스킬로 한다.
 - Worker secret: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI` (`printf 'v' | pnpm wrangler secret put KEY`). Route Handler에서 `process.env`로 읽는다.
 - GitHub secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. 자격증명 원본은 1Password "Cloudflare R2 - yasiro-contest".
 - wrangler 4.x는 Node 22 이상이 필요하다.
@@ -77,7 +76,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 ### Route Handler
 
 - `NextResponse`와 `export const runtime = "edge"`를 쓰지 않는다. opennextjs 번들링에서 `Cannot read properties of undefined (reading 'default')` 에러가 난다. 네이티브 `Request`/`Response`를 쓴다.
-- 인증이 필요한 API는 `session_id` 쿠키로 `sessions`를 조회해 `expires_at > unixepoch()`를 확인한다. `api/whack/route.ts`가 기준 패턴이다.
+- 인증이 필요한 API는 `session_id` 쿠키로 `sessions`를 조회해 `expires_at > unixepoch()`를 확인한다. `api/guestbook/route.ts`가 기준 패턴이다.
 - `cookies()`를 쓰기 때문에 `layout.tsx`의 `export const dynamic = 'force-dynamic'`을 지우지 않는다.
 
 ## 치지직
