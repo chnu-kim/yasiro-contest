@@ -43,3 +43,7 @@ _design/
 
 # 디자인 확인 스크린샷 (pnpm shots)
 screenshots/
+
+# Cloudflare 로컬 런타임·빌드 산출물
+.wrangler/
+.open-next/
