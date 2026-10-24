@@ -20,9 +20,8 @@
 }
 
 .subtitle {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 15px;
-  font-weight: 300;
+  font-family: 'Gaegu', cursive;
+  font-size: 18px;
   color: var(--text-dim);
 }
 
@@ -35,8 +34,8 @@
 
 /* ─── Empty ─── */
 .empty {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 15px;
+  font-family: 'Gaegu', cursive;
+  font-size: 18px;
   word-break: keep-all;
   color: var(--text-dim);
   text-align: center;
@@ -55,10 +54,10 @@
   color: #fff;
   border: none;
   border-radius: 999px;
-  padding: 13px 22px 13px 18px;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
+  padding: 14px 22px 14px 18px;
+  font-family: 'Gaegu', cursive;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(196, 122, 10, 0.45);
   transition: background 0.18s, transform 0.18s, box-shadow 0.18s;

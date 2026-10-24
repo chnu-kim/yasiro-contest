@@ -44,7 +44,8 @@
 .heroBtnPrimary {
   display: inline-flex;
   align-items: center;
-  background: var(--accent);
+  /* 흰 글씨 명암비: accent(#C47A0A)는 3.4:1로 AA 미달, accent-d는 5.1:1 */
+  background: var(--accent-d);
   padding: 12px 28px;
   border-radius: var(--radius-sm);
   font-size: 15px;
@@ -56,13 +57,17 @@
 }
 
 .heroBtnPrimary:hover {
-  background: var(--accent-d);
   transform: translateY(-2px);
 }
 
-/* 다크 accent(#F5A623)는 밝아서 흰 글씨 명암비가 약 2:1 — 어두운 글씨로 바꾼다 */
+/* 다크 accent(#F5A623)는 밝아서 흰 글씨 명암비가 약 2:1 — 어두운 글씨로 바꾼다 (8.8:1) */
 :global([data-theme="dark"]) .heroBtnPrimary {
+  background: var(--accent);
   color: var(--bg);
+}
+
+:global([data-theme="dark"]) .heroBtnPrimary:hover {
+  background: var(--accent-d);
 }
 
 .heroBtnPrimary:focus-visible {
