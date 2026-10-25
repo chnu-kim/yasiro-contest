@@ -14,7 +14,8 @@
     "shots": "node scripts/screenshot.mjs",
     "test:coverage": "vitest run --coverage",
     "games:seed": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning scripts/games-seed.ts",
-    "games:export": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning scripts/games-export.ts"
+    "games:export": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning scripts/games-export.ts",
+    "games:edit": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning scripts/games-edit.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.11",

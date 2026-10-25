@@ -19,6 +19,7 @@ pnpm lint
 pnpm test:coverage  # src/lib/games/**, chzzk-category.ts는 100% threshold. 미달하면 exit 1
 pnpm games:seed <input.json>   # 게임 JSON → migrations/0008 형태 시드 SQL (기존 파일은 --force 없이는 거부. 원격 적용 후엔 다시 만들지 않는다)
 pnpm -s games:export [--local|--remote] [--hidden] [--out file]  # D1 → games.json 형식 백업. stdout으로 받을 땐 `-s`(pnpm 배너 제거) 또는 --out. --remote는 사람이 실행. 기본은 보이는 게임만, --hidden은 숨긴 게임만(전체 백업은 두 번). 변경 기록은 담지 않는다
+pnpm -s games:edit --find <키워드> | --search <검색어> | <ops.json> [--apply]  # 운영 D1 게임 기록 고치기. 절차는 games-edit 스킬
 pnpm preview        # Workers 런타임으로 로컬 미리보기
 pnpm shots [url] [경로...]  # 페이지 × 라이트/다크 × 1280/390 전체 스크린샷 → screenshots/index.html
 pnpm run deploy     # 수동 배포. `pnpm deploy`는 pnpm 예약어라 동작 안 함
@@ -40,7 +41,7 @@ src/app/
   api/guestbook/route.ts
   api/games/            관리자 API (route·[id]·[id]/hidden·[id]/changes·categories·youtube). 핸들러는 얇게, 로직은 src/lib/games/api.ts
 src/components/         Nav, PostIt, SkipLink, ClearStamp (공유)
-scripts/games-{seed,export}.ts   pnpm games:seed / games:export 진입점 (얇게. 로직은 src/lib/games/seed.ts)
+scripts/games-{seed,export,edit}.ts   pnpm games:seed / games:export / games:edit 진입점 (얇게. 로직은 src/lib/games/seed.ts, ops.ts)
 src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta})
 migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
@@ -101,7 +102,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ## 하네스 (`.claude/`)
 
-- 스킬: `new-entry`(새 출품작), `verify`(PR 전 검증), `d1-migration`(스키마 변경)
+- 스킬: `new-entry`(새 출품작), `verify`(PR 전 검증), `d1-migration`(스키마 변경), `games-edit`(운영 /games 기록 추가·수정)
 - hook: 기존 `migrations/*.sql` 수정 차단, Route Handler의 `NextResponse`·`runtime` 선언 감지
 - 권한: 테스트·lint·로컬 D1은 허용. 배포, 원격 D1, secret, `git push`는 매번 확인
 

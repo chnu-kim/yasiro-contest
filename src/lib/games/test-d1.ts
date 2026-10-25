@@ -1,5 +1,5 @@
 // 테스트 전용 D1 대역. node:sqlite(DatabaseSync, Node 22.5+)로 GamesDb 인터페이스를 흉내 낸다.
-// 앱·Worker 코드에서 import하지 않는다(커버리지 제외: vitest.config.ts).
+// 앱·Worker 코드에서 import하지 않는다(커버리지 제외: vitest.config.ts). 예외: scripts/games-edit.ts가 운영 사본을 올리는 로컬 엔진으로 쓴다.
 //
 // D1과 맞춘 동작:
 // - bind(undefined)는 던진다. boolean도 던진다(lib 코드가 0/1을 명시적으로 넘기게 강제).
