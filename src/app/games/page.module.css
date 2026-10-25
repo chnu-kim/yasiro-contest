@@ -357,15 +357,13 @@
     padding: 0 14px;
   }
 
-  .segment {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
+  /* 탭 개수·글자 길이에 맞춰 한 줄에서 너비를 나눈다("끝없는 탐험"이 가장 길다) */
   .segBtn {
+    flex: 1 1 auto;
     height: var(--tap);
-    padding: 0;
+    padding: 0 6px;
     font-size: var(--fs-sm);
+    white-space: nowrap;
   }
 
   .selects {

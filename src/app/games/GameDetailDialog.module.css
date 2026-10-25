@@ -1,12 +1,12 @@
-/* 게임 상세 모달. 데스크톱은 가운데 카드, ≤640px는 아래에서 올라오는 바텀시트. */
+/* 게임 상세 모달. 데스크톱은 가운데 카드, ≤640px는 아래에서 올라오는 바텀시트.
+   dialog는 고정 틀(닫기 버튼·모바일 손잡이)이고 스크롤은 안쪽 .sheet만 한다. */
 .dialog {
   width: min(760px, calc(100% - 48px));
   max-width: none;
   max-height: calc(100dvh - 48px);
   margin: auto;
   padding: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
   color: var(--text);
   background: var(--paper-hi);
   border: 1px solid var(--border-strong);
@@ -19,6 +19,8 @@
 }
 
 .dialog[open] {
+  display: flex;
+  flex-direction: column;
   animation: fadeUp var(--dur-base) var(--ease-out) both;
 }
 
@@ -27,7 +29,10 @@
 }
 
 .sheet {
-  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   grid-template-areas:
@@ -42,6 +47,8 @@
 .poster {
   grid-area: poster;
   align-self: start;
+  position: sticky; /* 다시보기 목록을 내려도 왼쪽 열이 비지 않게 */
+  top: 0;
 }
 
 .head {
@@ -73,7 +80,7 @@
   position: absolute;
   top: var(--space-6);
   right: var(--space-6);
-  z-index: 1;
+  z-index: 2;
   width: var(--tap);
   height: var(--tap);
   display: grid;
@@ -84,6 +91,15 @@
   color: var(--text);
   cursor: pointer;
   transition: background var(--dur-fast);
+}
+
+/* 내용이 버튼 밑으로 스크롤돼 지나가도 버튼이 묻히지 않게 바탕을 깐다 */
+.close {
+  background: var(--paper-hi);
+}
+
+:global([data-theme="dark"]) .close {
+  background: var(--surface);
 }
 
 .close:hover {
@@ -230,6 +246,7 @@
     border-width: 1px 0 0;
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
+    padding-top: 52px; /* 상단 바(손잡이 + 닫기) 자리. 스크롤은 그 아래에서만 */
   }
 
   .dialog::backdrop {
@@ -244,11 +261,15 @@
       'vods vods';
     grid-template-rows: auto;
     gap: 16px;
-    padding: 64px 20px 32px;
+    padding: 12px 20px 32px;
   }
 
-  /* 상단 바: 손잡이 + 닫기 */
-  .sheet::before {
+  .poster {
+    position: static;
+  }
+
+  /* 상단 바: 손잡이 + 닫기. 스크롤하지 않는 dialog에 붙인다 */
+  .dialog::before {
     content: '';
     position: absolute;
     left: 50%;
@@ -260,7 +281,7 @@
     background: var(--border-strong);
   }
 
-  .sheet::after {
+  .dialog::after {
     content: '';
     position: absolute;
     left: 0;

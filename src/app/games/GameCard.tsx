@@ -31,6 +31,7 @@ export default function GameCard({
         <p className={styles.cardMeta}>
           <span className={styles.date}>{formatDate(game.firstPlayed)}</span>
           {game.status === 'fail' && <span className={styles.failChip}>정복 못함</span>}
+          {game.status === 'endless' && <span className={styles.endlessChip}>끝없는 탐험</span>}
           {game.status === 'clear' && <span className={styles.srOnly}>정복</span>}
         </p>
       </div>

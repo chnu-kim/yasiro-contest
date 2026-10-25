@@ -42,10 +42,11 @@ export default function GameDetailDialog({ game, onClose }: { game: IndexedGame;
         if (e.target === e.currentTarget) ref.current?.close();
       }}
     >
+      {/* 닫기는 스크롤 영역(.sheet) 밖에 두어 다시보기 목록이 길어도 항상 보인다 */}
+      <button type="button" className={styles.close} aria-label="닫기" onClick={() => ref.current?.close()}>
+        <X size={18} strokeWidth={1.8} aria-hidden="true" />
+      </button>
       <div className={styles.sheet}>
-        <button type="button" className={styles.close} aria-label="닫기" onClick={() => ref.current?.close()}>
-          <X size={18} strokeWidth={1.8} aria-hidden="true" />
-        </button>
 
         <div className={styles.poster}>
           <Poster eager nameWideOnly game={game} stampSize={108} stampStyle={{ right: -22, bottom: -24 }} />
