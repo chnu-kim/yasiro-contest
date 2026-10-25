@@ -91,6 +91,11 @@
 
 /* 상세 모바일(포스터 96px)에서는 이름이 바로 옆 제목과 겹치고 한두 글자씩 끊기므로 NO.만 남긴다 */
 @media (max-width: 640px) {
+  /* 2열 카드 폭에서 긴 영문 단어가 글자 중간에서 끊기지 않을 크기 */
+  .emptyName {
+    font-size: 15px;
+  }
+
   .nameWideOnly {
     display: none;
   }
