@@ -6,7 +6,7 @@
     "categoryId": "Stellar_Blade",
     "posterUrl": "https://nng-phinf.pstatic.net/MjAyNDAxMTVfMjU4/MDAxNzA1MzA5MTAwOTcy.OTX84NpicqkqZTFBITRDMKu-hrMfceef717DQCbDGkwg.vnZ4z-6Cjnexd2AdxiA4dFWLghWY8UGw7mkSAsM8QgIg.PNG/20.png",
     "firstPlayed": "2026-10-10",
-    "status": "unknown",
+    "status": "clear",
     "vods": [
       {
         "title": "(1) 종겜룰렛으로 스텔라 블레이드 했어요 [ 2026. 10. 10 ]",
@@ -124,6 +124,11 @@
     "status": "fail",
     "vods": [
       {
+        "title": "종겜룰렛데이로 Cuphead 했어요 [ 2025. 08. 01 ]",
+        "url": "https://www.youtube.com/watch?v=em_J-6HizLA",
+        "date": "2025-08-01"
+      },
+      {
         "title": "링피트 하려다가 못 하고 컵헤드 했어요 [ 2025. 08. 12 ]",
         "url": "https://www.youtube.com/watch?v=mkUxJh12l9o",
         "date": "2025-08-12"
@@ -153,7 +158,7 @@
     "categoryId": "RingFit_Adventure",
     "posterUrl": "https://nng-phinf.pstatic.net/MjAyMzEyMTNfMTA0/MDAxNzAyNDMzMzQ3MTgx.Izw_T8ZHPsJVQvl5GWDVrovrECSDOt8lsyNj1KE0C4og.PWp3VrndqruGfesKe6CU6SDr1cqITYPxx1-jlwwZHZIg.JPEG/419.%EB%A7%81%ED%94%BC%ED%8A%B8%EC%96%B4%EB%93%9C%EB%B2%A4%EC%B2%98_%EC%99%84%EC%84%B1%EB%B3%B8_%EC%9D%B4%EB%8B%AC%EB%8B%98.jpg",
     "firstPlayed": "2025-07-04",
-    "status": "unknown",
+    "status": "fail",
     "vods": [
       {
         "title": "링 피트 어드벤처 했어요 [ 2025. 07. 04 ]",
