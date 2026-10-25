@@ -63,7 +63,6 @@
 .logoIcon {
   width: 26px;
   height: 26px;
-  color: var(--accent);
   flex-shrink: 0;
   transition: transform var(--dur-base) var(--ease-out);
 }

@@ -65,7 +65,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
   - Gaegu: 포스트잇 본문과 /about 장비 콜아웃만. `letter-spacing: 0`, 18px 이상
 - 컨셉은 "호기심 많은 탐험가". 탐험가 느낌은 캐릭터 장비(고글·쌍안경·지도 두루마리·파우치·부츠)와 현장 기록(기록 카드, 콜아웃, 눈금자, 스탬프, 테이프)으로 낸다. 지도 모티프는 허브의 "다음 목적지" 경로 한 곳만 쓴다. 장식은 화면당 스탬프 1개, 테이프 4개 이하.
 - 색: 작은 앰버 텍스트는 `--accent-text`, 주 버튼·FAB는 `--btn-primary-*`, `--accent`·`--brass`·`--eye`는 텍스트에 쓰지 않는다(AA 미달).
-- 공유 컴포넌트(`src/components/`): Button, SectionLabel, StitchRule, TapeStrip, RoundStamp, HeightRuler, ChannelGlyph, PawMark, icons. 장식 SVG는 `aria-hidden`.
+- 공유 컴포넌트(`src/components/`): Button, SectionLabel, StitchRule, TapeStrip, RoundStamp, HeightRuler, ChannelGlyph, KkulMark(Nav 로고·파비콘과 같은 꿀붕이 그림, 컬러), PawMark(꿀붕이 발자국 장식), icons. 장식 SVG는 `aria-hidden`.
 - 고정 버튼은 페이지당 1개. LIVE는 Nav 안의 pill이고 모바일 FAB가 없다.
 - 캐릭터·꿀붕이 PNG는 투명 배경이라 블렌드 없이 올린다. 캐릭터 패널은 `--tile`(라이트 `#EAE0D0`, 다크 `--surface`).
 - 강조 배지·구분선의 작은 사각 도트는 `borderRadius: 1`이 의도된 값이다.

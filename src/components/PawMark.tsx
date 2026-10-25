@@ -1,5 +1,5 @@
-// 꿀붕이 발자국 마크(사이트 로고 심볼). props: className, size(기본 26), style. 색은 currentColor.
-// 용도: Nav 로고, 푸터·빈 상태 같은 작은 브랜드 표식. 장식이므로 aria-hidden.
+// 꿀붕이 발자국 마크. props: className, size(기본 26), style. 색은 currentColor.
+// 용도: 허브 목록 점, 표본 라벨 워터마크, 도장 속 표식 같은 장식. 사이트 로고는 KkulMark. 장식이므로 aria-hidden.
 import type { CSSProperties } from 'react';
 
 const TOE = 'M 0 -46 C 23 -40 37 -16 37 5 C 37 31 21 50 0 50 C -21 50 -37 31 -37 5 C -37 -16 -23 -40 0 -46 Z';
