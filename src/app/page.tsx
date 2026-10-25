@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -9,6 +10,9 @@ import PawMark from '@/components/PawMark';
 import { ArrowIcon } from '@/components/icons';
 import RotatingPhrase from './_components/RotatingPhrase';
 import KkulCrop from './_components/KkulCrop';
+import { HOME_DESCRIPTION, HOME_TITLE, jsonLdString, pageMetadata, siteJsonLd } from '@/lib/seo';
+
+export const metadata: Metadata = pageMetadata({ path: '/', title: { absolute: HOME_TITLE }, description: HOME_DESCRIPTION });
 
 // 히어로 배지에서 돌아가며 보이는 문구
 const BADGE_PHRASES = ['치지직 버츄얼 스트리머', '호기심 많은 탐험가', '테라포레 소속 벌꿀오소리', '종합게임 스트리머', '인정사정이 없어요'] as const;
@@ -47,6 +51,7 @@ export default async function Home() {
 
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--text)' }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(siteJsonLd()) }} />
       {/* ══ HERO ══ */}
       <section className={styles.hero} aria-labelledby="hero-title">
         <div className={styles.heroInner}>

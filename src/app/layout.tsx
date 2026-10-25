@@ -3,13 +3,11 @@ import { cookies } from 'next/headers';
 import './globals.css';
 import Nav from '@/components/Nav';
 import SkipLink from '@/components/SkipLink';
+import { siteDefaults } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: '야시로',
-  description: '치지직 스트리머 야시로 팬사이트 · 테라포레 소속, 호기심 많은 탐험가 벌꿀오소리',
-};
+export const metadata: Metadata = siteDefaults();
 
 async function getSessionUser() {
   try {

@@ -40,7 +40,7 @@ src/app/api/<name>/route.ts      D1이 필요할 때만
 
 ## 5. Nav 연결
 
-`src/components/Nav.tsx`에서 데스크톱 링크(`styles.link`)와 모바일 메뉴(`styles.mobileMenuItem`, `onClick={closeMenu}`) **두 곳 모두**에 추가하고, 허브 `src/app/page.tsx`의 `ENTRIES`에 카드(kicker·title·desc)를 한 줄 더한다. 링크가 늘면 ≤480px에서 줄바꿈되지 않는지 `verify` 스킬로 확인한다.
+`src/components/Nav.tsx`에서 데스크톱 링크(`styles.link`)와 모바일 메뉴(`styles.mobileMenuItem`, `onClick={closeMenu}`) **두 곳 모두**에 추가하고, 허브 `src/app/page.tsx`의 `ENTRIES`에 카드(kicker·title·desc)를 한 줄 더한다. 검색엔진용으로 `src/lib/seo.ts`의 `SITE_PAGES`에 경로를 넣고, 페이지 metadata는 `pageMetadata({ path, title, description })`로 쓴다. 링크가 늘면 ≤480px에서 줄바꿈되지 않는지 `verify` 스킬로 확인한다.
 
 ## 6. 마무리
 
