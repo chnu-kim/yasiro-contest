@@ -1,4 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { readCookie, safeNextPath } from "@/lib/games/admin";
 import { exchangeCode, fetchUser, generateState } from "@/lib/chzzk-auth";
 
 export async function GET(req: Request) {
@@ -51,14 +52,11 @@ export async function GET(req: Request) {
     .run();
 
   const origin = new URL(req.url).origin;
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: origin + "/",
-      "Set-Cookie": [
-        "oauth_state=; Path=/; HttpOnly; Max-Age=0",
-        `session_id=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`,
-      ].join(", "),
-    },
-  });
+  // 로그인 시작 때 저장한 복귀 경로(없거나 이상하면 "/")
+  const next = safeNextPath(readCookie(cookieHeader, "oauth_next"));
+  const headers = new Headers({ Location: origin + next });
+  headers.append("Set-Cookie", "oauth_state=; Path=/; HttpOnly; Max-Age=0");
+  headers.append("Set-Cookie", "oauth_next=; Path=/; HttpOnly; Max-Age=0");
+  headers.append("Set-Cookie", `session_id=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`);
+  return new Response(null, { status: 302, headers });
 }
