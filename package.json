@@ -13,7 +13,8 @@
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
     "shots": "node scripts/screenshot.mjs",
     "test:coverage": "vitest run --coverage",
-    "games:add": "node --env-file=.dev.vars --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/games-add.ts"
+    "games:seed": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning scripts/games-seed.ts",
+    "games:export": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning scripts/games-export.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.11",

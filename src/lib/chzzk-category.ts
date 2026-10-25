@@ -1,14 +1,5 @@
-import { ID_PATTERN, isPosterUrl, youtubeVideoId } from "./games/schema.ts";
-import type {
-  ChzzkCategory,
-  ChzzkCategoryConfig,
-  FetchLike,
-  GameDraft,
-  Game,
-  GameDraftInput,
-  UpsertResult,
-  Vod,
-} from "./games/types.ts";
+import { ID_PATTERN, isPosterUrl } from "./games/schema.ts";
+import type { ChzzkCategory, ChzzkCategoryConfig, FetchLike } from "./games/types.ts";
 
 export const CHZZK_OPEN_API = "https://openapi.chzzk.naver.com";
 export const DEFAULT_SEARCH_SIZE = 20;
@@ -31,27 +22,6 @@ export class ChzzkResponseError extends ChzzkCategoryError {
   constructor(message: string) {
     super(message);
     this.name = "ChzzkResponseError";
-  }
-}
-
-export class GameDraftError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "GameDraftError";
-  }
-}
-
-export class GameConflictError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "GameConflictError";
-  }
-}
-
-export class CandidateSelectionError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "CandidateSelectionError";
   }
 }
 
@@ -167,32 +137,6 @@ export async function searchCategories(
   return games;
 }
 
-/** 검색 후보에서 하나를 고른다. categoryId가 기준이고, pick(1-based)은 미리보기용이며 둘 다 주면 일치해야 한다. */
-export function selectCandidate(
-  candidates: readonly ChzzkCategory[],
-  selection: { pick?: number; categoryId?: string },
-): ChzzkCategory {
-  const { pick, categoryId } = selection;
-  let byPick: ChzzkCategory | undefined;
-  if (pick !== undefined) {
-    byPick = candidates[pick - 1];
-    if (byPick === undefined) throw new CandidateSelectionError(`--pick ${pick} 은 후보 수(${candidates.length})를 넘습니다`);
-  }
-  if (categoryId === undefined) {
-    if (byPick === undefined) throw new CandidateSelectionError("--category-id 또는 --pick 이 필요합니다");
-    return byPick;
-  }
-  const byId = candidates.find((c) => c.categoryId === categoryId);
-  if (byId === undefined) {
-    const ids = candidates.map((c) => c.categoryId).join(", ");
-    throw new CandidateSelectionError(`categoryId "${categoryId}" 가 후보에 없습니다 (후보: ${ids})`);
-  }
-  if (byPick !== undefined && byPick !== byId) {
-    throw new CandidateSelectionError(`--pick ${pick} 은 ${byPick.categoryId} 인데 --category-id 는 ${categoryId} 입니다`);
-  }
-  return byId;
-}
-
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
@@ -211,104 +155,4 @@ export function slugify(s: string): string {
   if (ID_PATTERN.test(base)) return base;
   // \p{Lm}, \p{Nl}, \p{No} 등 ID_PATTERN이 허용하지 않는 문자는 제거한다.
   return trimDashes(base.replace(/[^\p{Ll}\p{Lo}\p{Nd}-]/gu, "").replace(/-{2,}/g, "-"));
-}
-
-/** 검색 결과 한 건과 사람이 입력한 값으로 GameDraft를 만든다. 형식 검증은 parseGames가 한다. */
-export function toGameDraft(category: ChzzkCategory, input: GameDraftInput = {}): GameDraft {
-  const name = category.categoryValue.trim();
-  const given = input.originalTitle?.trim();
-  const originalTitle = given === undefined || given === "" || given === name ? undefined : given;
-
-  let id: string;
-  if (input.id !== undefined) {
-    if (!ID_PATTERN.test(input.id)) {
-      throw new GameDraftError(`id "${input.id}"는 소문자/숫자/한글과 '-'만 쓸 수 있습니다`);
-    }
-    id = input.id;
-  } else {
-    const candidates = [originalTitle ?? "", category.categoryId, name];
-    id = candidates.map(slugify).find((slug) => slug !== "") ?? "";
-    if (id === "") throw new GameDraftError("id를 만들 수 없습니다 (--id 필요)");
-  }
-
-  return {
-    id,
-    name,
-    categoryId: category.categoryId,
-    posterUrl: category.posterImageUrl ?? undefined,
-    originalTitle,
-    firstPlayed: input.firstPlayed,
-    status: input.status,
-    vods: input.vods ?? [],
-  };
-}
-
-/** videoId가 있으면 그것으로, 없으면 URL 문자열로 영상을 식별한다. */
-function vodKey(vod: Vod): string {
-  const videoId = youtubeVideoId(vod.url);
-  return videoId === null ? `url:${vod.url}` : `yt:${videoId}`;
-}
-
-/** 게임 목록에 draft를 추가하거나 기존 게임에 병합한 새 목록을 반환한다. 입력은 변경하지 않는다. */
-export function upsertGame(games: readonly Game[], draft: GameDraft): UpsertResult {
-  const byCategory =
-    draft.categoryId === undefined ? -1 : games.findIndex((g) => g.categoryId === draft.categoryId);
-  const byId = games.findIndex((g) => g.id === draft.id);
-
-  if (byCategory !== -1 && byId !== -1 && byCategory !== byId) {
-    throw new GameConflictError(`id "${draft.id}"는 다른 게임이 이미 사용 중입니다`);
-  }
-  if (
-    byCategory === -1 &&
-    byId !== -1 &&
-    draft.categoryId !== undefined &&
-    games[byId].categoryId !== undefined &&
-    games[byId].categoryId !== draft.categoryId
-  ) {
-    throw new GameConflictError(
-      `id "${draft.id}"는 다른 categoryId(${games[byId].categoryId})의 게임입니다`,
-    );
-  }
-
-  const target = byCategory !== -1 ? byCategory : byId;
-
-  if (target === -1) {
-    const game: Game = {
-      id: draft.id,
-      name: draft.name,
-      ...(draft.originalTitle !== undefined && { originalTitle: draft.originalTitle }),
-      ...(draft.categoryId !== undefined && { categoryId: draft.categoryId }),
-      ...(draft.posterUrl !== undefined && { posterUrl: draft.posterUrl }),
-      firstPlayed: draft.firstPlayed ?? null,
-      status: draft.status ?? "unknown",
-      vods: [...draft.vods],
-    };
-    return { games: [...games, game], action: "added", game };
-  }
-
-  const old = games[target];
-  const seen = new Set(old.vods.map(vodKey));
-  const vods = [...old.vods];
-  for (const vod of draft.vods) {
-    const key = vodKey(vod);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    vods.push(vod);
-  }
-  const originalTitle = draft.originalTitle ?? old.originalTitle;
-  const categoryId = draft.categoryId ?? old.categoryId;
-  const posterUrl = draft.posterUrl ?? old.posterUrl;
-  const game: Game = {
-    id: old.id,
-    name: draft.name,
-    ...(originalTitle !== undefined && { originalTitle }),
-    ...(categoryId !== undefined && { categoryId }),
-    ...(posterUrl !== undefined && { posterUrl }),
-    firstPlayed: draft.firstPlayed === undefined ? old.firstPlayed : draft.firstPlayed,
-    status: draft.status ?? old.status,
-    vods,
-  };
-  const next = [...games];
-  next[target] = game;
-  return { games: next, action: "updated", game };
 }
