@@ -2,8 +2,9 @@
 // 이 파일은 scripts/games-add.ts(Node type stripping)에서도 import되므로
 // 런타임 구문(enum, namespace, 생성자 parameter property)을 쓰지 않는다.
 
-/** 정복 여부. clear=정복(원형 도장), fail=정복 못함(점선 칩), unknown=모름(카드 표시 없음, 상세 "기록 없음") */
-export type GameStatus = "clear" | "fail" | "unknown";
+/** 정복 여부. clear=정복(원형 도장), fail=정복 못함(점선 칩), endless=끝없는 탐험(정복 개념이 없는 온라인 게임, 칩),
+ *  unknown=모름(카드 표시 없음, 상세 "기록 없음") */
+export type GameStatus = "clear" | "fail" | "endless" | "unknown";
 
 /** 유튜브 다시보기 한 편. 치지직 다시보기 URL은 금지(한 달 뒤 삭제) */
 export interface Vod {
@@ -82,6 +83,7 @@ export interface GameStats {
   total: number;
   clear: number;
   fail: number;
+  endless: number;
   unknown: number;
   /** firstPlayed === null 개수 */
   undated: number;

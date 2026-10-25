@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-import { ID_PATTERN, isValidIsoDate, isYoutubeUrl } from "./schema.ts";
+import { GAME_STATUSES, ID_PATTERN, isValidIsoDate, isYoutubeUrl } from "./schema.ts";
 import type { AddArgs, GameDraftInput, GameStatus, Vod } from "./types.ts";
 
 export class CliArgsError extends Error {
@@ -14,13 +14,13 @@ export const USAGE = `사용법: pnpm games:add "검색어" [옵션]
   --pick N                     후보 번호(1부터). --dry-run 미리보기용(--category-id와 함께 주면 일치 확인)
   --size N                     검색 후보 수 1-50 (기본 20)
   --date YYYY-MM-DD|none       첫 플레이 날짜 (none = 날짜 기록 없음)
-  --status clear|fail|unknown  정복 여부
+  --status clear|fail|endless|unknown  정복 여부
   --orig "원제"                원제(스팀 등재명 등)
   --id slug                    id 직접 지정
   --vod "제목|유튜브URL|YYYY-MM-DD"  다시보기 (반복 가능)
   --dry-run                    파일을 쓰지 않고 결과 JSON만 출력`;
 
-const STATUSES: readonly string[] = ["clear", "fail", "unknown"];
+const STATUSES: readonly string[] = GAME_STATUSES;
 
 export function parseVodArg(s: string): Vod {
   const second = s.lastIndexOf("|");
@@ -105,7 +105,7 @@ export function parseAddArgs(argv: readonly string[]): AddArgs {
   }
   if (values.status !== undefined) {
     if (!STATUSES.includes(values.status)) {
-      throw new CliArgsError(`--status 는 clear|fail|unknown 중 하나여야 합니다: ${values.status}`);
+      throw new CliArgsError(`--status 는 ${GAME_STATUSES.join("|")} 중 하나여야 합니다: ${values.status}`);
     }
     input.status = values.status as GameStatus;
   }

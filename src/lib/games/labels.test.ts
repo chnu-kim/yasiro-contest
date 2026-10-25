@@ -24,11 +24,12 @@ describe("라벨 상수", () => {
       all: "전체",
       clear: "정복",
       fail: "정복 못함",
+      endless: "끝없는 탐험",
       unknown: "모름",
     });
   });
   it("상세의 정복 여부 문구: unknown은 기록 없음", () => {
-    expect(STATUS_TEXT).toEqual({ clear: "정복", fail: "정복 못함", unknown: "기록 없음" });
+    expect(STATUS_TEXT).toEqual({ clear: "정복", fail: "정복 못함", endless: "끝없는 탐험", unknown: "기록 없음" });
   });
   it("정렬 라벨", () => {
     expect(SORT_LABEL).toEqual({

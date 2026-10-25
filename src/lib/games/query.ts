@@ -1,4 +1,4 @@
-import { compareCanonical, compareName, ID_PATTERN } from "./schema.ts";
+import { compareCanonical, compareName, GAME_STATUSES, ID_PATTERN } from "./schema.ts";
 import type {
   IndexedGame,
   Game,
@@ -99,7 +99,7 @@ export function pageWindow(current: number, pageCount: number): Array<number | "
 }
 
 /** UI 노출 순서 그대로 */
-export const STATUS_FILTERS: readonly StatusFilter[] = ["all", "clear", "fail", "unknown"];
+export const STATUS_FILTERS: readonly StatusFilter[] = ["all", ...GAME_STATUSES];
 export const SORT_KEYS: readonly SortKey[] = ["recent", "old", "name"];
 
 type Year = `${number}`;
@@ -186,7 +186,7 @@ export function applyFilterChange(
 }
 
 export function countStats(games: readonly Game[]): GameStats {
-  const stats: GameStats = { total: games.length, clear: 0, fail: 0, unknown: 0, undated: 0 };
+  const stats: GameStats = { total: games.length, clear: 0, fail: 0, endless: 0, unknown: 0, undated: 0 };
   for (const game of games) {
     stats[game.status] += 1;
     if (game.firstPlayed === null) stats.undated += 1;

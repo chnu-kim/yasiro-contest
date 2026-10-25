@@ -38,7 +38,9 @@ export function isYoutubeUrl(url: unknown): url is string {
 
 const GAME_KEYS = new Set(["id", "name", "originalTitle", "categoryId", "posterUrl", "firstPlayed", "status", "vods"]);
 const VOD_KEYS = new Set(["title", "url", "date"]);
-const STATUSES: readonly string[] = ["clear", "fail", "unknown"];
+/** 정복 여부 값. 이 순서가 필터 탭 순서다 */
+export const GAME_STATUSES: readonly GameStatus[] = ["clear", "fail", "endless", "unknown"];
+const STATUSES: readonly string[] = GAME_STATUSES;
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
@@ -113,7 +115,7 @@ function validateGame(raw: unknown, i: number, issues: ValidationIssue[]): Game 
   const firstPlayed = raw.firstPlayed;
   if (firstPlayed !== null && !isValidIsoDate(firstPlayed)) add("firstPlayed", "YYYY-MM-DD 또는 null이어야 합니다");
 
-  if (typeof raw.status !== "string" || !STATUSES.includes(raw.status)) add("status", "clear | fail | unknown 중 하나여야 합니다");
+  if (typeof raw.status !== "string" || !STATUSES.includes(raw.status)) add("status", `${GAME_STATUSES.join(" | ")} 중 하나여야 합니다`);
 
   const vods: Vod[] = [];
   if (!Array.isArray(raw.vods)) add("vods", "배열이어야 합니다");

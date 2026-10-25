@@ -75,7 +75,7 @@ describe("parseAddArgs", () => {
   it("--date none 은 null", () => {
     expect(parseAddArgs(["x", "--date", "none"]).input.firstPlayed).toBeNull();
   });
-  it.each(["unknown", "fail", "clear"])("status %s 허용", (s) => {
+  it.each(["unknown", "fail", "clear", "endless"])("status %s 허용", (s) => {
     expect(parseAddArgs(["x", "--status", s]).input.status).toBe(s);
   });
   it.each([

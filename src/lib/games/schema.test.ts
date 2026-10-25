@@ -152,8 +152,8 @@ describe("validateGames: valid input", () => {
     const g = { ...base(), firstPlayed: null, vods: [{ title: "t", url: "https://youtu.be/dQw4w9WgXcQ", date: "1999-01-01" }] };
     expect(validateGames([g]).ok).toBe(true);
   });
-  it("accepts all three statuses", () => {
-    for (const status of ["clear", "fail", "unknown"]) {
+  it("accepts all four statuses", () => {
+    for (const status of ["clear", "fail", "endless", "unknown"]) {
       expect(validateGames([{ ...base(), status }]).ok, status).toBe(true);
     }
   });
@@ -221,7 +221,7 @@ describe("validateGames: top-level and element shape", () => {
     expect(paths([{ ...base(), firstPlayed: 20250101 }])).toEqual(["[0].firstPlayed"]);
   });
   it("rejects bad status", () => {
-    for (const status of ["cleared", null, "", undefined, 1]) {
+    for (const status of ["cleared", null, "", undefined, 1, "Endless", "endless "]) {
       expect(paths([{ ...base(), status }]), String(status)).toEqual(["[0].status"]);
     }
   });

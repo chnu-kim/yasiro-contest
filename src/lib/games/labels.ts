@@ -13,6 +13,7 @@ export const STATUS_FILTER_LABEL: Readonly<Record<StatusFilter, string>> = {
   all: "전체",
   clear: "정복",
   fail: "정복 못함",
+  endless: "끝없는 탐험",
   unknown: "모름",
 };
 
@@ -20,6 +21,7 @@ export const STATUS_FILTER_LABEL: Readonly<Record<StatusFilter, string>> = {
 export const STATUS_TEXT: Readonly<Record<GameStatus, string>> = {
   clear: "정복",
   fail: "정복 못함",
+  endless: "끝없는 탐험",
   unknown: "기록 없음",
 };
 

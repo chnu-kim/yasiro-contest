@@ -339,11 +339,20 @@ describe("applyFilterChange", () => {
 });
 
 describe("countStats", () => {
+  it("endless를 따로 센다", () => {
+    const gs: Game[] = [
+      { id: "lol", name: "리그 오브 레전드", firstPlayed: null, status: "endless", vods: [] },
+      { id: "tft", name: "전략적 팀 전투", firstPlayed: "2024-01-01", status: "endless", vods: [] },
+      { id: "a", name: "a", firstPlayed: "2024-01-01", status: "clear", vods: [] },
+    ];
+    expect(countStats(gs)).toEqual({ total: 3, clear: 1, fail: 0, endless: 2, unknown: 0, undated: 1 });
+  });
+
   it("집계한다", () => {
-    expect(countStats(fixture)).toEqual({ total: 9, clear: 4, fail: 1, unknown: 4, undated: 2 });
+    expect(countStats(fixture)).toEqual({ total: 9, clear: 4, fail: 1, endless: 0, unknown: 4, undated: 2 });
   });
   it("빈 목록은 전부 0", () => {
-    expect(countStats([])).toEqual({ total: 0, clear: 0, fail: 0, unknown: 0, undated: 0 });
+    expect(countStats([])).toEqual({ total: 0, clear: 0, fail: 0, endless: 0, unknown: 0, undated: 0 });
   });
 });
 
@@ -553,7 +562,7 @@ describe("normalizeQ", () => {
 
 describe("STATUS_FILTERS / SORT_KEYS", () => {
   it("UI 노출 순서 그대로", () => {
-    expect(STATUS_FILTERS).toEqual(["all", "clear", "fail", "unknown"]);
+    expect(STATUS_FILTERS).toEqual(["all", "clear", "fail", "endless", "unknown"]);
     expect(SORT_KEYS).toEqual(["recent", "old", "name"]);
   });
 });
@@ -641,5 +650,18 @@ describe("detailQuery", () => {
   });
   it("serializeQueryState는 game을 넣지 않는다(필터·페이지 변경 시 상세가 닫힌다)", () => {
     expect(serializeQueryState(parseQueryState(new URLSearchParams("game=cuphead&page=2")))).toBe("page=2");
+  });
+});
+
+describe("endless 상태 필터", () => {
+  it("status=endless를 파싱·직렬화하고 그 게임만 거른다", () => {
+    const st = parseQueryState(new URLSearchParams("status=endless"));
+    expect(st.status).toBe("endless");
+    expect(serializeQueryState(st)).toBe("status=endless");
+    const gs = indexGames([
+      { id: "lol", name: "리그 오브 레전드", firstPlayed: null, status: "endless", vods: [] },
+      { id: "a", name: "a", firstPlayed: null, status: "fail", vods: [] },
+    ]);
+    expect(filterGames(gs, st).map((g) => g.id)).toEqual(["lol"]);
   });
 });
