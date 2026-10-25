@@ -1459,7 +1459,7 @@
     "categoryId": "Quarantine_Zone_The_Last_Check",
     "posterUrl": "https://nng-phinf.pstatic.net/MjAyNTExMTRfMjMw/MDAxNzYzMDg3NjE0MzE5.wNPbrIRqdnQKqsD2fKwZSIVMyOtF0Xa_3maIET-9D9Ag.kj66MP5HD6UdLU-z1air8YWyq67VcvvjVU53YOar9A8g.JPEG/%EC%BF%BC%EB%9F%B0%ED%8B%B4_%EC%A1%B4_%EB%8D%94_%EB%9D%BC%EC%8A%A4%ED%8A%B8_%EC%B2%B4%ED%81%AC_%ED%8F%AC%EC%8A%A4%ED%84%B0.jpg",
     "firstPlayed": "2026-01-13",
-    "status": "unknown",
+    "status": "clear",
     "vods": [
       {
         "title": "Quarantine Zone: The Last Check 했어요 [ 2026. 01. 13 ]",
@@ -4156,10 +4156,12 @@
     "vods": []
   },
   {
-    "id": "캐치마인드",
-    "name": "캐치마인드",
+    "id": "koongya-catch-mind",
+    "name": "쿵야 캐치마인드",
+    "categoryId": "KoongYa_Catch_Mind",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNDA3MTJfOTcg/MDAxNzIwNzYxNDc0MDUz.8Fll-LhzLozBnoivSxaqMYivhc0e4saOb8VWKBS_6Hog._ip9xVbfvqsHqNdSu0tkloPoVtvXGyLuZSzhbvly2x4g.PNG/%EC%BF%B5%EC%95%BC_%EC%BA%90%EC%B9%98%EB%A7%88%EC%9D%B8%EB%93%9C.png",
     "firstPlayed": "2024-05-31",
-    "status": "clear",
+    "status": "endless",
     "vods": [
       {
         "title": "캐치마인드 하고 갈틱폰 했어요 [ 2026. 05. 05 ]",
@@ -4363,7 +4365,7 @@
     "categoryId": "Minecraft",
     "posterUrl": "https://nng-phinf.pstatic.net/MjAyMzEyMTFfMTM3/MDAxNzAyMjgyNjI1MDgw.Ozu1fi3gdfyooyBjO_SGXJBDqRWgDFLlmWAFZg6qYIUg.rlnppQX9tMgn2nvgjhXwqsJhfktN23Gdjj09CgJ--BYg.JPEG/104.%EB%A7%88%EC%9D%B8%ED%81%AC%EB%9E%98%ED%94%84%ED%8A%B8_%EC%99%84%EC%84%B1%EB%B3%B8_%EC%9D%B4%EB%8B%AC%EB%8B%98.jpg",
     "firstPlayed": "2024-02-28",
-    "status": "unknown",
+    "status": "endless",
     "vods": [
       {
         "title": "마인크래프트 했어요 [ 2026. 02. 06 ]",
@@ -4485,7 +4487,7 @@
     "id": "디제이맥스",
     "name": "디제이맥스",
     "firstPlayed": null,
-    "status": "fail",
+    "status": "endless",
     "vods": []
   },
   {
@@ -4555,7 +4557,7 @@
     "categoryId": "Sephiria",
     "posterUrl": "https://nng-phinf.pstatic.net/MjAyNjA4MDVfMjI2/MDAxNzg1OTEwMzI0OTQ1.xfO1ilDYnxOHHnNq5gkM4_Vo8YKNgGyN4XTYszmufiwg.p9spn6wqMe0HBg7rVj-cjjiGDhL7HiQ5_kjZ4hAso84g.JPEG/%EC%84%B8%ED%94%BC%EB%A6%AC%EC%95%84-300-400.jpg",
     "firstPlayed": null,
-    "status": "fail",
+    "status": "endless",
     "vods": []
   },
   {
@@ -4689,7 +4691,7 @@
     "id": "중세-러스트-합방-샌드박스",
     "name": "중세 러스트 합방(샌드박스)",
     "firstPlayed": null,
-    "status": "fail",
+    "status": "endless",
     "vods": []
   },
   {
@@ -4713,14 +4715,14 @@
     "id": "팩맨",
     "name": "팩맨",
     "firstPlayed": null,
-    "status": "fail",
+    "status": "endless",
     "vods": []
   },
   {
     "id": "피카츄-배구",
     "name": "피카츄 배구",
     "firstPlayed": null,
-    "status": "fail",
+    "status": "endless",
     "vods": []
   },
   {
