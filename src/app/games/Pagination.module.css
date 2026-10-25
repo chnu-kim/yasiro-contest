@@ -1,0 +1,116 @@
+/* 번호 페이지네이션. ≤640px는 시안(MobileDark)대로 이전·n / N·다음만 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 56px;
+}
+
+.pageNumbers {
+  display: flex;
+  gap: 6px;
+}
+
+.pageCompact {
+  display: none;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-base);
+}
+
+.pageTotal {
+  color: var(--text-dim);
+}
+
+.pageBtn {
+  height: var(--tap);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 15px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+.pageBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--accent-bg);
+}
+
+.pageBtn:disabled {
+  color: var(--text-dim);
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.pageStep {
+  padding: 0 14px;
+}
+
+.pageNum {
+  width: var(--tap);
+  border-color: var(--border);
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  font-size: var(--fs-base);
+}
+
+.pageNum[aria-current='page'] {
+  background: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  font-weight: 600;
+}
+
+.pageGap {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  color: var(--text-dim);
+}
+
+.rangeText {
+  margin-top: var(--space-3);
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+@media (max-width: 640px) {
+  .pagination {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    margin-top: 44px;
+  }
+
+  .pageNumbers {
+    display: none;
+  }
+
+  .pageCompact {
+    display: inline;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .pageStep:first-child {
+    grid-column: 1;
+  }
+
+  .pageStep:last-child {
+    grid-column: 3;
+  }
+
+  .rangeText {
+    display: none;
+  }
+}

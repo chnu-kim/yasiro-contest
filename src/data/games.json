@@ -1,0 +1,190 @@
+[
+  {
+    "id": "stellar-blade",
+    "name": "스텔라 블레이드",
+    "originalTitle": "Stellar Blade",
+    "categoryId": "Stellar_Blade",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNDAxMTVfMjU4/MDAxNzA1MzA5MTAwOTcy.OTX84NpicqkqZTFBITRDMKu-hrMfceef717DQCbDGkwg.vnZ4z-6Cjnexd2AdxiA4dFWLghWY8UGw7mkSAsM8QgIg.PNG/20.png",
+    "firstPlayed": "2026-10-10",
+    "status": "clear",
+    "vods": [
+      {
+        "title": "(1) 종겜룰렛으로 스텔라 블레이드 했어요 [ 2026. 10. 10 ]",
+        "url": "https://www.youtube.com/watch?v=zQTUcEUyt6s",
+        "date": "2026-10-10"
+      },
+      {
+        "title": "(2) 종겜룰렛으로 스텔라 블레이드 했어요 [ 2026. 10. 10 ]",
+        "url": "https://www.youtube.com/watch?v=MEyoqNmztMQ",
+        "date": "2026-10-10"
+      },
+      {
+        "title": "스텔라 블레이드 했어요 [ 2026. 10. 15 ]",
+        "url": "https://www.youtube.com/watch?v=Fdb3jWb2rvc",
+        "date": "2026-10-15"
+      },
+      {
+        "title": "스텔라 블레이드 했어요 [ 2026. 10. 18 ]",
+        "url": "https://www.youtube.com/watch?v=fhM0bOrkj4o",
+        "date": "2026-10-18"
+      },
+      {
+        "title": "스텔라 블레이드 완 했어요 [ 2026. 10. 21 ]",
+        "url": "https://www.youtube.com/watch?v=23GNwpGCNLc",
+        "date": "2026-10-21"
+      }
+    ]
+  },
+  {
+    "id": "bear-s-restaurant",
+    "name": "곰아저씨 레스토랑",
+    "originalTitle": "Bear's Restaurant",
+    "categoryId": "Bears_Restaurant",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNDAzMTNfMTMx/MDAxNzEwMzAzNzY2OTY3.ac2LeCko_1IaqslbBf1MbFlhGEvZahUr-ZLkqk7dlqwg.RhUvEwdLdoSxDKkq7iK4UhlBy9_kO_6qokiKWkr8UXEg.PNG/%EA%B3%B0%EC%95%84%EC%A0%80%EC%94%A8_%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91.png",
+    "firstPlayed": "2025-10-02",
+    "status": "clear",
+    "vods": [
+      {
+        "title": "곰아저씨 레스토랑 했어요 [ 2025. 10. 02 ]",
+        "url": "https://www.youtube.com/watch?v=sCb8adGsFkQ",
+        "date": "2025-10-02"
+      }
+    ]
+  },
+  {
+    "id": "cloverpit",
+    "name": "클로버핏",
+    "originalTitle": "CloverPit",
+    "categoryId": "CloverPit",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNTA1MjBfNDQg/MDAxNzQ3NzI2OTMyMTEx.cRJ1tZAiueG4vxJ_17XPk9iTUkjy0b9zkL-5apfwsh4g.g7qgv3G2oVM8gbe6IxL4NIfGxrUFrmqe0sN-lRTW0Isg.PNG/%ED%81%B4%EB%A1%9C%EB%B2%84%ED%95%8F_%ED%8F%AC%EC%8A%A4%ED%84%B0.png",
+    "firstPlayed": "2025-09-30",
+    "status": "fail",
+    "vods": [
+      {
+        "title": "CloverPit 했어요 [ 2025. 09. 30 ]",
+        "url": "https://www.youtube.com/watch?v=AX_oi0PNPKY",
+        "date": "2025-09-30"
+      }
+    ]
+  },
+  {
+    "id": "silent-hill-f",
+    "name": "사일런트 힐 f",
+    "originalTitle": "SILENT HILL f",
+    "categoryId": "SILENT_HILL_f",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNTAzMTRfMjg1/MDAxNzQxOTIyMzgxNTcw.Vh_VHgjBvMCQ7w1-vUk2YEfFcJUrRu3f7JYWDAIzmX8g._SUJ3G7ti5Zo7WCtNmkoeBzOrCCeRJOkpdBr9aWwULMg.PNG/%EC%82%AC%EC%9D%BC%EB%9F%B0%ED%8A%B8%ED%9E%90_%ED%8F%AC%EC%8A%A4%ED%84%B0.png",
+    "firstPlayed": "2025-09-23",
+    "status": "clear",
+    "vods": [
+      {
+        "title": "SILENT HILL f 했어요 [ 2025. 09. 23 ]",
+        "url": "https://www.youtube.com/watch?v=wOy2efLzbzo",
+        "date": "2025-09-23"
+      },
+      {
+        "title": "SILENT HILL f 했어요 [ 2025. 09. 24 ]",
+        "url": "https://www.youtube.com/watch?v=ucltde7j_JA",
+        "date": "2025-09-24"
+      }
+    ]
+  },
+  {
+    "id": "professor-layton-and-the-diabolical-box",
+    "name": "레이튼 교수와 악마의 상자 HD",
+    "originalTitle": "Professor Layton and the Diabolical Box",
+    "categoryId": "Professor_Layton_and_the_Diabolical_Box_HD",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNDA0MjJfOTEg/MDAxNzEzNzY4Mzg5NjQy.UhlhQq3mifnA915kbYUyO4VX1P_ZAcIPvW9zLGd-hEsg.J4fzOGfomzgUExygINYafeSeW96OcLzcuJUxzKP8VhMg.PNG/16.png",
+    "firstPlayed": "2025-08-16",
+    "status": "unknown",
+    "vods": [
+      {
+        "title": "레이튼 교수와 악마의 상자 했어요 [ 2025. 08. 16 ]",
+        "url": "https://www.youtube.com/watch?v=ySV1aHvUOKA",
+        "date": "2025-08-16"
+      },
+      {
+        "title": "레이튼 교수와 악마의 상자 했어요 [ 2025. 08. 23 ]",
+        "url": "https://www.youtube.com/watch?v=dYrBaTGQ-HE",
+        "date": "2025-08-23"
+      },
+      {
+        "title": "레이튼 교수와 악마의 상저 했어요 [ 2025. 08. 30 ]",
+        "url": "https://www.youtube.com/watch?v=n4kNy3FD8To",
+        "date": "2025-08-30"
+      }
+    ]
+  },
+  {
+    "id": "cuphead",
+    "name": "컵헤드",
+    "originalTitle": "Cuphead",
+    "categoryId": "Cuphead",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNDAyMjdfMjE4/MDAxNzA4OTk3MTQ1MjAy.3tQZWxwmH7buHLRWBbnxnmsYsyxWZ-IB_Anc2_E0VmIg.FK0SNgVBmfsChDxQZJootTzH5MrP3cJuOZ7RO4D5Ggwg.PNG/%EC%BB%B5%ED%97%A4%EB%93%9C.png",
+    "firstPlayed": "2025-08-01",
+    "status": "fail",
+    "vods": [
+      {
+        "title": "종겜룰렛데이로 Cuphead 했어요 [ 2025. 08. 01 ]",
+        "url": "https://www.youtube.com/watch?v=em_J-6HizLA",
+        "date": "2025-08-01"
+      },
+      {
+        "title": "링피트 하려다가 못 하고 컵헤드 했어요 [ 2025. 08. 12 ]",
+        "url": "https://www.youtube.com/watch?v=mkUxJh12l9o",
+        "date": "2025-08-12"
+      }
+    ]
+  },
+  {
+    "id": "there-is-no-game-wrong-dimension",
+    "name": "이건 게임이 아닙니다",
+    "originalTitle": "There Is No Game: Wrong Dimension",
+    "categoryId": "There_Is_No_Game_Wrong_Dimension",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyNDAyMjlfMTc2/MDAxNzA5MTg3NjE1NzA5.bUkwyau-RjxinFhMA4uVYGogPljV_jeaVEatE3dPrGog.-DEJUQDcTXjWlgh1YSKyVIbq9xTA-G9i3Q0k6BjYI9Ag.PNG/%EB%8D%B0%EC%96%B4_%EC%9D%B4%EC%A6%88_%EB%85%B8_%EA%B2%8C%EC%9E%84.png",
+    "firstPlayed": "2025-07-31",
+    "status": "clear",
+    "vods": [
+      {
+        "title": "There Is No Game: Wrong Dimension 했어요 [ 2025. 07. 31 ]",
+        "url": "https://www.youtube.com/watch?v=bwIvDFl8Rto",
+        "date": "2025-07-31"
+      }
+    ]
+  },
+  {
+    "id": "ring-fit-adventure",
+    "name": "링 피트 어드벤처",
+    "originalTitle": "Ring Fit Adventure",
+    "categoryId": "RingFit_Adventure",
+    "posterUrl": "https://nng-phinf.pstatic.net/MjAyMzEyMTNfMTA0/MDAxNzAyNDMzMzQ3MTgx.Izw_T8ZHPsJVQvl5GWDVrovrECSDOt8lsyNj1KE0C4og.PWp3VrndqruGfesKe6CU6SDr1cqITYPxx1-jlwwZHZIg.JPEG/419.%EB%A7%81%ED%94%BC%ED%8A%B8%EC%96%B4%EB%93%9C%EB%B2%A4%EC%B2%98_%EC%99%84%EC%84%B1%EB%B3%B8_%EC%9D%B4%EB%8B%AC%EB%8B%98.jpg",
+    "firstPlayed": "2025-07-04",
+    "status": "fail",
+    "vods": [
+      {
+        "title": "링 피트 어드벤처 했어요 [ 2025. 07. 04 ]",
+        "url": "https://www.youtube.com/watch?v=kFEi1wSvZJE",
+        "date": "2025-07-04"
+      },
+      {
+        "title": "링 피트 어드벤처 했어요 [ 2025. 07. 15 ]",
+        "url": "https://www.youtube.com/watch?v=L8ooFYGIsIE",
+        "date": "2025-07-15"
+      },
+      {
+        "title": "링 피트 어드벤처 했어요 [ 2025. 07. 30 ]",
+        "url": "https://www.youtube.com/watch?v=7cRTABOkmvQ",
+        "date": "2025-07-30"
+      },
+      {
+        "title": "링 피트 어드벤처 했어요 [ 2025. 08. 20 ]",
+        "url": "https://www.youtube.com/watch?v=RiYfRqsCghY",
+        "date": "2025-08-20"
+      },
+      {
+        "title": "링 피트 어드벤처 했어요 [ 2026. 05. 19 ]",
+        "url": "https://www.youtube.com/watch?v=i75EU3GXnU8",
+        "date": "2026-05-19"
+      }
+    ]
+  }
+]

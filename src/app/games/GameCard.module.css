@@ -1,0 +1,100 @@
+/* 목록 카드. 카드 전체가 클릭 영역이고 상세를 연다. */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cardCover {
+  transition: transform var(--dur-base) ease, filter var(--dur-base) ease;
+}
+
+.card:hover .cardCover {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 8px 12px rgba(40, 25, 10, 0.18));
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 8px;
+}
+
+.cardTitle {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 카드 전체가 클릭 영역. 제목 버튼의 ::after가 li(position: relative)를 덮는다 */
+.cardOpen {
+  all: unset;
+  cursor: pointer;
+}
+
+.cardOpen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+}
+
+.cardOpen:focus-visible::after {
+  outline: 2px solid var(--focus);
+  outline-offset: 6px;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.date {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+}
+
+.failChip {
+  padding: 2px 8px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 640px) {
+  .card {
+    gap: 10px;
+  }
+
+  .cardBody {
+    gap: 4px;
+    padding-right: 10px;
+  }
+
+  .cardTitle {
+    font-size: 15px;
+  }
+
+  .cardCover :global(svg) {
+    width: 72px !important;
+    height: 72px !important;
+    right: -10px !important;
+    bottom: -14px !important;
+  }
+}

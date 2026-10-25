@@ -1,0 +1,97 @@
+/* 게임 커버(3:4). 포스터 이미지 또는 "포스터 없음" 카드. 톤은 NO. 기준으로 돌려 쓴다. */
+.cover {
+  --tone-0: #D9C7A3;
+  --tone-1: #C9B48E;
+  --tone-2: #BFC2A4;
+  --tone-3: #D8B9A2;
+  --tone-4: #CDBFA8;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  background: var(--tone);
+}
+
+:global([data-theme="dark"]) .cover {
+  --tone-0: #3A2E20;
+  --tone-1: #33301F;
+  --tone-2: #3B2A22;
+  --tone-3: #2F3326;
+  --tone-4: #3A3024;
+}
+
+.t0 { --tone: var(--tone-0); }
+.t1 { --tone: var(--tone-1); }
+.t2 { --tone: var(--tone-2); }
+.t3 { --tone: var(--tone-3); }
+.t4 { --tone: var(--tone-4); }
+
+.img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: calc(var(--radius-md) - 1px);
+}
+
+/* 이미지 위에서도 읽히도록 종이색 칩을 깐다 */
+.no {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 3px 6px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--paper-hi) 88%, transparent);
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.1em;
+  line-height: 1;
+  color: var(--text-dim);
+}
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px;
+}
+
+.emptyNo {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+
+.emptyName {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.3;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--text);
+}
+
+.emptyRule {
+  height: 1px;
+  border-top: 1px dashed var(--border-strong);
+}
+
+/* 상세 모바일(포스터 96px)에서는 이름이 바로 옆 제목과 겹치고 한두 글자씩 끊기므로 NO.만 남긴다 */
+@media (max-width: 640px) {
+  .nameWideOnly {
+    display: none;
+  }
+}

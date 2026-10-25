@@ -1,0 +1,403 @@
+/* /games 플레이한 게임. 색은 전부 globals.css 토큰. 시안: Main(데스크톱) · MobileDark(≤640px) */
+.page {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: var(--space-8) var(--gutter) 96px;
+  color: var(--text);
+}
+
+/* ─── 헤더 ─── */
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-6);
+  border-bottom: 1px dashed var(--border-strong);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.title {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1.1;
+}
+
+.lead {
+  font-size: 17px;
+  line-height: var(--lh-body);
+  color: var(--text-dim);
+  word-break: keep-all;
+}
+
+.stats {
+  display: flex;
+}
+
+.stat {
+  padding: 4px var(--space-5);
+  border-left: 2px solid var(--brass);
+}
+
+.stat dt {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.stat dd {
+  margin-top: 4px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.statClear {
+  color: var(--stamp);
+}
+
+/* ─── 검색·필터 ─── */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 24px;
+  padding: 28px 0 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldSearch {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 16px;
+  background: var(--paper-hi);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-dim);
+}
+
+.search:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--fs-base);
+  color: var(--text);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--text-dim);
+  opacity: 1;
+}
+
+.segment {
+  display: flex;
+  background: var(--paper-hi);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.segBtn {
+  height: 46px;
+  padding: 0 16px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+.segBtn:last-child {
+  border-right: 0;
+}
+
+.segBtn:hover {
+  background: var(--accent-bg);
+}
+
+.segBtn[aria-pressed='true'] {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  font-weight: 600;
+}
+
+.select {
+  height: 48px;
+  padding: 0 12px;
+  background: var(--paper-hi);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.selectYear { min-width: 132px; }
+.selectSort { min-width: 168px; }
+
+.segBtn:focus-visible,
+.select:focus-visible,
+.linkBtn:focus-visible,
+.solidBtn:focus-visible,
+.ghostBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* 페이지 이동·상세 닫힘 뒤 포커스가 오는 자리(tabIndex=-1). 마우스로 왔을 때만 테두리를 숨긴다 */
+.statusRow:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.status {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.linkBtn {
+  min-height: 36px;
+  padding: 0 12px;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ─── 카드 그리드 ─── */
+.grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(208px, 1fr));
+  gap: 40px 24px;
+}
+
+/* ─── 빈 결과 ─── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 72px var(--space-5);
+  background: var(--paper-hi);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.emptyTitle {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.emptyDesc {
+  font-size: 15px;
+  color: var(--text-dim);
+}
+
+.emptyActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.solidBtn,
+.ghostBtn {
+  height: var(--tap);
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+.solidBtn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border: 0;
+  font-weight: 600;
+}
+
+.solidBtn:hover {
+  background: var(--btn-primary-bg-hover);
+}
+
+.ghostBtn {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  font-weight: 500;
+}
+
+.ghostBtn:hover {
+  background: var(--accent-bg);
+}
+
+.footnote {
+  margin-top: var(--space-8);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--text-dim);
+}
+
+/* ─── 모바일 ─── */
+@media (max-width: 640px) {
+  .page {
+    padding-top: 36px;
+    padding-bottom: var(--space-8);
+  }
+
+  .header {
+    display: block;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .headerText {
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 40px;
+    line-height: 1.15;
+  }
+
+  .lead {
+    font-size: 15px;
+  }
+
+  .stats {
+    margin-top: var(--space-5);
+  }
+
+  .stat {
+    padding: 2px 20px 2px 14px;
+  }
+
+  .stat dd {
+    font-size: 26px;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 28px;
+    padding: var(--space-5) 0 0;
+    border-top: 1px dashed var(--border-strong);
+  }
+
+  .fieldSearch {
+    flex: none;
+  }
+
+  .labelHideMobile {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .search {
+    padding: 0 14px;
+  }
+
+  .segment {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .segBtn {
+    height: var(--tap);
+    padding: 0;
+    font-size: var(--fs-sm);
+  }
+
+  .selects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .select {
+    height: var(--tap);
+    min-width: 0;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .statusRow {
+    margin: 12px 0 24px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 14px;
+  }
+
+  .footnote {
+    margin-top: 40px;
+  }
+}
+
+/* 데스크톱에서 selects 래퍼는 레이아웃에 참여하지 않는다 */
+@media (min-width: 641px) {
+  .selects {
+    display: contents;
+  }
+}

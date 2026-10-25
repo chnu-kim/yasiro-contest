@@ -47,3 +47,6 @@ screenshots/
 # Cloudflare 로컬 런타임·빌드 산출물
 .wrangler/
 .open-next/
+
+# 로컬 Worker 비밀값 (1Password Environment chzzk-local-dev 마운트)
+.dev.vars
