@@ -1,4 +1,4 @@
-import { compareCanonical, compareName } from "./schema.ts";
+import { compareCanonical, compareName, ID_PATTERN } from "./schema.ts";
 import type {
   IndexedGame,
   Game,
@@ -162,6 +162,19 @@ export function serializeQueryState(state: GamesQueryState): string {
   if (state.year !== DEFAULT_QUERY_STATE.year) params.set("year", state.year);
   if (state.sort !== DEFAULT_QUERY_STATE.sort) params.set("sort", state.sort);
   if (state.page !== DEFAULT_QUERY_STATE.page) params.set("page", String(state.page));
+  return params.toString();
+}
+
+/** 상세로 열린 게임 ID(`game` 파라미터). 형식이 틀리면 null */
+export function parseDetailId(input: QueryInput): string | null {
+  const id = pick(input, "game");
+  return id !== undefined && ID_PATTERN.test(id) ? id : null;
+}
+
+/** 목록 상태 + 상세 게임 ID의 쿼리 문자열. id가 null이면 목록 상태만 */
+export function detailQuery(state: GamesQueryState, id: string | null): string {
+  const params = new URLSearchParams(serializeQueryState(state));
+  if (id !== null) params.set("game", id);
   return params.toString();
 }
 

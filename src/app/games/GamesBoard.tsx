@@ -8,8 +8,10 @@ import {
   applyFilterChange,
   availableYears,
   countStats,
+  detailQuery,
   indexGames,
   normalizeQ,
+  parseDetailId,
   parseQueryState,
   parseSortKey,
   parseYearFilter,
@@ -38,6 +40,9 @@ import styles from './page.module.css';
 // 목록 상태(q, status, year, sort, page)의 정본은 URL이다. useSearchParams로 읽고
 // history.pushState/replaceState로 쓴다(Next가 둘을 라우터와 동기화한다).
 // 검색 입력은 타이핑마다 replaceState(히스토리 오염 방지), 필터·정렬·페이지는 pushState.
+// 상세를 열며 쌓은 history 항목 표식. Next는 pushState data의 사용자 키를 보존한다.
+const DETAIL_ENTRY = 'yasiroGameDetail';
+
 export default function GamesBoard({ games }: { games: Game[] }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -55,13 +60,13 @@ export default function GamesBoard({ games }: { games: Game[] }) {
     if (normalizeQ(typed) !== state.q) setTyped(state.q);
   }
 
-  // 상세는 연 시점의 URL에 묶인다. 뒤로가기·앞으로가기로 URL이 바뀌면 닫는다(렌더 중 동기화).
-  const qs = searchParams.toString();
-  const [open, setOpen] = useState<{ id: string; qs: string } | null>(null);
-  if (open !== null && open.qs !== qs) setOpen(null);
+  // 상세도 URL(`game` 파라미터)이 정본이다. 열 때 pushState로 기록을 하나 쌓아서
+  // 뒤로가기(모바일 제스처 포함)가 페이지를 떠나지 않고 시트만 닫게 한다.
+  const openId = parseDetailId(searchParams);
+  const openGame: IndexedGame | undefined = openId === null ? undefined : indexed.find((g) => g.id === openId);
+  const open = openGame === undefined ? null : openGame.id;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
-  const openGame: IndexedGame | undefined = open === null ? undefined : indexed.find((g) => g.id === open.id);
 
   // 닫힌 뒤(닫기 버튼·Esc·배경 클릭·URL 변경 모두) 포커스를 연 카드로 돌린다.
   // 카드가 목록에서 사라졌으면 결과 요약 줄로 보낸다.
@@ -94,12 +99,21 @@ export default function GamesBoard({ games }: { games: Game[] }) {
     topRef.current?.focus({ preventScroll: true });
   };
 
-  const onOpen = (game: IndexedGame, trigger: HTMLButtonElement) => {
-    triggerRef.current = trigger;
-    setOpen({ id: game.id, qs });
+  const detailUrl = (id: string | null) => {
+    const qs = detailQuery(state, id);
+    return qs ? `${pathname}?${qs}` : pathname;
   };
 
-  const onClose = () => setOpen(null);
+  const onOpen = (game: IndexedGame, trigger: HTMLButtonElement) => {
+    triggerRef.current = trigger;
+    window.history.pushState({ [DETAIL_ENTRY]: true }, '', detailUrl(game.id));
+  };
+
+  const onClose = () => {
+    // 이 페이지에서 쌓은 기록(앞으로가기로 돌아온 경우 포함)이면 back, 링크로 바로 들어왔으면 replace.
+    if (window.history.state?.[DETAIL_ENTRY] === true) window.history.back();
+    else window.history.replaceState(null, '', detailUrl(null));
+  };
 
   const yearOptions = yearFilterOptions(years, state.year);
 

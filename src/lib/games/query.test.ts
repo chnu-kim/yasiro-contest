@@ -3,6 +3,7 @@ import {
   applyFilterChange,
   availableYears,
   countStats,
+  detailQuery,
   DEFAULT_QUERY_STATE,
   filterGames,
   formatDate,
@@ -11,6 +12,7 @@ import {
   sortGames,
   paginate,
   pageWindow,
+  parseDetailId,
   parseQueryState,
   serializeQueryState,
   matchesQuery,
@@ -588,5 +590,56 @@ describe("yearFilterOptions", () => {
     const years = { years: ["2026"] as `${number}`[], hasUndated: false };
     yearFilterOptions(years, "2025");
     expect(years).toEqual({ years: ["2026"], hasUndated: false });
+  });
+});
+
+describe("parseDetailId", () => {
+  it("유효한 game 파라미터를 돌려준다", () => {
+    expect(parseDetailId(new URLSearchParams("game=silent-hill-f"))).toBe("silent-hill-f");
+    expect(parseDetailId({ game: "스텔라-블레이드" })).toBe("스텔라-블레이드");
+  });
+  it("배열이면 첫 값을 쓴다", () => {
+    expect(parseDetailId({ game: ["cuphead", "x"] })).toBe("cuphead");
+  });
+  it("없거나 빈 값이면 null", () => {
+    expect(parseDetailId(new URLSearchParams(""))).toBeNull();
+    expect(parseDetailId({ game: "" })).toBeNull();
+    expect(parseDetailId({ game: undefined })).toBeNull();
+    expect(parseDetailId({ game: [] })).toBeNull();
+  });
+  it("ID 형식이 아니면 null (대문자·공백·앞뒤 하이픈·연속 하이픈·특수문자)", () => {
+    for (const bad of ["Cuphead", "cup head", "-cuphead", "cuphead-", "cup--head", "cup/head", "<script>"]) {
+      expect(parseDetailId({ game: bad })).toBeNull();
+    }
+  });
+});
+
+describe("detailQuery", () => {
+  it("목록 상태를 유지하고 game을 붙인다", () => {
+    const state = { ...DEFAULT_QUERY_STATE, q: "힐", status: "clear" as const, page: 2 };
+    const qs = new URLSearchParams(detailQuery(state, "silent-hill-f"));
+    expect(qs.get("game")).toBe("silent-hill-f");
+    expect(parseQueryState(qs)).toEqual(state);
+  });
+  it("기본 상태면 game만 남는다", () => {
+    expect(detailQuery(DEFAULT_QUERY_STATE, "cuphead")).toBe("game=cuphead");
+  });
+  it("null이면 game 없이 목록 상태만 직렬화한다", () => {
+    const state = { ...DEFAULT_QUERY_STATE, sort: "name" as const };
+    expect(detailQuery(state, null)).toBe(serializeQueryState(state));
+    expect(detailQuery(DEFAULT_QUERY_STATE, null)).toBe("");
+  });
+  it("한글 ID는 인코딩되고 왕복된다", () => {
+    const qs = detailQuery(DEFAULT_QUERY_STATE, "스텔라-블레이드");
+    expect(qs).not.toContain("스");
+    expect(parseDetailId(new URLSearchParams(qs))).toBe("스텔라-블레이드");
+  });
+  it("입력 상태를 변경하지 않는다", () => {
+    const state = Object.freeze({ ...DEFAULT_QUERY_STATE, q: "a" });
+    detailQuery(state, "cuphead");
+    expect(state.q).toBe("a");
+  });
+  it("serializeQueryState는 game을 넣지 않는다(필터·페이지 변경 시 상세가 닫힌다)", () => {
+    expect(serializeQueryState(parseQueryState(new URLSearchParams("game=cuphead&page=2")))).toBe("page=2");
   });
 });
