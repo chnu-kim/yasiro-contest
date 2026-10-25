@@ -25,6 +25,7 @@ const CHZZK_LIVE = 'https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f
 // navLabel은 Nav·푸터와 같은 이름
 const ENTRIES: { href: string; kicker: string; title: string; navLabel: string; desc: string }[] = [
   { href: '/about', kicker: 'ABOUT', title: '야시로 소개', navLabel: '소개', desc: '프로필 · 채널' },
+  { href: '/games', kicker: 'GAMES', title: '플레이한 게임', navLabel: '게임', desc: '탐험한 게임 · 다시보기' },
   { href: '/to-yasiro', kicker: 'TO YASIRO', title: '야시로에게', navLabel: '야시로에게', desc: '팬들이 남긴 한마디' },
 ];
 

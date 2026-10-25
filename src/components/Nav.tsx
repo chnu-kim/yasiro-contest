@@ -19,6 +19,7 @@ interface NavProps {
 // 새 출품작을 추가하면 여기 한 줄 — 데스크톱 링크와 모바일 메뉴가 같은 목록을 쓴다
 const LINKS = [
   { href: '/about', label: '소개' },
+  { href: '/games', label: '게임' },
   { href: '/to-yasiro', label: '야시로에게' },
 ] as const;
 

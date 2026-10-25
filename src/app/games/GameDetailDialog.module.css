@@ -1,0 +1,317 @@
+/* 게임 상세 모달. 데스크톱은 가운데 카드, ≤640px는 아래에서 올라오는 바텀시트. */
+.dialog {
+  width: min(760px, calc(100% - 48px));
+  max-width: none;
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  color: var(--text);
+  background: var(--paper-hi);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 24px 48px rgba(40, 25, 10, 0.35);
+}
+
+:global([data-theme="dark"]) .dialog {
+  background: var(--surface);
+}
+
+.dialog[open] {
+  animation: fadeUp var(--dur-base) var(--ease-out) both;
+}
+
+.dialog::backdrop {
+  background: rgba(23, 18, 13, 0.55);
+}
+
+.sheet {
+  position: relative;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-areas:
+    'poster head'
+    'poster facts'
+    'poster vods';
+  grid-template-rows: auto auto 1fr;
+  gap: 20px 32px;
+  padding: var(--space-6);
+}
+
+.poster {
+  grid-area: poster;
+  align-self: start;
+}
+
+.head {
+  grid-area: head;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 56px; /* 닫기 버튼 자리 */
+}
+
+.title {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.25;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.orig {
+  min-width: 0;
+  font-size: 15px;
+  color: var(--text-dim);
+  overflow-wrap: anywhere; /* 공백 없는 긴 원제가 대화상자를 가로로 밀지 않게 */
+}
+
+.close {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  z-index: 1;
+  width: var(--tap);
+  height: var(--tap);
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+.close:hover {
+  background: var(--accent-bg);
+}
+
+.close:focus-visible,
+.vod:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.facts {
+  grid-area: facts;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px dashed var(--border-strong);
+  border-bottom: 1px dashed var(--border-strong);
+}
+
+.fact {
+  padding: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fact dt {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.factRight {
+  padding-left: 20px;
+  border-left: 1px dashed var(--border-strong);
+}
+
+.factDate {
+  margin: 0;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.factStatus {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.isClear {
+  color: var(--stamp);
+}
+
+.vods {
+  grid-area: vods;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vodsTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.num {
+  font-family: 'Fredoka', sans-serif;
+}
+
+.vodList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vod {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+
+:global([data-theme="dark"]) .vod {
+  background: var(--paper-hi);
+}
+
+.vod:hover {
+  border-color: var(--brass);
+  background: var(--accent-bg);
+}
+
+.vodIcon {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.vodText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vodName {
+  font-size: 15px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.vodMeta {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.vodArrow {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.noVods {
+  font-size: 15px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 640px) {
+  .dialog {
+    width: 100%;
+    max-height: 86dvh;
+    margin: auto 0 0;
+    border-width: 1px 0 0;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .sheet {
+    grid-template-columns: 96px minmax(0, 1fr);
+    grid-template-areas:
+      'poster head'
+      'facts facts'
+      'vods vods';
+    grid-template-rows: auto;
+    gap: 16px;
+    padding: 64px 20px 32px;
+  }
+
+  /* 상단 바: 손잡이 + 닫기 */
+  .sheet::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 999px;
+    background: var(--border-strong);
+  }
+
+  .sheet::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 52px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .close {
+    top: 4px;
+    right: 8px;
+    border: 0;
+  }
+
+  .head {
+    padding-right: 0;
+  }
+
+  .title {
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .poster svg {
+    width: 60px !important;
+    height: 60px !important;
+    right: -14px !important;
+    bottom: -14px !important;
+  }
+
+  .facts {
+    margin-top: 8px;
+  }
+
+  .fact {
+    padding: 12px 0;
+  }
+
+  .factRight {
+    padding-left: 16px;
+  }
+
+  .factDate {
+    font-size: 17px;
+  }
+
+  .factStatus {
+    font-size: 16px;
+  }
+
+  .vod {
+    min-height: 60px;
+  }
+}

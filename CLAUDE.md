@@ -16,6 +16,8 @@
 pnpm dev            # UI 개발. D1 바인딩 없음 → 세션 null, API 실패 (D1이 필요하면 pnpm preview)
 pnpm test           # vitest run
 pnpm lint
+pnpm test:coverage  # src/lib/games/**, chzzk-category.ts는 100% threshold. 미달하면 exit 1
+pnpm games:add "검색어"  # 게임 추가 CLI (아래 '게임 목록' 참고)
 pnpm preview        # Workers 런타임으로 로컬 미리보기
 pnpm shots [url] [경로...]  # 페이지 × 라이트/다크 × 1280/390 전체 스크린샷 → screenshots/index.html
 pnpm run deploy     # 수동 배포. `pnpm deploy`는 pnpm 예약어라 동작 안 함
@@ -31,10 +33,13 @@ src/app/
   page.tsx              허브(/) — 히어로, 출품작 바로가기 카드, 최근 한마디
   about/                소개 — 프로필, 주요 콘텐츠, 채널 링크
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
+  games/                플레이한 게임 출품작 (page=서버·검증, GamesBoard·GameCard·GameDetailDialog·Pagination·Poster)
   auth/{login,callback,logout}/route.ts   치지직 OAuth
   api/guestbook/route.ts
-src/components/         Nav, PostIt, SkipLink (공유)
-src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook)
+src/components/         Nav, PostIt, SkipLink, ClearStamp (공유)
+src/data/games.json     게임 목록 정본 (사람이 큐레이션, CLI로 추가)
+scripts/games-add.ts    pnpm games:add 진입점 (얇게. 로직은 src/lib/games, chzzk-category)
+src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook, chzzk-category, games/{schema,query,labels,cli-args})
 migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
 ```
@@ -61,6 +66,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 고정 버튼은 페이지당 1개. LIVE는 Nav 안의 pill이고 모바일 FAB가 없다.
 - 캐릭터·꿀붕이 PNG는 투명 배경이라 블렌드 없이 올린다. 캐릭터 패널은 `--tile`(라이트 `#EAE0D0`, 다크 `--surface`).
 - 강조 배지·구분선의 작은 사각 도트는 `borderRadius: 1`이 의도된 값이다.
+- 원형 도장은 사이트 전체 1개(`RoundStamp`, /about)가 원칙이다. 예외: 게임 정복 도장(`ClearStamp`, /games 카드·상세의 `clear` 게임). 정복한 게임마다 찍히는 데이터 표시라 개수 제한을 두지 않는다.
 
 ## 테마
 
@@ -102,3 +108,13 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 기능 추가·로직 변경: 브랜치 → worktree → TDD → PR → 머지.
 - 문구·URL처럼 한 파일 안에서 끝나는 단순 수정: main에 바로 커밋·푸시.
 - PR 생성과 push 전에 `gh auth switch --user chnu-kim`을 실행한다.
+
+## 게임 목록 (/games)
+
+- `src/data/games.json`이 정본이다. D1·런타임 외부 호출 없음. `page.tsx`가 `parseGames`로 검증하므로 형식이 깨지면 빌드가 실패한다. 파일을 손으로 고쳐도 되지만 가능하면 CLI를 쓴다(정렬·검증이 같이 된다).
+- 추가: `pnpm games:add "검색어"`로 치지직 카테고리 후보(번호와 categoryId)를 보고, `--category-id <ID>`로 확정한다. 검색 결과 순서는 실행마다 바뀔 수 있어서 `--pick N` 단독은 `--dry-run` 미리보기에서만 받는다(`--pick`과 `--category-id`를 같이 주면 일치를 확인한다). 첫 플레이 날짜·정복 여부·원제·다시보기는 옵션 인자로 사람이 넣는다. 같은 categoryId를 다시 실행하면 갱신된다. 파일은 임시 파일에 쓴 뒤 rename한다. 옵션은 `src/lib/games/cli-args.ts` 참고.
+- CLI는 `node --experimental-strip-types`로 `src/lib`의 `.ts`를 직접 import한다(그래서 lib 런타임 import는 `./x.ts` 상대경로, erasable 구문만). package.json에 `"type"`이 없어 Node가 `.ts`를 CommonJS로 읽다 실패한 뒤 ESM으로 다시 파싱하며 `MODULE_TYPELESS_PACKAGE_JSON` 경고를 매 실행 출력한다. 동작에는 영향이 없어 `games:add` 스크립트에서 `--disable-warning=MODULE_TYPELESS_PACKAGE_JSON`으로 이 경고 하나만 끈다. `"type": "module"`을 넣으면 Next·ESLint 설정 파일 해석이 바뀌므로 넣지 않는다.
+- 키는 `.dev.vars`(`CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`)에서 읽는다. 1Password 환경 `chzzk-local-dev`를 마운트한 파일이라 내용을 출력·커밋하지 않는다.
+- 규칙: 다시보기는 유튜브 링크만(치지직 다시보기는 한 달 뒤 삭제되므로 검증이 거부). `firstPlayed`는 `YYYY-MM-DD` 또는 `null`. 정복 여부는 `clear | fail | unknown`(unknown은 카드에 표시 없음, 상세에서 "기록 없음"). 게임이 아닌 항목(저챗, 룰렛, 갈틱폰 등)은 넣지 않는다.
+- 목록 상태(q, status, year, sort, page)의 정본은 URL이다. `GamesBoard`가 `useSearchParams`로 읽고 `history.pushState/replaceState`로 쓴다. 로직은 `src/lib/games`(query·labels)에만 두고 컴포넌트에 복제하지 않는다.
+- 포스터는 `<img>`(loading lazy, 실패 시 "포스터 없음" 카드). `next/image`는 쓰지 않는다. `posterUrl`은 `isPosterUrl`(https, `pstatic.net` 또는 하위 도메인, 자격 증명 없음)만 통과한다. CLI도 같은 규칙이라 다른 호스트의 포스터는 스냅샷하지 않는다(null).
