@@ -1,0 +1,86 @@
+/* 화면 아래 알림(6초). 시안: States */
+.wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  z-index: 1000; /* 모달(top layer) 밖에서는 이 값이면 충분. 열린 dialog 위에서는 popover로 올린다 */
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--gutter);
+  pointer-events: none;
+}
+
+.live {
+  width: min(520px, 100%);
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #2A1F14;
+  color: #F7F0DE;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  animation: fadeUp var(--dur-base) var(--ease-out) both;
+}
+
+:global([data-theme="dark"]) .toast {
+  background: #F0E4C8;
+  color: #17120D;
+}
+
+.withAction {
+  padding: 8px 8px 8px 16px;
+}
+
+.icon {
+  flex: none;
+  color: #F0B84A;
+}
+
+:global([data-theme="dark"]) .icon {
+  color: #7A4E08;
+}
+
+.msg {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.action {
+  flex: none;
+  min-height: var(--tap);
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid rgba(247, 240, 222, 0.4);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #F0B84A;
+  cursor: pointer;
+}
+
+:global([data-theme="dark"]) .action {
+  border-color: rgba(23, 18, 13, 0.4);
+  color: #7A4E08;
+}
+
+.action:focus-visible {
+  outline: 2px solid #F0B84A;
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    bottom: 16px;
+    padding: 0 16px;
+  }
+}

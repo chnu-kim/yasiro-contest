@@ -503,3 +503,71 @@ describe("isPosterUrl", () => {
     }
   });
 });
+
+// ---------- D1 전환: validateCandidate / isChzzkUrl ----------
+import { CHZZK_VOD_MESSAGE, isChzzkUrl, validateCandidate } from "./schema.ts";
+
+describe("validateCandidate", () => {
+  const base = (id: string, extra: Record<string, unknown> = {}) => ({ id, name: `이름 ${id}`, firstPlayed: null, status: "unknown", vods: [], ...extra });
+  const others = [base("a", { categoryId: "CatA" }), base("b")] as never[];
+
+  it("returns [] for a valid candidate", () => {
+    expect(validateCandidate(others, base("c"))).toEqual([]);
+  });
+  it("returns [] with no others", () => {
+    expect(validateCandidate([], base("c"))).toEqual([]);
+  });
+  it("strips the index prefix from field paths", () => {
+    expect(validateCandidate(others, base("c", { name: " " }))).toEqual([{ path: "name", message: expect.any(String) }]);
+  });
+  it("reports nested vod paths without prefix", () => {
+    const issues = validateCandidate(others, base("c", { vods: [{ title: "t", url: "https://chzzk.naver.com/video/1", date: "2026-01-01" }] }));
+    expect(issues.map((i) => i.path)).toEqual(["vods[0].url"]);
+  });
+  it("reports duplicate categoryId on the candidate (others first)", () => {
+    expect(validateCandidate(others, base("c", { categoryId: "CatA" }))).toEqual([{ path: "categoryId", message: expect.stringContaining("중복") }]);
+  });
+  it("reports duplicate id on the candidate", () => {
+    expect(validateCandidate(others, base("a")).map((i) => i.path)).toEqual(["id"]);
+  });
+  it("ignores issues that belong to other games", () => {
+    const broken = [base("x", { name: "" })] as never[];
+    expect(validateCandidate(broken, base("c"))).toEqual([]);
+  });
+  it("does not confuse [1] with [10]", () => {
+    const many = Array.from({ length: 10 }, (_, i) => base(`g${i}`)) as never[];
+    const bad = [base("bad", { name: "" }), ...many.slice(1)] as never[];
+    expect(validateCandidate(bad.slice(0, 1), base("ok"))).toEqual([]);
+  });
+  it("maps a non-object candidate to path ''", () => {
+    expect(validateCandidate(others, 5)).toEqual([{ path: "", message: "객체여야 합니다" }]);
+  });
+  it("keeps vod date earlier than first play", () => {
+    const c = base("c", { firstPlayed: "2026-02-01", vods: [{ title: "t", url: "https://youtu.be/abcdefghijk", date: "2026-01-01" }] });
+    expect(validateCandidate(others, c)).toEqual([{ path: "vods[0].date", message: expect.stringContaining("2026-02-01") }]);
+  });
+});
+
+describe("isChzzkUrl", () => {
+  it.each([
+    ["https://chzzk.naver.com/video/123", true],
+    ["  https://chzzk.naver.com/live/abc  ", true],
+    ["https://m.chzzk.naver.com/video/1", true],
+    ["chzzk.naver.com/video/1", true],
+    ["http://chzzk.naver.com/", true],
+    ["https://youtu.be/abcdefghijk", false],
+    ["https://notchzzk.naver.com/video/1", false],
+    ["https://chzzk.naver.com.evil.example/", false],
+    ["https://naver.com/chzzk.naver.com", false],
+    ["", false],
+    ["http://[", false],
+  ])("%s → %s", (url, want) => {
+    expect(isChzzkUrl(url)).toBe(want);
+  });
+  it("non-string → false", () => {
+    expect(isChzzkUrl(undefined)).toBe(false);
+  });
+  it("message is the fixed copy", () => {
+    expect(CHZZK_VOD_MESSAGE).toBe("치지직 다시보기는 한 달 뒤 사라져요. 유튜브 링크만 넣을 수 있어요.");
+  });
+});

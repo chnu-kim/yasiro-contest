@@ -232,10 +232,19 @@ export function indexGames(games: readonly Game[]): IndexedGame[] {
   });
 }
 
-export function selectPage(
-  indexed: readonly IndexedGame[],
+export function selectPage<T extends IndexedGame>(
+  indexed: readonly T[],
   state: GamesQueryState,
   pageSize?: number,
-): Page<IndexedGame> {
+): Page<T> {
   return paginate(sortGames(filterGames(indexed, state), state.sort), state.page, pageSize);
+}
+
+/** 숨기지 않은 게임만 indexGames 규칙으로 번호를 매기고, 숨긴 게임은 ordinal 0·no "—"로 붙인다. 입력 순서는 상관없음 */
+export function indexWithHidden<T extends Game & { hidden: boolean }>(games: readonly T[]): Array<T & IndexedGame> {
+  const numbered = new Map<string, IndexedGame>(indexGames(games.filter((g) => !g.hidden)).map((g) => [g.id, g]));
+  return games.map((g) => {
+    const n = numbered.get(g.id);
+    return { ...g, ordinal: n?.ordinal ?? 0, no: n?.no ?? "—" };
+  });
 }

@@ -8,6 +8,7 @@ import {
   filterGames,
   formatDate,
   indexGames,
+  indexWithHidden,
   selectPage,
   sortGames,
   paginate,
@@ -663,5 +664,30 @@ describe("endless 상태 필터", () => {
       { id: "a", name: "a", firstPlayed: null, status: "fail", vods: [] },
     ]);
     expect(filterGames(gs, st).map((g) => g.id)).toEqual(["lol"]);
+  });
+});
+
+describe("indexWithHidden", () => {
+  const withHidden = (hiddenIds: string[]) => fixture.map((x) => ({ ...x, hidden: hiddenIds.includes(x.id) }));
+  it("숨김이 없으면 indexGames와 같은 번호", () => {
+    const all = indexWithHidden(withHidden([]));
+    const expected = new Map(indexGames(fixture).map((x) => [x.id, x]));
+    for (const x of all) {
+      expect(x.ordinal).toBe(expected.get(x.id)?.ordinal);
+      expect(x.no).toBe(expected.get(x.id)?.no);
+    }
+  });
+  it("숨긴 게임은 0과 —", () => {
+    const sb = indexWithHidden(withHidden(["sb"])).find((x) => x.id === "sb");
+    expect(sb).toMatchObject({ ordinal: 0, no: "—", hidden: true });
+  });
+  it("보이는 게임 번호는 숨김 때문에 밀리지 않는다", () => {
+    const hiddenOne = indexWithHidden(withHidden(["po"]));
+    const visibleOnly = new Map(indexGames(fixture.filter((x) => x.id !== "po")).map((x) => [x.id, x.ordinal]));
+    for (const x of hiddenOne.filter((y) => !y.hidden)) expect(x.ordinal).toBe(visibleOnly.get(x.id));
+    expect(Math.max(...hiddenOne.map((x) => x.ordinal))).toBe(fixture.length - 1);
+  });
+  it("입력 순서를 유지한다", () => {
+    expect(indexWithHidden(withHidden(["sb"])).map((x) => x.id)).toEqual(fixture.map((x) => x.id));
   });
 });

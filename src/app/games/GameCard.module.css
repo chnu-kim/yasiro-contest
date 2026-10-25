@@ -85,6 +85,90 @@
   clip-path: inset(50%);
 }
 
+/* ─── 관리자 ─── */
+.editChip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2; /* .cardOpen::after(카드 전체 덮개) 위 */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--paper-hi);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+
+.card:hover .editChip,
+.card:focus-within .editChip,
+.editChip:focus-visible {
+  opacity: 1;
+}
+
+.editChip:focus-visible,
+.unhideBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* 터치 기기에는 호버가 없다. 상세 모달 아래쪽 관리자 영역에서 수정한다 */
+@media (hover: none) {
+  .editChip {
+    display: none;
+  }
+}
+
+.isHidden .cardCover {
+  opacity: 0.55;
+}
+
+.isHidden .cardCover > div {
+  border-style: dashed;
+}
+
+.isHidden .cardTitle {
+  color: var(--text-dim);
+}
+
+.hiddenChip {
+  padding: 2px 8px;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.unhideBtn {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--tap);
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.unhideBtn:hover {
+  background: var(--accent-bg);
+}
+
 @media (max-width: 640px) {
   .card {
     gap: 10px;
