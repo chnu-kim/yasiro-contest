@@ -2,11 +2,13 @@
 
 import { useCallback, useState, type CSSProperties } from 'react';
 import ClearStamp from '@/components/ClearStamp';
+import PawMark from '@/components/PawMark';
 import type { IndexedGame } from '@/lib/games/types';
 import styles from './Poster.module.css';
 
 // 치지직 posterImageUrl 스냅샷. next/image는 쓰지 않는다(next.config가 unoptimized라 이점이 없고
-// 원격 호스트 등록만 늘어난다). 로드 실패하면 "포스터 없음" 카드로 대체한다.
+// 원격 호스트 등록만 늘어난다). 포스터가 없거나 로드에 실패하면 "표본 라벨" 카드로 대체한다:
+// 꿀붕이 발자국 워터마크 + 아래쪽 종이 라벨(번호·이름·포스터 미확보).
 export default function Poster({
   game,
   stampSize,
@@ -60,9 +62,15 @@ export default function Poster({
         </>
       ) : (
         <div className={styles.empty}>
-          <span className={styles.emptyNo}>NO.{game.no}</span>
-          <span className={nameWideOnly ? `${styles.emptyName} ${styles.nameWideOnly}` : styles.emptyName}>{game.name}</span>
-          <span className={styles.emptyRule} aria-hidden="true" />
+          <PawMark size={132} className={styles.paw} />
+          <span className={nameWideOnly ? `${styles.label} ${styles.nameWideOnly}` : styles.label}>
+            <span className={styles.labelNo}>
+              <span className={styles.labelDot} aria-hidden="true" />
+              <span className={styles.labelKind}>SPECIMEN </span>NO.{game.no}
+            </span>
+            <span className={styles.labelName}>{game.name}</span>
+            <span className={styles.labelFoot}>포스터 미확보</span>
+          </span>
         </div>
       )}
       {game.status === 'clear' && <ClearStamp size={stampSize} style={{ position: 'absolute', ...stampStyle }} />}

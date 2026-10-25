@@ -117,4 +117,4 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 키는 `.dev.vars`(`CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`)에서 읽는다. 1Password 환경 `chzzk-local-dev`를 마운트한 파일이라 내용을 출력·커밋하지 않는다.
 - 규칙: 다시보기는 유튜브 링크만(치지직 다시보기는 한 달 뒤 삭제되므로 검증이 거부). `firstPlayed`는 `YYYY-MM-DD` 또는 `null`. 정복 여부는 `clear | fail | endless | unknown`. endless("끝없는 탐험")는 리그 오브 레전드처럼 정복 개념이 없는 온라인 게임이다. unknown은 카드에 표시 없음, 상세에서 "기록 없음". 게임이 아닌 항목(저챗, 룰렛 자체, 갈틱폰 등)은 넣지 않는다. 단 종겜룰렛(데이)에서 플레이한 게임은 그 게임으로 기록하고 영상도 다시보기에 넣는다.
 - 목록 상태(q, status, year, sort, page)의 정본은 URL이다. `GamesBoard`가 `useSearchParams`로 읽고 `history.pushState/replaceState`로 쓴다. 로직은 `src/lib/games`(query·labels)에만 두고 컴포넌트에 복제하지 않는다.
-- 포스터는 `<img>`(loading lazy, 실패 시 "포스터 없음" 카드). `next/image`는 쓰지 않는다. `posterUrl`은 `isPosterUrl`(https, `pstatic.net` 또는 하위 도메인, 자격 증명 없음)만 통과한다. CLI도 같은 규칙이라 다른 호스트의 포스터는 스냅샷하지 않는다(null).
+- 포스터는 `<img>`(loading lazy, 없거나 실패하면 "표본 라벨" 카드: 꿀붕이 발자국 워터마크 + SPECIMEN NO.·이름·"포스터 미확보" 라벨. 모바일은 번호만, 상세 모바일은 발자국만). `next/image`는 쓰지 않는다. `posterUrl`은 `isPosterUrl`(https, `pstatic.net` 또는 하위 도메인, 자격 증명 없음)만 통과한다. CLI도 같은 규칙이라 다른 호스트의 포스터는 스냅샷하지 않는다(null).
