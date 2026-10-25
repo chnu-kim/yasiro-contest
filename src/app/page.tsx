@@ -11,7 +11,7 @@ import RotatingPhrase from './_components/RotatingPhrase';
 import KkulCrop from './_components/KkulCrop';
 
 // 히어로 배지에서 돌아가며 보이는 문구
-const BADGE_PHRASES = ['고등어 통조림 애호가', '호기심 많은 탐험가', '테라포레 소속 벌꿀오소리', '종합게임 스트리머', '인정사정이 없어요'] as const;
+const BADGE_PHRASES = ['치지직 버츄얼 스트리머', '호기심 많은 탐험가', '테라포레 소속 벌꿀오소리', '종합게임 스트리머', '인정사정이 없어요'] as const;
 
 interface GuestbookRow {
   id: string;
