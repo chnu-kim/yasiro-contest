@@ -36,6 +36,22 @@ export function isYoutubeUrl(url: unknown): url is string {
   return typeof url === "string" && youtubeVideoId(url) !== null;
 }
 
+/** 치지직 다시보기를 넣으려 할 때의 안내. 수정 폼(patch.ts)과 API(youtube 프록시)가 같은 문구를 쓴다 */
+export const CHZZK_VOD_MESSAGE = "치지직 다시보기는 한 달 뒤 사라져요. 유튜브 링크만 넣을 수 있어요.";
+
+/** chzzk.naver.com 또는 그 하위 도메인 링크인가. 스킴이 없어도("chzzk.naver.com/video/1") 본다 */
+export function isChzzkUrl(raw: unknown): boolean {
+  if (typeof raw !== "string") return false;
+  const t = raw.trim();
+  let u: URL;
+  try {
+    u = new URL(/^[a-z][a-z\d+.-]*:/i.test(t) ? t : `https://${t}`);
+  } catch {
+    return false;
+  }
+  return u.hostname === "chzzk.naver.com" || u.hostname.endsWith(".chzzk.naver.com");
+}
+
 const GAME_KEYS = new Set(["id", "name", "originalTitle", "categoryId", "posterUrl", "firstPlayed", "status", "vods"]);
 const VOD_KEYS = new Set(["title", "url", "date"]);
 /** 정복 여부 값. 이 순서가 필터 탭 순서다 */
@@ -175,6 +191,19 @@ export function validateGames(input: unknown): ValidationResult {
     dup(seenCategories, typeof raw.categoryId === "string" ? raw.categoryId.trim() : undefined, "categoryId");
   });
   return issues.length ? { ok: false, issues } : { ok: true, games };
+}
+
+/** others(자기 자신 제외 전체 목록, 숨김 포함) + candidate를 validateGames로 검사해 candidate에 관한 이슈만 돌려준다.
+ *  candidate를 맨 끝에 둔다(id·categoryId 중복은 뒤에 나온 쪽에 보고된다). 경로의 "[n]" 접두를 떼서
+ *  "name", "vods[0].url" 꼴로 돌려주고, 객체가 아니면 경로 "". 다른 게임의 이슈는 버린다.
+ *  서버(repo.ts)와 클라이언트(patch.ts)가 같은 규칙으로 검증하기 위한 단일 입구. */
+export function validateCandidate(others: readonly Game[], candidate: unknown): ValidationIssue[] {
+  const r = validateGames([...others, candidate]);
+  if (r.ok) return [];
+  const prefix = `[${others.length}]`;
+  return r.issues
+    .filter((i) => i.path === prefix || i.path.startsWith(`${prefix}.`))
+    .map((i) => ({ path: i.path.slice(prefix.length + 1), message: i.message }));
 }
 
 export class GamesValidationError extends Error {
