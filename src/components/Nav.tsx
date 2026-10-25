@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Moon, Sun, Menu, X } from 'lucide-react';
-import PawMark from './PawMark';
+import KkulMark from './KkulMark';
 import styles from './Nav.module.css';
 
 interface NavUser {
@@ -71,7 +71,7 @@ export default function Nav({ initialUser }: NavProps) {
         aria-current={pathname === '/' ? 'page' : undefined}
         onClick={closeMenu}
       >
-        <PawMark className={styles.logoIcon} />
+        <KkulMark className={styles.logoIcon} />
         <span className={styles.logoText} aria-hidden="true">야시로</span>
       </Link>
 
