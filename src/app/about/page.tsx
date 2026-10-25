@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Button from '@/components/Button';
 import ChannelGlyph, { type ChannelKind } from '@/components/ChannelGlyph';
@@ -11,10 +12,11 @@ import TapeStrip from '@/components/TapeStrip';
 import { ArrowIcon, PenIcon } from '@/components/icons';
 import styles from './page.module.css';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: '/about',
   title: '야시로 소개',
-  description: '호기심 많은 탐험가, 벌꿀오소리 야시로의 프로필과 채널.',
-};
+  description: '치지직 버츄얼 스트리머 야시로의 프로필과 채널. 테라포레 소속, 호기심 많은 탐험가 벌꿀오소리.',
+});
 
 const KEY_FACTS: { label: string; value: string }[] = [
   { label: '종족', value: '벌꿀오소리' },

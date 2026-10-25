@@ -31,7 +31,8 @@ main에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 `pnpm test`
 
 ```
 src/app/
-  layout.tsx            세션 조회(D1) + Nav + 테마 초기화 스크립트. force-dynamic
+  layout.tsx            세션 조회(D1) + Nav + 테마 초기화 스크립트 + 기본 메타데이터(siteDefaults). force-dynamic
+  sitemap.ts, robots.ts 검색엔진용. 페이지 목록은 src/lib/seo.ts SITE_PAGES
   page.tsx              허브(/) — 히어로, 출품작 바로가기 카드, 최근 한마디
   about/                소개 — 프로필, 주요 콘텐츠, 채널 링크
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
@@ -47,11 +48,18 @@ migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
 ```
 
+## 검색·공유 (SEO)
+
+- 정본은 `src/lib/seo.ts`: 홈 제목·설명(야시로·치지직·버튜버·버츄얼·테라포레, '비공식' 명시), `pageMetadata`, `SITE_PAGES`(sitemap), 허브 JSON-LD(`siteJsonLd`: WebSite + 야시로 Person, 공식 채널 sameAs).
+- 공개 페이지는 `export const metadata = pageMetadata({ path, title, description })`로 쓴다. 하위 metadata는 openGraph·twitter를 통째로 덮어써서(얕은 병합) 제목만 두면 공유 미리보기가 레이아웃 값으로 남는다. 제목 뒤 " | 야시로 팬사이트"는 레이아웃 template이 붙인다.
+- 새 출품작은 `SITE_PAGES`에도 넣는다. 공유 이미지는 `public/og.png`(1200×630).
+- 네이버 서치어드바이저·구글 서치 콘솔 소유 확인 코드는 `siteDefaults`의 `verification`(구글)·`other['naver-site-verification']`에 넣는다.
+
 ## 출품작 규칙
 
 - 새 출품작은 `src/app/<name>/page.tsx` + `page.module.css`로 만든다. 허브(`/`)에는 바로가기 카드(`ENTRIES`) 한 장만 더하고, 내용 섹션은 넣지 않는다.
 - 공유 레이어는 `globals.css`의 토큰·keyframe과 `src/components/`뿐. `globals.css`에 유틸리티 클래스를 넣지 않는다.
-- 새 출품작을 추가하면 `Nav.tsx`의 데스크톱 링크와 모바일 메뉴, 허브의 `ENTRIES` 세 곳에 넣는다.
+- 새 출품작을 추가하면 `Nav.tsx`의 데스크톱 링크와 모바일 메뉴, 허브의 `ENTRIES`, `src/lib/seo.ts`의 `SITE_PAGES` 네 곳에 넣는다.
 - 디자인 변경은 `pnpm shots`로 찍은 스크린샷을 직접 보고 확인한 뒤 사용자에게 보여 준다. 축소된 브라우저 화면만 보고 판단하지 않는다.
 - 검증·계산 로직은 `src/lib/`에 순수 함수로 빼고 테스트를 붙인다. 컴포넌트와 Route Handler는 얇게 유지한다.
 

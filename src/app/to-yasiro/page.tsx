@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { cookies } from 'next/headers';
 
-export const metadata: Metadata = {
-  title: '야시로에게 - 팬의 한마디',
+export const metadata: Metadata = pageMetadata({
+  path: '/to-yasiro',
+  title: '야시로에게',
   description: '야시로 팬들이 남긴 한마디 방명록. 치지직 로그인 후 메모를 남겨보세요.',
-};
+});
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import GuestbookBoard from './GuestbookBoard';
 
