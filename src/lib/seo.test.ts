@@ -63,6 +63,10 @@ describe("siteDefaults", () => {
     expect(meta.openGraph).toMatchObject({ title: HOME_TITLE, images: [OG_IMAGE] });
     expect(meta.twitter).toMatchObject({ card: "summary_large_image", title: HOME_TITLE });
   });
+
+  it("네이버 서치어드바이저 소유 확인 메타 태그를 모든 페이지에 둔다", () => {
+    expect(meta.other).toEqual({ "naver-site-verification": "9eddd3c4e4e94c7014124e446d5219c735b16be6" });
+  });
 });
 
 describe("SITE_PAGES", () => {

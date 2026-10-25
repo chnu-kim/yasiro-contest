@@ -46,6 +46,8 @@ export function siteDefaults(): Metadata {
     description: HOME_DESCRIPTION,
     openGraph: { type: "website", locale: "ko_KR", siteName: SITE_NAME, title: HOME_TITLE, description: HOME_DESCRIPTION, images: [OG_IMAGE] },
     twitter: { card: "summary_large_image", title: HOME_TITLE, description: HOME_DESCRIPTION, images: [OG_IMAGE.url] },
+    // 검색엔진 소유 확인(공개 값). 구글은 서치 콘솔에서 따로 확인됨
+    other: { "naver-site-verification": "9eddd3c4e4e94c7014124e446d5219c735b16be6" },
   };
 }
 
