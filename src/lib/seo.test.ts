@@ -4,7 +4,7 @@ import { HOME_DESCRIPTION, HOME_TITLE, OG_IMAGE, SITE_NAME, SITE_PAGES, SITE_URL
 describe("홈 문구", () => {
   it("검색어(야시로·치지직·버튜버·버츄얼)와 '비공식'이 홈 제목·설명에 들어 있다", () => {
     const text = `${HOME_TITLE} ${HOME_DESCRIPTION}`;
-    for (const word of ["야시로", "치지직", "버튜버", "버츄얼", "비공식", "테라포레"]) expect(text).toContain(word);
+    for (const word of ["야시로", "치지직", "버튜버", "버츄얼", "비공식"]) expect(text).toContain(word);
   });
 
   it("홈 제목은 '야시로'로 시작한다", () => {

@@ -50,7 +50,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ## 검색·공유 (SEO)
 
-- 정본은 `src/lib/seo.ts`: 홈 제목·설명(야시로·치지직·버튜버·버츄얼·테라포레, '비공식' 명시), `pageMetadata`, `SITE_PAGES`(sitemap), 허브 JSON-LD(`siteJsonLd`: WebSite + 야시로 Person, 공식 채널 sameAs).
+- 정본은 `src/lib/seo.ts`: 홈 제목·설명(야시로·치지직·버튜버·버츄얼, '비공식' 명시), `pageMetadata`, `SITE_PAGES`(sitemap), 허브 JSON-LD(`siteJsonLd`: WebSite + 야시로 Person, 공식 채널 sameAs).
 - 공개 페이지는 `export const metadata = pageMetadata({ path, title, description })`로 쓴다. 하위 metadata는 openGraph·twitter를 통째로 덮어써서(얕은 병합) 제목만 두면 공유 미리보기가 레이아웃 값으로 남는다. 제목 뒤 " | 야시로 팬사이트"는 레이아웃 template이 붙인다.
 - 새 출품작은 `SITE_PAGES`에도 넣는다. 공유 이미지는 `public/og.png`(1200×630).
 - 네이버 서치어드바이저·구글 서치 콘솔 소유 확인 코드는 `siteDefaults`의 `verification`(구글)·`other['naver-site-verification']`에 넣는다.
