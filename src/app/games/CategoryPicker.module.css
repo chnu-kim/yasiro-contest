@@ -1,0 +1,231 @@
+/* 치지직 카테고리 검색. 시안: AddGame */
+.picker {
+  --field-bg: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--text);
+}
+
+:global([data-theme="dark"]) .picker {
+  --field-bg: var(--bg);
+}
+
+.searchBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.searchRow {
+  display: flex;
+  gap: 8px;
+}
+
+.search {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 14px;
+  background: var(--field-bg);
+  border: 2px solid var(--accent-d);
+  border-radius: var(--radius-md);
+  color: var(--text-dim);
+}
+
+:global([data-theme="dark"]) .search {
+  border-color: var(--accent);
+}
+
+.search:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.searchBtn {
+  height: 48px;
+  padding: 0 18px;
+  background: var(--text);
+  color: var(--bg);
+  border: 0;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.searchBtn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.searchBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.hint {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.statusLine {
+  min-height: 20px;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.error {
+  padding: 10px 14px;
+  border: 1px solid var(--stamp);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  color: var(--stamp);
+}
+
+.results {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--dur-fast), background var(--dur-fast);
+}
+
+:global([data-theme="dark"]) .card {
+  background: var(--paper-hi);
+}
+
+.card:hover:not(.cardTaken) {
+  border-color: var(--brass);
+}
+
+.cardOn {
+  background: var(--field-bg);
+  border: 2px solid var(--accent-d);
+  padding: 9px;
+}
+
+:global([data-theme="dark"]) .cardOn {
+  border-color: var(--accent);
+}
+
+.cardTaken {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.radio {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent-d);
+}
+
+.card:has(.radio:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: #D8B9A2;
+  border: 1px solid var(--border);
+}
+
+:global([data-theme="dark"]) .cover {
+  background: #3B2A22;
+}
+
+.img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.cid {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text-dim);
+  overflow-wrap: anywhere;
+}
+
+.takenNote {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .search,
+  .searchBtn {
+    height: var(--tap);
+  }
+}

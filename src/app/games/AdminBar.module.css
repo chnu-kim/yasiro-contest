@@ -1,0 +1,118 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-5);
+  padding: 12px 16px;
+  background: var(--paper-hi);
+  border: 1px solid var(--brass);
+  border-radius: var(--radius-md);
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-sm);
+  min-width: 0;
+}
+
+.noteIcon {
+  flex: none;
+  color: var(--accent-text);
+}
+
+.note strong {
+  font-weight: 600;
+}
+
+.touchHint {
+  display: none;
+}
+
+@media (hover: none) {
+  .hoverHint {
+    display: none;
+  }
+
+  .touchHint {
+    display: inline;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 12px;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-d);
+}
+
+:global([data-theme="dark"]) .check input {
+  accent-color: var(--accent);
+}
+
+.check:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.count {
+  font-family: 'Fredoka', sans-serif;
+  color: var(--text-dim);
+}
+
+.add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--tap);
+  padding: 0 18px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border: 0;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+.add:hover {
+  background: var(--btn-primary-bg-hover);
+}
+
+.add:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .bar {
+    padding: 12px;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

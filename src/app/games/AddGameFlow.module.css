@@ -1,0 +1,170 @@
+/* 게임 추가 1단계. 틀(dialog)은 DialogFrame. 시안: AddGame */
+.head {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 84px 16px 28px;
+  border-bottom: 1px dashed var(--border-strong);
+}
+
+.title {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.steps {
+  list-style: none;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: var(--fs-sm);
+}
+
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepOn {
+  font-weight: 600;
+}
+
+.stepOff {
+  color: var(--text-dim);
+}
+
+.stepNo {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 13px;
+}
+
+.stepNoOn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border-color: transparent;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 24px 28px;
+}
+
+.foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 28px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+:global([data-theme="dark"]) .foot {
+  background: var(--surface);
+}
+
+.footBtns {
+  display: flex;
+  gap: 10px;
+}
+
+.textBtn {
+  min-height: var(--tap);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.outline,
+.solid {
+  min-height: var(--tap);
+  padding: 0 18px;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+.outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+}
+
+.outline:hover {
+  background: var(--accent-bg);
+}
+
+.solid {
+  padding: 0 22px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border: 0;
+  font-weight: 600;
+}
+
+.solid:hover:not(:disabled) {
+  background: var(--btn-primary-bg-hover);
+}
+
+.solid:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.textBtn:focus-visible,
+.outline:focus-visible,
+.solid:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .head {
+    padding: 4px 60px 12px 20px;
+  }
+
+  .body {
+    padding: 16px 20px;
+  }
+
+  .foot {
+    padding: 12px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .footBtns {
+    width: 100%;
+  }
+
+  .footBtns .outline {
+    flex: 1;
+    min-height: 48px;
+  }
+
+  .footBtns .solid {
+    flex: 2;
+    min-height: 48px;
+  }
+}

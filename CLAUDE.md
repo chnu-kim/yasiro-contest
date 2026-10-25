@@ -17,7 +17,8 @@ pnpm dev            # UI 개발. D1 바인딩 없음 → 세션 null, API 실패
 pnpm test           # vitest run
 pnpm lint
 pnpm test:coverage  # src/lib/games/**, chzzk-category.ts는 100% threshold. 미달하면 exit 1
-pnpm games:add "검색어"  # 게임 추가 CLI (아래 '게임 목록' 참고)
+pnpm games:seed <input.json>   # 게임 JSON → migrations/0008 형태 시드 SQL (기존 파일은 --force 없이는 거부. 원격 적용 후엔 다시 만들지 않는다)
+pnpm -s games:export [--local|--remote] [--hidden] [--out file]  # D1 → games.json 형식 백업. stdout으로 받을 땐 `-s`(pnpm 배너 제거) 또는 --out. --remote는 사람이 실행. 기본은 보이는 게임만, --hidden은 숨긴 게임만(전체 백업은 두 번). 변경 기록은 담지 않는다
 pnpm preview        # Workers 런타임으로 로컬 미리보기
 pnpm shots [url] [경로...]  # 페이지 × 라이트/다크 × 1280/390 전체 스크린샷 → screenshots/index.html
 pnpm run deploy     # 수동 배포. `pnpm deploy`는 pnpm 예약어라 동작 안 함
@@ -33,13 +34,14 @@ src/app/
   page.tsx              허브(/) — 히어로, 출품작 바로가기 카드, 최근 한마디
   about/                소개 — 프로필, 주요 콘텐츠, 채널 링크
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
-  games/                플레이한 게임 출품작 (page=서버·검증, GamesBoard·GameCard·GameDetailDialog·Pagination·Poster)
-  auth/{login,callback,logout}/route.ts   치지직 OAuth
+  games/                플레이한 게임 출품작. page=서버(D1 읽기·관리자 판별), GamesBoard·GameCard·GameDetailDialog·Pagination·Poster(공개) +
+                        관리자 UI: AdminBar·GameEditForm·CategoryPicker·AddGameFlow·DialogFrame·Toast, adminApi(fetch 래퍼)·drafts(localStorage)
+  auth/{login,callback,logout}/route.ts   치지직 OAuth (login?next=<경로>는 oauth_next 쿠키로 복귀)
   api/guestbook/route.ts
+  api/games/            관리자 API (route·[id]·[id]/hidden·[id]/changes·categories·youtube). 핸들러는 얇게, 로직은 src/lib/games/api.ts
 src/components/         Nav, PostIt, SkipLink, ClearStamp (공유)
-src/data/games.json     게임 목록 정본 (사람이 큐레이션, CLI로 추가)
-scripts/games-add.ts    pnpm games:add 진입점 (얇게. 로직은 src/lib/games, chzzk-category)
-src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook, chzzk-category, games/{schema,query,labels,cli-args})
+scripts/games-{seed,export}.ts   pnpm games:seed / games:export 진입점 (얇게. 로직은 src/lib/games/seed.ts)
+src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta})
 migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
 ```
@@ -81,8 +83,8 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - Worker `yasiro-contest` · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
 - D1 `yasiro-db` (`69020930-766c-423b-8cbd-85d62eee3e02`) → `env.DB`. 타입은 `src/types/cloudflare.d.ts`
 - 접근: `const { env } = await getCloudflareContext({ async: true })` (`@opennextjs/cloudflare`)
-- 테이블: `sessions`, `guestbook`. 스키마 변경은 `d1-migration` 스킬로 한다.
-- Worker secret: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI` (`printf 'v' | pnpm wrangler secret put KEY`). Route Handler에서 `process.env`로 읽는다.
+- 테이블: `sessions`, `guestbook`, `games`, `game_vods`, `game_changes`(0007, 시드 0008). 스키마 변경은 `d1-migration` 스킬로 한다.
+- Worker secret: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI`, `ADMIN_CHANNEL_IDS`(쉼표 구분 관리자 채널 ID, 아래 '관리자') (`printf 'v' | pnpm wrangler secret put KEY`). Route Handler에서 `process.env`로 읽는다.
 - GitHub secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. 자격증명 원본은 1Password "Cloudflare R2 - yasiro-contest".
 - wrangler 4.x는 Node 22 이상이 필요하다.
 
@@ -111,10 +113,21 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ## 게임 목록 (/games)
 
-- `src/data/games.json`이 정본이다. D1·런타임 외부 호출 없음. `page.tsx`가 `parseGames`로 검증하므로 형식이 깨지면 빌드가 실패한다. 파일을 손으로 고쳐도 되지만 가능하면 CLI를 쓴다(정렬·검증이 같이 된다).
-- 추가: `pnpm games:add "검색어"`로 치지직 카테고리 후보(번호와 categoryId)를 보고, `--category-id <ID>`로 확정한다. 검색 결과 순서는 실행마다 바뀔 수 있어서 `--pick N` 단독은 `--dry-run` 미리보기에서만 받는다(`--pick`과 `--category-id`를 같이 주면 일치를 확인한다). 첫 플레이 날짜·정복 여부·원제·다시보기는 옵션 인자로 사람이 넣는다. 같은 categoryId를 다시 실행하면 갱신된다. 파일은 임시 파일에 쓴 뒤 rename한다. 옵션은 `src/lib/games/cli-args.ts` 참고.
-- CLI는 `node --experimental-strip-types`로 `src/lib`의 `.ts`를 직접 import한다(그래서 lib 런타임 import는 `./x.ts` 상대경로, erasable 구문만). package.json에 `"type"`이 없어 Node가 `.ts`를 CommonJS로 읽다 실패한 뒤 ESM으로 다시 파싱하며 `MODULE_TYPELESS_PACKAGE_JSON` 경고를 매 실행 출력한다. 동작에는 영향이 없어 `games:add` 스크립트에서 `--disable-warning=MODULE_TYPELESS_PACKAGE_JSON`으로 이 경고 하나만 끈다. `"type": "module"`을 넣으면 Next·ESLint 설정 파일 해석이 바뀌므로 넣지 않는다.
-- 키는 `.dev.vars`(`CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`)에서 읽는다. 1Password 환경 `chzzk-local-dev`를 마운트한 파일이라 내용을 출력·커밋하지 않는다.
-- 규칙: 다시보기는 유튜브 링크만(치지직 다시보기는 한 달 뒤 삭제되므로 검증이 거부). `firstPlayed`는 `YYYY-MM-DD` 또는 `null`. 정복 여부는 `clear | fail | endless | unknown`. endless("끝없는 탐험")는 리그 오브 레전드처럼 정복 개념이 없는 온라인 게임이다. unknown은 카드에 표시 없음, 상세에서 "기록 없음". 게임이 아닌 항목(저챗, 룰렛 자체, 갈틱폰 등)은 넣지 않는다. 단 종겜룰렛(데이)에서 플레이한 게임은 그 게임으로 기록하고 영상도 다시보기에 넣는다.
+- 정본은 D1이다: `games`(게임 한 줄, `hidden`·`version`), `game_vods`(다시보기), `game_changes`(변경 기록). 기존 `src/data/games.json`과 `games:add` CLI는 없어졌다. 338개 시드는 `migrations/0008_games_seed.sql`(결정적 출력, 직접 고치지 않는다). 시드는 `INSERT OR IGNORE`라 다시 실행해도 기존 행을 덮어쓰지 않고, 다시보기는 그 게임의 `import-<id>` 기록이 없을 때만 들어간다. OR IGNORE는 CHECK 위반도 건너뛰므로 `seed-data.test.ts`가 개수(338·306)와 export의 sha256(이전 games.json)을 고정한다. 백업은 `pnpm -s games:export`(숨긴 게임은 `--hidden`으로 따로, 변경 기록은 백업되지 않음).
+- 쓰기는 입력 원문이 아니라 검증기가 본 값을 저장한다(`repo.ts normalizedCandidate`: 이름·원제·categoryId·다시보기 제목 trim, 다시보기 URL은 `https://www.youtube.com/watch?v=<id>`로). 비교(`diffGames`)도 그 값으로 하므로 공백만 다른 수정은 "변화 없음"이다.
+- **배포 순서**: `deploy.yml`은 마이그레이션을 적용하지 않는다. games 테이블을 읽는 코드를 main에 올리기 전에 사람이 `pnpm wrangler d1 migrations list yasiro-db --remote`로 대기 목록을 보고(0006 `DROP TABLE whack_scores, clicks`가 함께 실행되는지 확인, 필요하면 `wrangler d1 export`로 먼저 백업) `migrations apply --remote` → `SELECT count(*) FROM games`가 338인지 확인 → `ADMIN_CHANNEL_IDS` secret 확인 → 머지한다. 순서가 바뀌면 배포부터 적용 전까지 /games가 "기록을 불러오지 못했어요"를 보인다.
+- `page.tsx`가 `loadGamesPageData`로 D1을 읽는다. D1이 없거나(`pnpm dev`) 조회가 실패하면 "기록을 불러오지 못했어요"를 보인다. 확인은 `pnpm build:worker` → `pnpm preview`(로컬 D1: `pnpm wrangler d1 migrations apply yasiro-db --local`)로 한다.
+- 검증 규칙의 정본은 `src/lib/games/schema.ts`(`validateGames`, `validateCandidate`)다. 서버(`repo.ts`)와 클라이언트 폼(`patch.ts validateForm`)이 같은 함수를 쓴다. 다시보기는 유튜브 링크만(치지직 다시보기는 한 달 뒤 삭제). `firstPlayed`는 `YYYY-MM-DD` 또는 `null`. 정복 여부는 `clear | fail | endless | unknown`(endless는 정복 개념이 없는 온라인 게임, unknown은 카드에 표시 없음·상세 "기록 없음"). 게임이 아닌 항목(저챗, 룰렛 자체, 갈틱폰 등)은 넣지 않는다(`seed-data.test.ts`가 시드를 검사). 종겜룰렛(데이)에서 플레이한 게임은 그 게임으로 기록한다.
+- 삭제는 숨김(soft delete, `hidden=1`)이다. 숨긴 게임은 방문자 목록·개수·상세·API에서 빠지고, 탐험 번호(NO.)는 숨기지 않은 게임만으로 매긴다(`indexWithHidden`, 숨긴 게임은 "—").
 - 목록 상태(q, status, year, sort, page)의 정본은 URL이다. `GamesBoard`가 `useSearchParams`로 읽고 `history.pushState/replaceState`로 쓴다. 로직은 `src/lib/games`(query·labels)에만 두고 컴포넌트에 복제하지 않는다.
-- 포스터는 `<img>`(loading lazy, 없거나 실패하면 "표본 라벨" 카드: 꿀붕이 발자국 워터마크 + SPECIMEN NO.·이름·"포스터 미확보" 라벨. 모바일은 번호만, 상세 모바일은 발자국만). `next/image`는 쓰지 않는다. `posterUrl`은 `isPosterUrl`(https, `pstatic.net` 또는 하위 도메인, 자격 증명 없음)만 통과한다. CLI도 같은 규칙이라 다른 호스트의 포스터는 스냅샷하지 않는다(null).
+- 포스터는 `<img>`(loading lazy, 없거나 실패하면 "표본 라벨" 카드: 꿀붕이 발자국 워터마크 + SPECIMEN NO.·이름·"포스터 미확보" 라벨. 모바일은 번호만, 상세 모바일은 발자국만). `next/image`는 쓰지 않는다. `posterUrl`은 `isPosterUrl`(https, `pstatic.net` 또는 하위 도메인, 자격 증명 없음)만 통과한다.
+- scripts/*.ts는 `node --experimental-strip-types`로 `src/lib`의 `.ts`를 직접 import한다(그래서 lib 런타임 import는 `./x.ts` 상대경로, erasable 구문만: enum·namespace·생성자 parameter property 금지). `MODULE_TYPELESS_PACKAGE_JSON` 경고는 스크립트에서 `--disable-warning`으로 끈다. `"type": "module"`을 넣으면 Next·ESLint 설정 해석이 바뀌므로 넣지 않는다.
+- 로컬 치지직 검색(관리자 게임 추가)은 `.dev.vars`의 `CHZZK_CLIENT_ID`·`CHZZK_CLIENT_SECRET`을 쓴다. 1Password 환경 `chzzk-local-dev`를 마운트한 파일이라 내용을 출력·커밋하지 않는다.
+
+### 관리자 (익명 규칙 포함)
+
+- 관리자 = `sessions`(`expires_at > now`)의 `channel_id`가 허용 목록에 있는 사람. 허용 목록 = 야시로 채널 ID(`admin.ts`의 `YASIRO_CHANNEL_ID`, 공개 정보) ∪ Worker secret `ADMIN_CHANNEL_IDS`. 다른 관리자의 채널 ID는 `chzzk.naver.com/<id>`로 채널 이름이 드러나므로 **코드·migrations·테스트·주석·커밋에 쓰지 않는다**(테스트는 `test-d1.ts`의 `FAKE_ADMIN_ID`). 로컬 확인은 `pnpm exec opennextjs-cloudflare preview -- --port <p> --var ADMIN_CHANNEL_IDS:<가짜 ID>`(빌드는 `pnpm build:worker`)로 주입하고 로컬 D1 `sessions`에 그 ID의 세션 행을 넣은 뒤 `session_id` 쿠키를 설정한다(OAuth 불필요).
+- **익명 표시(사용자 지시)**: 관리자의 치지직 채널 이름은 `games`·`game_changes`·API 응답·export·로그 어디에도 저장·표시·반환하지 않는다. 수정자 표시는 `actorNameFor(channelId)`로만 정한다(야시로 → "야시로", 그 밖의 허용 ID → "관리자", 시드 → "시스템"). 세션의 `channel_name`은 games 코드에서 SELECT하지 않는다. `channel_id`는 감사 컬럼(`games.updated_by_channel_id`, `game_changes.channel_id`)에만 저장하고 응답·props·로그로 내보내지 않는다. 테스트(`api.e2e.test.ts` 등)가 이를 고정한다. Nav의 로그인 표시는 기존대로 본인 브라우저에서 자기 채널 이름을 보인다(이 값은 layout의 `initialUser`로 직렬화되어 그 사용자의 HTML에만 들어간다).
+- 쓰기 API는 `checkSameOrigin`(CSRF) → 인증 → 본문 크기 → 모양 → 검증 순서이고, 동시 수정은 `version` 낙관적 잠금(충돌 시 409 + "관리자가 방금(HH:MM) 이 게임을 먼저 고쳤어요…")이다. 응답은 `Cache-Control: no-store`.
+- UI는 /games 안에서만: 관리자 띠(숨긴 게임 보기·게임 추가), 카드 호버/포커스 시 "수정" 칩(`@media (hover: none)`에서는 숨김), 상세 모달 하단 관리자 영역(숨기기·수정·변경 기록), 같은 모달의 수정 모드, 게임 추가 2단계. 수정 중 Esc·배경 클릭·닫기는 확인을 거치고(`DialogFrame intercept`), 로그인이 만료되면 입력을 `localStorage['yasiro-games-draft:<id|new>']`에 보존한다. 알림(`Toast`)은 열린 `<dialog>`(top layer) 위에 보이도록 dialog 안에도 렌더링하고, 한 번에 하나만 내용을 가진다.
+- 응답 해석·문구·폼 로직은 `src/lib/games/{client,patch,diff}.ts`(순수 함수, 100% 커버리지)에 둔다. 컴포넌트는 상태와 fetch만 한다.

@@ -399,3 +399,8 @@
     display: contents;
   }
 }
+
+/* 관리자 띠 자리(제목 위, 시안: Main). 띠 스타일은 AdminBar.module.css */
+.adminSlot {
+  margin-bottom: var(--space-6);
+}

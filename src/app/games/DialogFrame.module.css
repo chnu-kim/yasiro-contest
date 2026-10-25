@@ -1,0 +1,121 @@
+/* 모달 틀. 데스크톱은 가운데 카드, ≤640px는 아래에서 올라오는 바텀시트.
+   dialog는 고정 틀(닫기 버튼·모바일 손잡이)이고 스크롤은 안쪽이 한다. */
+.dialog {
+  width: min(760px, calc(100% - 48px));
+  max-width: none;
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  color: var(--text);
+  background: var(--paper-hi);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 24px 48px rgba(40, 25, 10, 0.35);
+}
+
+:global([data-theme="dark"]) .dialog {
+  background: var(--surface);
+}
+
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+  /* backwards: 끝난 뒤 transform이 남으면 안쪽 position: fixed(알림)가 dialog 기준이 된다 */
+  animation: fadeUp var(--dur-base) var(--ease-out) backwards;
+}
+
+.dialog::backdrop {
+  background: rgba(23, 18, 13, 0.55);
+}
+
+.close {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  z-index: 4; /* 수정 모드의 고정 오류 요약(z 3)보다 위. 요약은 이 자리만큼 오른쪽을 비운다 */
+  width: var(--tap);
+  height: var(--tap);
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+/* 내용이 버튼 밑으로 스크롤돼 지나가도 버튼이 묻히지 않게 바탕을 깐다 */
+.close {
+  background: var(--paper-hi);
+}
+
+:global([data-theme="dark"]) .close {
+  background: var(--surface);
+}
+
+.close:hover {
+  background: var(--accent-bg);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+
+@media (max-width: 640px) {
+  .dialog {
+    width: 100%;
+    max-height: 86dvh;
+    margin: auto 0 0;
+    border-width: 1px 0 0;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
+    padding-top: 52px; /* 상단 바(손잡이 + 닫기) 자리. 스크롤은 그 아래에서만 */
+  }
+
+  .dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  /* 상단 바: 손잡이 + 닫기. 스크롤하지 않는 dialog에 붙인다 */
+  .dialog::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 999px;
+    background: var(--border-strong);
+  }
+
+  .dialog::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 52px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .close {
+    top: 4px;
+    right: 8px;
+    border: 0;
+  }
+}
+
+/* 게임 추가 1단계처럼 조금 넓은 모달 */
+.wide {
+  width: min(820px, calc(100% - 48px));
+}
+
+@media (max-width: 640px) {
+  .wide {
+    width: 100%;
+  }
+}

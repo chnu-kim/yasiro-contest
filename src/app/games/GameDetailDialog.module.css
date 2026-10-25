@@ -1,33 +1,5 @@
 /* 게임 상세 모달. 데스크톱은 가운데 카드, ≤640px는 아래에서 올라오는 바텀시트.
    dialog는 고정 틀(닫기 버튼·모바일 손잡이)이고 스크롤은 안쪽 .sheet만 한다. */
-.dialog {
-  width: min(760px, calc(100% - 48px));
-  max-width: none;
-  max-height: calc(100dvh - 48px);
-  margin: auto;
-  padding: 0;
-  overflow: hidden;
-  color: var(--text);
-  background: var(--paper-hi);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-md);
-  box-shadow: 0 24px 48px rgba(40, 25, 10, 0.35);
-}
-
-:global([data-theme="dark"]) .dialog {
-  background: var(--surface);
-}
-
-.dialog[open] {
-  display: flex;
-  flex-direction: column;
-  animation: fadeUp var(--dur-base) var(--ease-out) both;
-}
-
-.dialog::backdrop {
-  background: rgba(23, 18, 13, 0.55);
-}
-
 .sheet {
   flex: 1;
   min-height: 0;
@@ -76,37 +48,6 @@
   overflow-wrap: anywhere; /* 공백 없는 긴 원제가 대화상자를 가로로 밀지 않게 */
 }
 
-.close {
-  position: absolute;
-  top: var(--space-6);
-  right: var(--space-6);
-  z-index: 2;
-  width: var(--tap);
-  height: var(--tap);
-  display: grid;
-  place-items: center;
-  background: transparent;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  cursor: pointer;
-  transition: background var(--dur-fast);
-}
-
-/* 내용이 버튼 밑으로 스크롤돼 지나가도 버튼이 묻히지 않게 바탕을 깐다 */
-.close {
-  background: var(--paper-hi);
-}
-
-:global([data-theme="dark"]) .close {
-  background: var(--surface);
-}
-
-.close:hover {
-  background: var(--accent-bg);
-}
-
-.close:focus-visible,
 .vod:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -239,20 +180,6 @@
 }
 
 @media (max-width: 640px) {
-  .dialog {
-    width: 100%;
-    max-height: 86dvh;
-    margin: auto 0 0;
-    border-width: 1px 0 0;
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
-    padding-top: 52px; /* 상단 바(손잡이 + 닫기) 자리. 스크롤은 그 아래에서만 */
-  }
-
-  .dialog::backdrop {
-    background: rgba(0, 0, 0, 0.6);
-  }
-
   .sheet {
     grid-template-columns: 96px minmax(0, 1fr);
     grid-template-areas:
@@ -266,34 +193,6 @@
 
   .poster {
     position: static;
-  }
-
-  /* 상단 바: 손잡이 + 닫기. 스크롤하지 않는 dialog에 붙인다 */
-  .dialog::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 10px;
-    width: 40px;
-    height: 4px;
-    margin-left: -20px;
-    border-radius: 999px;
-    background: var(--border-strong);
-  }
-
-  .dialog::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 52px;
-    border-top: 1px dashed var(--border);
-  }
-
-  .close {
-    top: 4px;
-    right: 8px;
-    border: 0;
   }
 
   .head {
@@ -334,5 +233,183 @@
 
   .vod {
     min-height: 60px;
+  }
+}
+
+/* ─── 관리자 영역 (시안: AdminDetail) ─── */
+.hiddenNote {
+  align-self: flex-start;
+  padding: 2px 8px;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 45%;
+  overflow: auto;
+  padding: 20px var(--space-6) 24px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+:global([data-theme="dark"]) .admin {
+  background: var(--surface);
+}
+
+.adminRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.adminLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--accent-text);
+}
+
+.adminDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 1px; /* 작은 사각 도트는 의도된 값 */
+  background: var(--brass);
+}
+
+.adminBtns {
+  display: flex;
+  gap: 10px;
+}
+
+.adminGhost,
+.adminPrimary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+
+.adminGhost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+}
+
+.adminGhost:hover:not(:disabled) {
+  background: var(--accent-bg);
+}
+
+.adminGhost:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.adminPrimary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border: 0;
+  font-weight: 600;
+}
+
+.adminPrimary:hover {
+  background: var(--btn-primary-bg-hover);
+}
+
+.adminGhost:focus-visible,
+.adminPrimary:focus-visible,
+.changes summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.adminError {
+  font-size: 15px;
+  color: var(--stamp);
+}
+
+.changes {
+  font-size: var(--fs-sm);
+}
+
+.changes summary {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.changeList {
+  list-style: none;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-dim);
+}
+
+.changeList li {
+  display: flex;
+  gap: 12px;
+}
+
+.changeList strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.changeTime {
+  flex: none;
+  width: 118px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+}
+
+.changeMore {
+  padding-left: 130px;
+}
+
+@media (max-width: 640px) {
+  .admin {
+    padding: 16px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .adminBtns {
+    width: 100%;
+  }
+
+  .adminBtns > * {
+    flex: 1;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  .changeList li {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .changeMore {
+    padding-left: 0;
   }
 }
