@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { generateState } from "./chzzk-auth.ts";
-import { FAKE_ADMIN_ID, FAKE_USER_ID, createGamesTestDb, findStringAnywhere, insertSession } from "./games/test-d1.ts";
+import { FAKE_ADMIN_ID, FAKE_USER_ID, applyMigrations, createGamesTestDb, findStringAnywhere, insertSession } from "./games/test-d1.ts";
 import {
   LEGACY_SESSION_COOKIE,
   SESSION_COOKIE,
@@ -191,5 +191,19 @@ describe("cookie strings", () => {
     expect(oauthCookie("oauth_state", "abc")).toBe(`oauth_state=abc; ${ATTRS}; Max-Age=600`);
     expect(oauthCookie("oauth_next", "/games?game=1")).toBe(`oauth_next=%2Fgames%3Fgame%3D1; ${ATTRS}; Max-Age=600`);
     expect(clearOauthCookies()).toEqual([`oauth_state=; ${ATTRS}; Max-Age=0`, `oauth_next=; ${ATTRS}; Max-Age=0`]);
+  });
+});
+
+describe("0010_clear_legacy_sessions", () => {
+  it("레거시 sessions 행(치지직 토큰 포함)을 지우고 테이블과 auth_sessions는 남긴다", () => {
+    const d = setup();
+    d.sqlite.prepare(
+      "INSERT INTO sessions (id, channel_id, channel_name, access_token, refresh_token, expires_at) VALUES (?, ?, ?, ?, ?, ?)",
+    ).run("legacy", FAKE_USER_ID, "표시이름", "old-access", "old-refresh", NOW + 100);
+    applyMigrations(d, ["0010_clear_legacy_sessions.sql"]);
+    expect(findStringAnywhere(d, "old-refresh", ["sessions"])).toEqual([]);
+    // 옛 callback이 롤백 뒤에도 INSERT할 수 있도록 테이블은 그대로다
+    expect(d.sqlite.prepare("SELECT count(*) n FROM sessions").get()).toEqual({ n: 0 });
+    expect(hashes(d)).toHaveLength(2);
   });
 });
