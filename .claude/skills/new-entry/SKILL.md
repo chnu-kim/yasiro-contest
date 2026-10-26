@@ -36,7 +36,7 @@ src/app/api/<name>/route.ts      D1이 필요할 때만
 ## 4. API와 D1 (필요할 때)
 
 - 테이블이 필요하면 `d1-migration` 스킬로 마이그레이션부터 만든다.
-- Route Handler는 `src/app/api/guestbook/route.ts`를 따라 쓴다: 네이티브 `Response.json`, `session_id` 쿠키 → `sessions` 조회 → 401, body 파싱 실패 → 400, lib 검증 실패 → 400.
+- Route Handler는 `src/app/api/guestbook/route.ts` + `src/lib/guestbook.ts handleGuestbookPost`를 따라 쓴다: 네이티브 `Response.json`, 쓰기는 `checkSameOrigin` → 403, `readSessionId`(`__Host-session` 쿠키) → `findSession`(`auth_sessions` 해시 조회, `src/lib/session.ts`) → 401, body 파싱 실패 → 400, lib 검증 실패 → 400. 핸들러 로직은 lib에 두고 db·now를 주입한다.
 
 ## 5. Nav 연결
 

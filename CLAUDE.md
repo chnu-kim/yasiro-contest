@@ -38,12 +38,12 @@ src/app/
   to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
   games/                플레이한 게임 출품작. page=서버(D1 읽기·관리자 판별), GamesBoard·GameCard·GameDetailDialog·Pagination·Poster(공개) +
                         관리자 UI: AdminBar·GameEditForm·CategoryPicker·AddGameFlow·DialogFrame·Toast, adminApi(fetch 래퍼)·drafts(localStorage)
-  auth/{login,callback,logout}/route.ts   치지직 OAuth (login?next=<경로>는 oauth_next 쿠키로 복귀)
+  auth/{login,callback,logout}/route.ts   치지직 OAuth (login?next=<경로>는 oauth_next 쿠키로 복귀). 로직은 src/lib/auth-routes.ts
   api/guestbook/route.ts
   api/games/            관리자 API (route·[id]·[id]/hidden·[id]/changes·categories·youtube). 핸들러는 얇게, 로직은 src/lib/games/api.ts
 src/components/         Nav, PostIt, SkipLink, ClearStamp (공유)
 scripts/games-{seed,export,edit}.ts   pnpm games:seed / games:export / games:edit 진입점 (얇게. 로직은 src/lib/games/seed.ts, ops.ts)
-src/lib/                순수 로직 + *.test.ts (chzzk-auth, guestbook, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta})
+src/lib/                순수 로직 + *.test.ts (session, auth-routes, http, chzzk-auth, guestbook, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta})
 migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
 ```
@@ -92,7 +92,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - Worker `yasiro-contest` · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
 - D1 `yasiro-db` (`69020930-766c-423b-8cbd-85d62eee3e02`) → `env.DB`. 타입은 `src/types/cloudflare.d.ts`
 - 접근: `const { env } = await getCloudflareContext({ async: true })` (`@opennextjs/cloudflare`)
-- 테이블: `sessions`, `guestbook`, `games`, `game_vods`, `game_changes`(0007, 시드 0008). 스키마 변경은 `d1-migration` 스킬로 한다.
+- 테이블: `auth_sessions`(0009, 아래 '세션'), `guestbook`, `games`, `game_vods`, `game_changes`(0007, 시드 0008), `sessions`(0001, 레거시. 읽지 않음, 0010에서 DROP 예정). 스키마 변경은 `d1-migration` 스킬로 한다.
 - Worker secret: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI`, `ADMIN_CHANNEL_IDS`(쉼표 구분 관리자 채널 ID, 아래 '관리자') (`printf 'v' | pnpm wrangler secret put KEY`). Route Handler에서 `process.env`로 읽는다.
 - GitHub secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. 자격증명 원본은 1Password "Cloudflare R2 - yasiro-contest".
 - wrangler 4.x는 Node 22 이상이 필요하다.
@@ -100,8 +100,18 @@ _design/                원본 디자인 핸드오프 (gitignored)
 ### Route Handler
 
 - `NextResponse`와 `export const runtime = "edge"`를 쓰지 않는다. opennextjs 번들링에서 `Cannot read properties of undefined (reading 'default')` 에러가 난다. 네이티브 `Request`/`Response`를 쓴다.
-- 인증이 필요한 API는 `session_id` 쿠키로 `sessions`를 조회해 `expires_at > unixepoch()`를 확인한다. `api/guestbook/route.ts`가 기준 패턴이다.
+- 인증이 필요한 API는 `src/lib/session.ts`의 `readSessionId(cookie)` → `findSession(db, id, now)`(해시로 `auth_sessions` 조회, `expires_at > now`)를 쓴다. games는 `channel_name`을 읽지 않는 `findSessionChannel`. 쓰기는 `checkSameOrigin`(`src/lib/http.ts`)을 먼저 본다. `src/lib/guestbook.ts handleGuestbookPost`가 기준 패턴이다.
+- 네이티브 `fetch`·`ctx.waitUntil`을 deps로 넘길 때는 `(i, init) => fetch(i, init)`처럼 감싼다. `deps.fetch()`로 부르면 Workers에서 Illegal invocation이 난다.
 - `cookies()`를 쓰기 때문에 `layout.tsx`의 `export const dynamic = 'force-dynamic'`을 지우지 않는다.
+
+### 세션
+
+- 정본은 `src/lib/session.ts`: 세션 ID(32바이트 hex 64자), 쿠키 `__Host-session`(`Path=/; Secure; HttpOnly; SameSite=Lax`), 절대 수명 `SESSION_TTL_SECONDS`(7일. 쿠키 Max-Age와 DB `expires_at`이 같은 값, 치지직 토큰 TTL과 무관). DB에는 `SHA-256(세션 ID)`(`auth_sessions.id_hash`)만 저장하고 원본 ID는 DB·로그에 남기지 않는다.
+- 로그인·로그아웃 로직은 `src/lib/auth-routes.ts`(Route Handler는 env·ctx 주입만). callback은 토큰 교환 → 사용자 조회 → 치지직 access·refresh 토큰을 `ctx.waitUntil`로 바로 폐기(best-effort, 실패해도 로그인 진행) → 기존 세션 행 삭제·만료 행 정리 → 새 세션. 치지직 토큰은 어디에도 저장하지 않는다. 로그에는 상태 코드·에러 이름만 남긴다.
+- callback은 성공·실패 모두 `oauth_state`·`oauth_next`를 지운다. `CHZZK_*`가 없으면 login·callback은 500이다.
+- 레거시 `sessions` 테이블과 `session_id` 쿠키는 읽지 않는다. 로그인·로그아웃 때 `session_id` 쿠키만 지운다.
+- **배포 순서**: 0009를 원격에 적용(`migrations apply --remote`)한 뒤 머지한다. 배포되면 기존 로그인은 모두 한 번 로그아웃된다. 새 코드가 배포된 것을 확인한 뒤 0010(`DROP TABLE IF EXISTS sessions`, 레거시 행에 남은 치지직 토큰 제거)을 사람이 따로 만들고 적용한다.
+- 로컬에서 로그인 상태 만들기(OAuth 불필요)는 `verify` 스킬의 '로그인 세션' 절차를 따른다. 확인 브라우저는 Chrome(localhost는 secure context라 `Secure`·`__Host-` 쿠키가 동작한다. Safari는 localhost의 Secure 쿠키를 다르게 다룰 수 있다).
 
 ## 치지직
 
@@ -135,7 +145,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ### 관리자 (익명 규칙 포함)
 
-- 관리자 = `sessions`(`expires_at > now`)의 `channel_id`가 허용 목록에 있는 사람. 허용 목록 = 야시로 채널 ID(`admin.ts`의 `YASIRO_CHANNEL_ID`, 공개 정보) ∪ Worker secret `ADMIN_CHANNEL_IDS`. 다른 관리자의 채널 ID는 `chzzk.naver.com/<id>`로 채널 이름이 드러나므로 **코드·migrations·테스트·주석·커밋에 쓰지 않는다**(테스트는 `test-d1.ts`의 `FAKE_ADMIN_ID`). 로컬 확인은 `pnpm exec opennextjs-cloudflare preview -- --port <p> --var ADMIN_CHANNEL_IDS:<가짜 ID>`(빌드는 `pnpm build:worker`)로 주입하고 로컬 D1 `sessions`에 그 ID의 세션 행을 넣은 뒤 `session_id` 쿠키를 설정한다(OAuth 불필요).
+- 관리자 = `auth_sessions`(`expires_at > now`)의 `channel_id`가 허용 목록에 있는 사람. 허용 목록 = 야시로 채널 ID(`admin.ts`의 `YASIRO_CHANNEL_ID`, 공개 정보) ∪ Worker secret `ADMIN_CHANNEL_IDS`. 다른 관리자의 채널 ID는 `chzzk.naver.com/<id>`로 채널 이름이 드러나므로 **코드·migrations·테스트·주석·커밋에 쓰지 않는다**(테스트는 `test-d1.ts`의 `FAKE_ADMIN_ID`). 로컬 확인은 `pnpm exec opennextjs-cloudflare preview -- --port <p> --var ADMIN_CHANNEL_IDS:<가짜 ID>`(빌드는 `pnpm build:worker`)로 주입하고 로컬 D1 `auth_sessions`에 그 채널 ID로 `sha256(세션 ID)` 행을 넣은 뒤 Chrome에서 `__Host-session` 쿠키를 세션 ID로 설정한다(OAuth 불필요, 명령은 `verify` 스킬 '로그인 세션').
 - **익명 표시(사용자 지시)**: 관리자의 치지직 채널 이름은 `games`·`game_changes`·API 응답·export·로그 어디에도 저장·표시·반환하지 않는다. 수정자 표시는 `actorNameFor(channelId)`로만 정한다(야시로 → "야시로", 그 밖의 허용 ID → "관리자", 시드 → "시스템"). 세션의 `channel_name`은 games 코드에서 SELECT하지 않는다. `channel_id`는 감사 컬럼(`games.updated_by_channel_id`, `game_changes.channel_id`)에만 저장하고 응답·props·로그로 내보내지 않는다. 테스트(`api.e2e.test.ts` 등)가 이를 고정한다. Nav의 로그인 표시는 기존대로 본인 브라우저에서 자기 채널 이름을 보인다(이 값은 layout의 `initialUser`로 직렬화되어 그 사용자의 HTML에만 들어간다).
 - 쓰기 API는 `checkSameOrigin`(CSRF) → 인증 → 본문 크기 → 모양 → 검증 순서이고, 동시 수정은 `version` 낙관적 잠금(충돌 시 409 + "관리자가 방금(HH:MM) 이 게임을 먼저 고쳤어요…")이다. 응답은 `Cache-Control: no-store`.
 - UI는 /games 안에서만: 관리자 띠(숨긴 게임 보기·게임 추가), 카드 호버/포커스 시 "수정" 칩(`@media (hover: none)`에서는 숨김), 상세 모달 하단 관리자 영역(숨기기·수정·변경 기록), 같은 모달의 수정 모드, 게임 추가 2단계. 수정 중 Esc·배경 클릭·닫기는 확인을 거치고(`DialogFrame intercept`), 로그인이 만료되면 입력을 `localStorage['yasiro-games-draft:<id|new>']`에 보존한다. 알림(`Toast`)은 열린 `<dialog>`(top layer) 위에 보이도록 dialog 안에도 렌더링하고, 한 번에 하나만 내용을 가진다.
