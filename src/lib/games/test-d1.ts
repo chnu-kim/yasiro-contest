@@ -112,18 +112,18 @@ export function createTestD1(): TestD1 {
   return { db, sqlite, batchCalls: () => batches, close: () => sqlite.close() };
 }
 
-/** migrations/ 의 파일을 이름 순서대로 적용한다. 기본: sessions(0001) + games(0007). 시드는 명시해서 넣는다 */
+/** migrations/ 의 파일을 이름 순서대로 적용한다. 기본: 레거시 sessions(0001) + games(0007) + auth_sessions(0009). 시드는 명시해서 넣는다 */
 export function applyMigrations(
   d1: TestD1,
-  files: readonly string[] = ["0001_sessions.sql", "0007_games.sql"],
+  files: readonly string[] = ["0001_sessions.sql", "0007_games.sql", "0009_auth_sessions.sql"],
 ): void {
   for (const f of files) d1.sqlite.exec(readFileSync(new URL(f, MIGRATIONS_DIR), "utf8"));
 }
 
-/** 0001 + 0007이 적용된 새 DB */
+/** 0001 + 0007 + 0009가 적용된 새 DB. extra는 그 뒤에 이어서 적용한다 */
 export function createGamesTestDb(extra: readonly string[] = []): TestD1 {
   const d1 = createTestD1();
-  applyMigrations(d1, ["0001_sessions.sql", "0007_games.sql", ...extra]);
+  applyMigrations(d1, ["0001_sessions.sql", "0007_games.sql", "0009_auth_sessions.sql", ...extra]);
   return d1;
 }
 
