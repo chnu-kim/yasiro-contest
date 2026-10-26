@@ -56,6 +56,20 @@ describe("handleLogout", () => {
     }
     expect(count(d)).toBe(1);
   });
+  it("clears both cookies and logs only the error name when the session store fails", async () => {
+    const lines: string[] = [];
+    const spy = vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => { lines.push(args.map(String).join(" ")); });
+    const db = { prepare: () => { throw new Error(`no such table: auth_sessions ${ID}`); } };
+    try {
+      const res = await handleLogout(post({ origin: ORIGIN, cookie: `__Host-session=${ID}` }), { db });
+      expect(res.status).toBe(302);
+      expect(res.headers.get("location")).toBe(`${ORIGIN}/`);
+      expect(cookies(res)).toEqual([CLEAR_NEW, CLEAR_LEGACY]);
+      expect(lines).toEqual(["session store error: Error"]);
+    } finally {
+      spy.mockRestore();
+    }
+  });
 });
 
 describe("handleLogin", () => {

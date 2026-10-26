@@ -141,7 +141,14 @@ export async function handleLogout(req: Request, deps: LogoutDeps): Promise<Resp
     return new Response("다른 사이트에서 보낸 요청은 받을 수 없습니다.", { status: 403 });
   }
   const sessionId = readSessionId(req.headers.get("cookie"));
-  if (sessionId !== null) await deleteSession(deps.db, sessionId);
+  if (sessionId !== null) {
+    try {
+      await deleteSession(deps.db, sessionId);
+    } catch (e) {
+      // 행을 못 지워도 쿠키는 지운다(공용 PC에서 로그아웃했다고 믿고 떠나는 경우). 행은 만료 시 정리된다
+      console.error(`session store error: ${errorLabel(e)}`);
+    }
+  }
 
   const headers = new Headers({ Location: new URL(req.url).origin + "/" });
   headers.append("Set-Cookie", clearSessionCookie());
