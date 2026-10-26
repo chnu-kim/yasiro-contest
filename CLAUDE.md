@@ -92,7 +92,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - Worker `yasiro-contest` · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
 - D1 `yasiro-db` (`69020930-766c-423b-8cbd-85d62eee3e02`) → `env.DB`. 타입은 `src/types/cloudflare.d.ts`
 - 접근: `const { env } = await getCloudflareContext({ async: true })` (`@opennextjs/cloudflare`)
-- 테이블: `auth_sessions`(0009, 아래 '세션'), `guestbook`, `games`, `game_vods`, `game_changes`(0007, 시드 0008), `sessions`(0001, 레거시. 읽지 않음, 0010에서 DROP 예정). 스키마 변경은 `d1-migration` 스킬로 한다.
+- 테이블: `auth_sessions`(0009, 아래 '세션'), `guestbook`, `games`, `game_vods`, `game_changes`(0007, 시드 0008), `sessions`(0001, 레거시. 읽지 않음, 0010에서 행 삭제, DROP은 0011 예정). 스키마 변경은 `d1-migration` 스킬로 한다.
 - Worker secret: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI`, `ADMIN_CHANNEL_IDS`(쉼표 구분 관리자 채널 ID, 아래 '관리자') (`printf 'v' | pnpm wrangler secret put KEY`). Route Handler에서 `process.env`로 읽는다.
 - GitHub secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. 자격증명 원본은 1Password "Cloudflare R2 - yasiro-contest".
 - wrangler 4.x는 Node 22 이상이 필요하다.
@@ -110,7 +110,11 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 로그인·로그아웃 로직은 `src/lib/auth-routes.ts`(Route Handler는 env·ctx 주입만). callback은 토큰 교환 → 사용자 조회 → 치지직 access·refresh 토큰을 `ctx.waitUntil`로 바로 폐기(best-effort, 실패해도 로그인 진행) → 기존 세션 행 삭제·만료 행 정리 → 새 세션. 치지직 토큰은 어디에도 저장하지 않는다. 로그에는 상태 코드·에러 이름만 남긴다.
 - callback은 성공·실패 모두 `oauth_state`·`oauth_next`를 지운다. `CHZZK_*`가 없으면 login·callback은 500이다.
 - 레거시 `sessions` 테이블과 `session_id` 쿠키는 읽지 않는다. 로그인·로그아웃 때 `session_id` 쿠키만 지운다.
-- **배포 순서**: 0009를 원격에 적용(`migrations apply --remote`)한 뒤 머지한다. 배포되면 기존 로그인은 모두 한 번 로그아웃된다. 새 코드가 배포된 것을 확인한 뒤 0010(`DROP TABLE IF EXISTS sessions`, 레거시 행에 남은 치지직 토큰 제거)을 사람이 따로 만들고 적용한다.
+- **배포 순서**: `migrations list yasiro-db --remote`로 대기 목록이 0009(`auth_sessions` 추가)·0010(레거시 `sessions` 행 삭제) 둘뿐인지 확인 → `migrations apply --remote` → 머지한다. 0010 적용 시점에 기존 로그인은 모두 한 번 로그아웃된다.
+  - 배포 확인 뒤 `SELECT count(*) FROM sessions`가 0인지 본다. 적용부터 배포 완료까지는 옛 코드가 돌고 있어 그 사이 로그인하면 토큰이 든 레거시 행이 다시 생긴다. 0이 아니면 `DELETE FROM sessions`를 한 번 더 실행한다(사람이 실행).
+  - 0010은 DB에서 행만 지운다. 치지직 쪽 토큰 폐기가 아니라서 이미 복사된 토큰(옛 D1 export·백업 포함)은 만료될 때까지 유효하다. 기존 행의 토큰을 폐기할지, 만료를 기다릴지는 사람이 정한다(폐기하려면 0010 적용 전에 원격 D1에서 읽어야 한다). 옛 백업 파일은 지운다.
+  - 순서가 바뀌어 0009 적용 전에 배포되면 `/auth/callback`이 500("로그인을 마치지 못했습니다", 로그 `session store error: Error`)을 낸다. 로그아웃은 쿠키만 지우고 302, 다른 페이지는 비로그인으로 정상 동작해서 장애가 로그인에서만 드러난다.
+  - 롤백: 0009·0010은 테이블을 추가하고 행만 지우므로 이전 커밋으로 롤백해도 안전하다(옛 코드로 전원 재로그인). 레거시 테이블 DROP(0011, 아직 없음)은 롤백할 일이 없다고 판단한 뒤에 만든다. 0011 뒤에 롤백하면 옛 callback이 `sessions`에 INSERT하다 500이 나므로, 그때는 `sessions`를 다시 만드는 마이그레이션을 먼저 적용한다.
 - 로컬에서 로그인 상태 만들기(OAuth 불필요)는 `verify` 스킬의 '로그인 세션' 절차를 따른다. 확인 브라우저는 Chrome(localhost는 secure context라 `Secure`·`__Host-` 쿠키가 동작한다. Safari는 localhost의 Secure 쿠키를 다르게 다룰 수 있다).
 
 ## 치지직
