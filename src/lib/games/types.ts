@@ -294,7 +294,7 @@ export interface ChangeList {
 
 export type SessionState =
   | { kind: "anonymous" }
-  /** session_id 쿠키는 있으나 유효한 세션 행이 없음(만료·로그아웃) */
+  /** 세션 쿠키(__Host-session)는 있으나 유효한 세션 행이 없음(만료·로그아웃) */
   | { kind: "expired" }
   /** 로그인했지만 관리자가 아님 */
   | { kind: "user" }

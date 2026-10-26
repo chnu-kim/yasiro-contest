@@ -109,7 +109,7 @@ function makeDeps(extra: Partial<ApiDeps> = {}): ApiDeps {
 }
 
 function req(method: string, path: string, opts: { body?: unknown; raw?: BodyInit; headers?: Record<string, string> } = {}): Request {
-  const headers: Record<string, string> = { origin: ORIGIN, cookie: "session_id=abc", ...opts.headers };
+  const headers: Record<string, string> = { origin: ORIGIN, cookie: "__Host-session=abc", ...opts.headers };
   let body: BodyInit | undefined = opts.raw;
   if (body === undefined && opts.body !== undefined) {
     body = JSON.stringify(opts.body);
@@ -304,9 +304,9 @@ describe("handleListGames", () => {
 
   it("쿠키·현재 시각·허용 목록으로 세션을 확인하고 same-origin 검사는 하지 않는다", async () => {
     m.listGames.mockResolvedValue([]);
-    await handleListGames(req("GET", "/api/games", { headers: { cookie: "session_id=zzz" } }), makeDeps());
+    await handleListGames(req("GET", "/api/games", { headers: { cookie: "__Host-session=zzz" } }), makeDeps());
     expect(m.parseAdminIds).toHaveBeenCalledWith(SECRET_ID);
-    expect(m.getSessionActor).toHaveBeenCalledWith(DB, "session_id=zzz", NOW, ADMIN_IDS);
+    expect(m.getSessionActor).toHaveBeenCalledWith(DB, "__Host-session=zzz", NOW, ADMIN_IDS);
     expect(m.checkSameOrigin).not.toHaveBeenCalled();
   });
 
@@ -348,10 +348,10 @@ describe("loadGamesPageData", () => {
     asAdmin();
     const all = [record("a"), record("b", { hidden: true })];
     m.listGames.mockResolvedValue(all);
-    const data = await loadGamesPageData(makeDeps(), "session_id=abc");
+    const data = await loadGamesPageData(makeDeps(), "__Host-session=abc");
     expect(data).toEqual({ ok: true, admin: { name: "관리자" }, games: all });
     expect(m.listGames).toHaveBeenCalledWith(DB, { includeHidden: true });
-    expect(m.getSessionActor).toHaveBeenCalledWith(DB, "session_id=abc", NOW, ADMIN_IDS);
+    expect(m.getSessionActor).toHaveBeenCalledWith(DB, "__Host-session=abc", NOW, ADMIN_IDS);
     expect(JSON.stringify(data)).not.toContain(SECRET_ID);
   });
 

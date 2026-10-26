@@ -1,59 +1,15 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { readCookie, safeNextPath } from "@/lib/http";
-import { sessionCookie } from "@/lib/session";
-import { exchangeCode, fetchUser, generateState } from "@/lib/chzzk-auth";
+import { handleCallback } from "@/lib/auth-routes";
+import { readChzzkConfig } from "@/lib/chzzk-auth";
 
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const code = searchParams.get("code");
-  const state = searchParams.get("state");
-
-  if (!code || !state) {
-    return new Response("code 또는 state 파라미터가 없습니다.", { status: 400 });
-  }
-
-  const cookieHeader = req.headers.get("cookie");
-  const savedState = readCookie(cookieHeader, "oauth_state");
-
-  if (!savedState || savedState !== state) {
-    return new Response("유효하지 않은 state입니다. 다시 로그인하세요.", { status: 403 });
-  }
-
-  const config = {
-    clientId: process.env.CHZZK_CLIENT_ID!,
-    clientSecret: process.env.CHZZK_CLIENT_SECRET!,
-    redirectUri: process.env.CHZZK_REDIRECT_URI!,
-  };
-
-  let tokens, user;
-  try {
-    tokens = await exchangeCode(config, code, state);
-    user = await fetchUser(tokens.accessToken);
-  } catch (e) {
-    console.error("Chzzk auth error:", e);
-    return new Response("인증 처리 중 오류가 발생했습니다.", { status: 502 });
-  }
-
-  const { env } = await getCloudflareContext({ async: true });
-  const db = env.DB;
-
-  const sessionId = generateState();
-  const expiresAt = Math.floor(Date.now() / 1000) + tokens.expiresIn;
-
-  await db
-    .prepare(
-      `INSERT OR REPLACE INTO sessions (id, channel_id, channel_name, access_token, refresh_token, expires_at)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-    )
-    .bind(sessionId, user.channelId, user.channelName, tokens.accessToken, tokens.refreshToken, expiresAt)
-    .run();
-
-  const origin = new URL(req.url).origin;
-  // 로그인 시작 때 저장한 복귀 경로(없거나 이상하면 "/")
-  const next = safeNextPath(readCookie(cookieHeader, "oauth_next"));
-  const headers = new Headers({ Location: origin + next });
-  headers.append("Set-Cookie", "oauth_state=; Path=/; HttpOnly; Max-Age=0");
-  headers.append("Set-Cookie", "oauth_next=; Path=/; HttpOnly; Max-Age=0");
-  headers.append("Set-Cookie", sessionCookie(sessionId));
-  return new Response(null, { status: 302, headers });
+  const { env, ctx } = await getCloudflareContext({ async: true });
+  return handleCallback(req, {
+    db: env.DB,
+    config: readChzzkConfig(process.env),
+    // 네이티브 함수를 deps의 메서드로 부르면 Workers에서 Illegal invocation이 나므로 감싼다
+    fetch: (input, init) => fetch(input, init),
+    now: () => Math.floor(Date.now() / 1000),
+    waitUntil: (p) => ctx.waitUntil(p),
+  });
 }

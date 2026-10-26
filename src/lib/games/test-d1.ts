@@ -7,6 +7,7 @@
 // - batch()는 한 트랜잭션. 하나라도 던지면 전부 롤백하고 그 에러를 다시 던진다.
 // - 문장당 바인딩은 100개까지(D1 한도). 넘으면 던진다.
 // - 외래 키 강제(PRAGMA foreign_keys = ON). 결과 행은 일반 객체(null prototype 아님).
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import type { GamesDb, GamesDbResult, GamesDbStatement } from "./types.ts";
@@ -128,6 +129,7 @@ export function createGamesTestDb(extra: readonly string[] = []): TestD1 {
 }
 
 export interface TestSession {
+  /** 쿠키에 담을 원본 세션 ID(hex 64자). DB에는 SHA-256 해시만 들어간다 */
   id: string;
   channelId: string;
   /** 실명 대역. 관리자 익명 테스트에서 이 문자열이 저장·응답에 나오지 않음을 확인한다 */
@@ -136,12 +138,11 @@ export interface TestSession {
   expiresAt: number;
 }
 
+/** auth_sessions에 세션 행을 넣는다. 해시는 session.ts hashSessionId와 같은 SHA-256 hex(동기 계산) */
 export function insertSession(d1: TestD1, s: TestSession): void {
   d1.sqlite
-    .prepare(
-      "INSERT INTO sessions (id, channel_id, channel_name, access_token, refresh_token, expires_at) VALUES (?, ?, ?, 'at', 'rt', ?)",
-    )
-    .run(s.id, s.channelId, s.channelName, s.expiresAt);
+    .prepare("INSERT INTO auth_sessions (id_hash, channel_id, channel_name, expires_at) VALUES (?, ?, ?, ?)")
+    .run(createHash("sha256").update(s.id).digest("hex"), s.channelId, s.channelName, s.expiresAt);
 }
 
 /** DB 전체(모든 테이블·모든 TEXT 컬럼)에서 needle이 들어간 값을 찾는다. 익명 테스트용 */

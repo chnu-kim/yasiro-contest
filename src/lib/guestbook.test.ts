@@ -52,20 +52,20 @@ describe("getPostItStyle", () => {
 
 describe("handleGuestbookPost", () => {
   const NOW = 1_792_900_000;
-  const ID = "0123456789abcdef0123456789abcdef";
+  const ID = "0123456789abcdef".repeat(4);
   const ORIGIN = "https://yasiro.stream";
 
   function setup() {
     const d = createTestD1();
-    applyMigrations(d, ["0001_sessions.sql", "0002_guestbook.sql"]);
+    applyMigrations(d, ["0002_guestbook.sql", "0009_auth_sessions.sql"]);
     insertSession(d, { id: ID, channelId: FAKE_ADMIN_ID, channelName: "표시이름", expiresAt: NOW + 100 });
-    insertSession(d, { id: "f".repeat(32), channelId: FAKE_ADMIN_ID, channelName: "표시이름", expiresAt: NOW });
+    insertSession(d, { id: "f".repeat(64), channelId: FAKE_ADMIN_ID, channelName: "표시이름", expiresAt: NOW });
     return d;
   }
   const post = (body: string, headers: Record<string, string> = {}) =>
     new Request(`${ORIGIN}/api/guestbook`, {
       method: "POST",
-      headers: { origin: ORIGIN, cookie: `session_id=${ID}`, "content-type": "application/json", ...headers },
+      headers: { origin: ORIGIN, cookie: `__Host-session=${ID}`, "content-type": "application/json", ...headers },
       body,
     });
   const run = (d: ReturnType<typeof setup>, req: Request) =>
@@ -90,7 +90,7 @@ describe("handleGuestbookPost", () => {
   });
   it("401 without a cookie or with a malformed one", async () => {
     const d = setup();
-    for (const cookie of ["", "session_id=nope"]) {
+    for (const cookie of ["", "__Host-session=nope"]) {
       const res = await run(d, post(JSON.stringify({ message: "x" }), { cookie }));
       expect(res.status).toBe(401);
       expect(await res.json()).toEqual({ error: "로그인이 필요합니다." });
@@ -98,8 +98,8 @@ describe("handleGuestbookPost", () => {
   });
   it("401 expired for unknown and expired sessions", async () => {
     const d = setup();
-    for (const id of ["a".repeat(32), "f".repeat(32)]) {
-      const res = await run(d, post(JSON.stringify({ message: "x" }), { cookie: `session_id=${id}` }));
+    for (const id of ["a".repeat(64), "f".repeat(64)]) {
+      const res = await run(d, post(JSON.stringify({ message: "x" }), { cookie: `__Host-session=${id}` }));
       expect(res.status).toBe(401);
       expect(await res.json()).toEqual({ error: "세션이 만료되었습니다. 다시 로그인해주세요." });
     }
