@@ -1,14 +1,15 @@
 // test-d1 대역 자체가 D1처럼 동작하는지 확인한다(다른 모듈 테스트의 전제).
 import { describe, expect, it } from "vitest";
+import { hashSessionId } from "../session.ts";
 import { applyMigrations, createGamesTestDb, createTestD1, FAKE_ADMIN_ID, findStringAnywhere, insertSession } from "./test-d1.ts";
 
 const insertGame = "INSERT INTO games (id, name) VALUES (?, ?)";
 
 describe("test-d1", () => {
-  it("applies 0001 + 0007 and exposes the games tables", () => {
+  it("applies 0001 + 0007 + 0009 and exposes the games and session tables", () => {
     const d = createGamesTestDb();
     const names = d.sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all().map((r) => r.name);
-    expect(names).toEqual(expect.arrayContaining(["game_changes", "game_vods", "games", "sessions"]));
+    expect(names).toEqual(expect.arrayContaining(["game_changes", "game_vods", "games", "auth_sessions", "sessions"]));
   });
   it("first/all/run behave like D1 and return plain objects", async () => {
     const d = createGamesTestDb();
@@ -66,10 +67,13 @@ describe("test-d1", () => {
     const [r] = await d.db.batch([d.db.prepare("INSERT INTO games (id, name) VALUES ('a', '가') RETURNING version")]);
     expect(r.results).toEqual([{ version: 1 }]);
   });
-  it("sessions helper and findStringAnywhere", () => {
+  it("sessions helper (same hash as session.ts) and findStringAnywhere", async () => {
     const d = createGamesTestDb();
     insertSession(d, { id: "s1", channelId: FAKE_ADMIN_ID, channelName: "실명채널", expiresAt: 999 });
-    expect(d.sqlite.prepare("SELECT channel_name FROM sessions").get()).toEqual({ channel_name: "실명채널" });
+    expect(d.sqlite.prepare("SELECT id_hash, channel_name FROM auth_sessions").get()).toEqual({
+      id_hash: await hashSessionId("s1"),
+      channel_name: "실명채널",
+    });
     d.sqlite.exec("INSERT INTO games (id, name) VALUES ('a', '실명채널 게임')");
     expect(findStringAnywhere(d, "실명채널")).toEqual(["games.name"]);
   });

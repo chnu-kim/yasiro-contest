@@ -56,11 +56,11 @@ describe("getSessionActor", () => {
   const ids = parseAdminIds(FAKE_ADMIN_ID);
   const setup = () => {
     const d = createGamesTestDb();
-    insertSession(d, { id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", channelId: FAKE_ADMIN_ID, channelName: "실명채널", expiresAt: NOW + 100 });
-    insertSession(d, { id: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", channelId: YASIRO_CHANNEL_ID, channelName: "야시로본명", expiresAt: NOW + 100 });
-    insertSession(d, { id: "cccccccccccccccccccccccccccccccc", channelId: FAKE_USER_ID, channelName: "일반", expiresAt: NOW + 100 });
-    insertSession(d, { id: "dddddddddddddddddddddddddddddddd", channelId: FAKE_ADMIN_ID, channelName: "실명채널", expiresAt: NOW - 1 });
-    insertSession(d, { id: "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", channelId: FAKE_ADMIN_ID, channelName: "실명채널", expiresAt: NOW });
+    insertSession(d, { id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", channelId: FAKE_ADMIN_ID, channelName: "실명채널", expiresAt: NOW + 100 });
+    insertSession(d, { id: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", channelId: YASIRO_CHANNEL_ID, channelName: "야시로본명", expiresAt: NOW + 100 });
+    insertSession(d, { id: "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", channelId: FAKE_USER_ID, channelName: "일반", expiresAt: NOW + 100 });
+    insertSession(d, { id: "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", channelId: FAKE_ADMIN_ID, channelName: "실명채널", expiresAt: NOW - 1 });
+    insertSession(d, { id: "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", channelId: FAKE_ADMIN_ID, channelName: "실명채널", expiresAt: NOW });
     return d;
   };
   const run = (cookie: string | null) => getSessionActor(setup().db, cookie, NOW, ids);
@@ -70,23 +70,23 @@ describe("getSessionActor", () => {
     expect(await run("other=1")).toEqual({ kind: "anonymous" });
   });
   it("expired for expired, boundary and unknown sessions", async () => {
-    expect(await run("session_id=dddddddddddddddddddddddddddddddd")).toEqual({ kind: "expired" });
-    expect(await run("session_id=eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")).toEqual({ kind: "expired" });
-    expect(await run("session_id=0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f")).toEqual({ kind: "expired" });
+    expect(await run("__Host-session=dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")).toEqual({ kind: "expired" });
+    expect(await run("__Host-session=eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")).toEqual({ kind: "expired" });
+    expect(await run("__Host-session=0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f")).toEqual({ kind: "expired" });
   });
   it("anonymous for a malformed session id (no DB lookup)", async () => {
-    expect(await run("session_id=nope")).toEqual({ kind: "anonymous" });
+    expect(await run("__Host-session=nope")).toEqual({ kind: "anonymous" });
   });
   it("user for non-admin", async () => {
-    expect(await run("session_id=cccccccccccccccccccccccccccccccc")).toEqual({ kind: "user" });
+    expect(await run("__Host-session=cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc")).toEqual({ kind: "user" });
   });
   it("admin gets alias, never the channel name", async () => {
-    const r = await run("a=1; session_id=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    const r = await run("a=1; __Host-session=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     expect(r).toEqual({ kind: "admin", actor: { channelId: FAKE_ADMIN_ID, name: "관리자" } });
     expect(JSON.stringify(r)).not.toContain("실명채널");
   });
   it("yasiro gets its alias", async () => {
-    expect(await run("session_id=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")).toEqual({
+    expect(await run("__Host-session=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")).toEqual({
       kind: "admin",
       actor: { channelId: YASIRO_CHANNEL_ID, name: "야시로" },
     });
@@ -101,7 +101,7 @@ describe("getSessionActor", () => {
       },
       batch: d.db.batch.bind(d.db),
     };
-    await getSessionActor(spy, "session_id=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", NOW, ids);
+    await getSessionActor(spy, "__Host-session=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", NOW, ids);
     expect(queries).toHaveLength(1);
     expect(queries[0]).not.toMatch(/channel_name/);
   });

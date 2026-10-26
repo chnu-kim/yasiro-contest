@@ -29,7 +29,23 @@ pnpm lint
 pnpm wrangler d1 migrations apply yasiro-db --local
 ```
 
-데이터가 필요하면 `pnpm wrangler d1 execute yasiro-db --local --command "INSERT ..."`로 넣는다. 로그인이 필요한 API는 `sessions`에 행을 넣고 브라우저 쿠키 `session_id`를 그 id로 맞춰 확인한다. 치지직 OAuth 자체는 `.dev.vars`에 CHZZK_* 값이 없어서 로컬에서는 확인할 수 없다.
+데이터가 필요하면 `pnpm wrangler d1 execute yasiro-db --local --command "INSERT ..."`로 넣는다. 치지직 OAuth 자체는 `.dev.vars`에 CHZZK_* 값이 없어서 로컬에서는 확인할 수 없다(값이 없으면 `/auth/login`은 500).
+
+### 로그인 세션
+
+`auth_sessions`에는 세션 ID의 SHA-256만 들어간다. 세션 ID를 만들고 해시 행을 넣는다(채널 ID는 야시로 `d6e680f5b17eba0b078f978dd722c0f3` 또는 `--var ADMIN_CHANNEL_IDS:<가짜 ID>`로 주입한 가짜 ID. 실제 다른 관리자 ID는 쓰지 않는다):
+
+```bash
+ID=$(openssl rand -hex 32)
+HASH=$(printf %s "$ID" | shasum -a 256 | cut -d' ' -f1)
+pnpm wrangler d1 execute yasiro-db --local --command "INSERT INTO auth_sessions (id_hash, channel_id, channel_name, expires_at) VALUES ('$HASH', '<채널 ID>', '로컬확인', unixepoch() + 604800)"
+echo "$ID"   # 쿠키 값
+```
+
+- curl: `curl -H "cookie: __Host-session=$ID" http://localhost:<port>/to-yasiro`
+- Chrome: 그 localhost 페이지의 DevTools 콘솔에서 `document.cookie = "__Host-session=<ID>; Path=/; Secure"` 후 새로고침(JS로 만든 쿠키라 HttpOnly는 아니지만 로컬 확인에는 충분하다). localhost는 secure context라 `Secure`·`__Host-` 쿠키가 동작한다. Safari는 localhost의 Secure 쿠키를 다르게 다룰 수 있으니 Chrome으로 본다.
+- 쓰기 요청(POST 등)은 `Origin` 헤더가 같은 출처여야 한다(`checkSameOrigin`). curl이면 `-H "origin: http://localhost:<port>"`.
+- 레거시 `sessions` 테이블과 `session_id` 쿠키는 더 이상 읽지 않는다.
 
 서버는 `run_in_background`로 띄우고, 확인이 끝나면 종료한다.
 

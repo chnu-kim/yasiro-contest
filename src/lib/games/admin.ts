@@ -25,7 +25,7 @@ export function actorNameFor(channelId: string): "야시로" | "관리자" {
   return channelId === YASIRO_CHANNEL_ID ? "야시로" : "관리자";
 }
 
-/** 세션 쿠키로 요청자를 판정한다. sessions.channel_name은 조회하지 않는다 */
+/** 세션 쿠키로 요청자를 판정한다. auth_sessions.channel_name은 조회하지 않는다 */
 export async function getSessionActor(
   db: GamesDb,
   cookieHeader: string | null,
