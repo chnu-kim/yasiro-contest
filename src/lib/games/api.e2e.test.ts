@@ -67,53 +67,53 @@ beforeEach(() => {
   logs = [];
   texts = [];
   counter = 0;
-  insertSession(d1, { id: "s-admin", channelId: FAKE_ADMIN_ID, channelName: REAL_NAME, expiresAt: NOW + 1000 });
-  insertSession(d1, { id: "s-yasiro", channelId: YASIRO_CHANNEL_ID, channelName: "야시로 본채널", expiresAt: NOW + 1000 });
-  insertSession(d1, { id: "s-user", channelId: FAKE_USER_ID, channelName: "일반시청자", expiresAt: NOW + 1000 });
-  insertSession(d1, { id: "s-old", channelId: FAKE_ADMIN_ID, channelName: REAL_NAME, expiresAt: NOW });
+  insertSession(d1, { id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", channelId: FAKE_ADMIN_ID, channelName: REAL_NAME, expiresAt: NOW + 1000 });
+  insertSession(d1, { id: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", channelId: YASIRO_CHANNEL_ID, channelName: "야시로 본채널", expiresAt: NOW + 1000 });
+  insertSession(d1, { id: "cccccccccccccccccccccccccccccccc", channelId: FAKE_USER_ID, channelName: "일반시청자", expiresAt: NOW + 1000 });
+  insertSession(d1, { id: "dddddddddddddddddddddddddddddddd", channelId: FAKE_ADMIN_ID, channelName: REAL_NAME, expiresAt: NOW });
 });
 
 afterEach(() => d1.close());
 
 describe("API 전 과정과 익명 규칙", () => {
   it("관리자(실명 채널) 세션으로 추가 → 수정 → 충돌 → 숨김 → 기록 → 목록, 실명·ID가 어디에도 없다", async () => {
-    const created = await read(await handleCreateGame(req("POST", "/api/games", "s-admin", { input: INPUT }), deps()));
+    const created = await read(await handleCreateGame(req("POST", "/api/games", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { input: INPUT }), deps()));
     expect(created.status).toBe(201);
     expect(created.body.changed).toBe(true);
     expect(created.body.game).toMatchObject({ name: "엘든 링", version: 1, hidden: false, updatedByName: "관리자" });
     const id: string = created.body.game.id;
 
     const updated = await read(
-      await handleUpdateGame(req("PATCH", `/api/games/${id}`, "s-admin", { expectedVersion: 1, patch: { status: "clear" } }), deps(), id),
+      await handleUpdateGame(req("PATCH", `/api/games/${id}`, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { expectedVersion: 1, patch: { status: "clear" } }), deps(), id),
     );
     expect(updated.status).toBe(200);
     expect(updated.body.game).toMatchObject({ version: 2, status: "clear", updatedByName: "관리자" });
 
     const stale = await read(
-      await handleUpdateGame(req("PATCH", `/api/games/${id}`, "s-admin", { expectedVersion: 1, patch: { status: "fail" } }), deps(), id),
+      await handleUpdateGame(req("PATCH", `/api/games/${id}`, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { expectedVersion: 1, patch: { status: "fail" } }), deps(), id),
     );
     expect(stale.status).toBe(409);
     expect(stale.body.error.code).toBe("conflict");
     expect(stale.body.error.message.startsWith("관리자가 방금(")).toBe(true);
     expect(stale.body.latest).toMatchObject({ version: 2, status: "clear", updatedByName: "관리자" });
 
-    const hidden = await read(await handleSetHidden(req("POST", `/api/games/${id}/hidden`, "s-admin", { hidden: true }), deps(), id));
+    const hidden = await read(await handleSetHidden(req("POST", `/api/games/${id}/hidden`, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { hidden: true }), deps(), id));
     expect(hidden.status).toBe(200);
     expect(hidden.body.game).toMatchObject({ hidden: true, version: 3 });
 
-    const changes = await read(await handleListChanges(req("GET", `/api/games/${id}/changes`, "s-admin"), deps(), id));
+    const changes = await read(await handleListChanges(req("GET", `/api/games/${id}/changes`, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), deps(), id));
     expect(changes.status).toBe(200);
     expect(changes.body.total).toBe(3);
     expect(changes.body.changes.map((c: { action: string }) => c.action)).toEqual(["hide", "update", "create"]);
     expect(changes.body.changes.every((c: { actorName: string }) => c.actorName === "관리자")).toBe(true);
     expect(changes.body.changes[1].summary).toBe("정복 여부 모름 → 정복");
 
-    const adminList = await read(await handleListGames(req("GET", "/api/games?includeHidden=1", "s-admin"), deps()));
+    const adminList = await read(await handleListGames(req("GET", "/api/games?includeHidden=1", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), deps()));
     expect(adminList.body.games.map((g: { id: string }) => g.id)).toEqual([id]);
     const visitorList = await read(await handleListGames(req("GET", "/api/games?includeHidden=1", null), deps()));
     expect(visitorList.body).toEqual({ games: [] });
 
-    const meta = await read(await handleYoutubeMeta(req("GET", `/api/games/youtube?url=${encodeURIComponent(VIDEO)}`, "s-admin"), deps()));
+    const meta = await read(await handleYoutubeMeta(req("GET", `/api/games/youtube?url=${encodeURIComponent(VIDEO)}`, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), deps()));
     expect(meta.status).toBe(200);
     expect(meta.body).toMatchObject({ videoId: "dQw4w9WgXcQ", date: "2026-10-23" });
 
@@ -136,27 +136,27 @@ describe("API 전 과정과 익명 규칙", () => {
 
   it("직접 API 호출의 공백·비정규 유튜브 URL은 500이 아니라 다듬어 저장된다", async () => {
     const padded = { ...INPUT, name: "  엘든 링  ", vods: [{ title: " 1화 ", url: ` https://www.youtube.com:8443/watch?v=dQw4w9WgXcQ&x="a#frag `, date: "2026-10-23" }] };
-    const res = await read(await handleCreateGame(req("POST", "/api/games", "s-admin", { input: padded }), deps()));
+    const res = await read(await handleCreateGame(req("POST", "/api/games", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { input: padded }), deps()));
     expect(res.status).toBe(201);
     expect(res.body.game).toMatchObject({ name: "엘든 링", vods: [{ title: "1화", url: VIDEO }] });
     expect(d1.sqlite.prepare("SELECT url FROM game_vods").get()).toEqual({ url: VIDEO });
   });
 
   it("야시로 채널 세션은 '야시로'로 기록된다", async () => {
-    const res = await read(await handleCreateGame(req("POST", "/api/games", "s-yasiro", { input: INPUT }), deps()));
+    const res = await read(await handleCreateGame(req("POST", "/api/games", "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", { input: INPUT }), deps()));
     expect(res.status).toBe(201);
     expect(res.body.game.updatedByName).toBe("야시로");
     expect(findStringAnywhere(d1, "야시로 본채널")).toEqual([]);
     const id = res.body.game.id;
     const stale = await read(
-      await handleUpdateGame(req("PATCH", `/api/games/${id}`, "s-yasiro", { expectedVersion: 9, patch: { status: "fail" } }), deps(), id),
+      await handleUpdateGame(req("PATCH", `/api/games/${id}`, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", { expectedVersion: 9, patch: { status: "fail" } }), deps(), id),
     );
     expect(stale.body.error.message.startsWith("야시로가 방금(")).toBe(true);
   });
 
   it("검증 오류는 422, 경로 접두 없이 치지직 링크 문구를 준다", async () => {
     const bad = { ...INPUT, vods: [{ title: "t", url: "https://chzzk.naver.com/video/1", date: "2026-10-23" }] };
-    const res = await read(await handleCreateGame(req("POST", "/api/games", "s-admin", { input: bad }), deps()));
+    const res = await read(await handleCreateGame(req("POST", "/api/games", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { input: bad }), deps()));
     expect(res.status).toBe(422);
     expect(res.body.error.code).toBe("invalid");
     expect(res.body.issues.map((i: { path: string }) => i.path)).toContain("vods[0].url");
@@ -166,19 +166,20 @@ describe("API 전 과정과 익명 규칙", () => {
   });
 
   it("없는 게임은 404, 이름 규칙 위반 id도 404", async () => {
-    const none = await read(await handleSetHidden(req("POST", "/api/games/none/hidden", "s-admin", { hidden: true }), deps(), "none"));
+    const none = await read(await handleSetHidden(req("POST", "/api/games/none/hidden", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { hidden: true }), deps(), "none"));
     expect(none.status).toBe(404);
-    const noChanges = await read(await handleListChanges(req("GET", "/api/games/none/changes", "s-admin"), deps(), "none"));
+    const noChanges = await read(await handleListChanges(req("GET", "/api/games/none/changes", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), deps(), "none"));
     expect(noChanges.status).toBe(404);
   });
 
   it("권한이 없는 요청은 DB를 바꾸지 못한다", async () => {
     const cases: Array<[string | null, number, string, Record<string, string>?]> = [
       [null, 401, "login_required"],
-      ["s-old", 401, "session_expired"],
-      ["ghost", 401, "session_expired"],
-      ["s-user", 403, "forbidden"],
-      ["s-admin", 403, "cross_origin", { origin: "https://evil.example" }],
+      ["dddddddddddddddddddddddddddddddd", 401, "session_expired"],
+      ["0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f", 401, "session_expired"],
+      ["ghost", 401, "login_required"],
+      ["cccccccccccccccccccccccccccccccc", 403, "forbidden"],
+      ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 403, "cross_origin", { origin: "https://evil.example" }],
     ];
     for (const [sid, status, code, headers] of cases) {
       const res = await read(await handleCreateGame(req("POST", "/api/games", sid, { input: INPUT }, headers), deps()));
@@ -188,11 +189,11 @@ describe("API 전 과정과 익명 규칙", () => {
   });
 
   it("loadGamesPageData: 관리자 / 방문자 / D1 오류", async () => {
-    await read(await handleCreateGame(req("POST", "/api/games", "s-admin", { input: INPUT }), deps()));
+    await read(await handleCreateGame(req("POST", "/api/games", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { input: INPUT }), deps()));
     const id = (d1.sqlite.prepare("SELECT id FROM games").get() as { id: string }).id;
-    await read(await handleSetHidden(req("POST", `/api/games/${id}/hidden`, "s-admin", { hidden: true }), deps(), id));
+    await read(await handleSetHidden(req("POST", `/api/games/${id}/hidden`, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", { hidden: true }), deps(), id));
 
-    const admin = await loadGamesPageData(deps(), "session_id=s-admin");
+    const admin = await loadGamesPageData(deps(), "session_id=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     expect(admin).toMatchObject({ ok: true, admin: { name: "관리자" } });
     expect(admin.ok && admin.games).toHaveLength(1);
     const visitor = await loadGamesPageData(deps(), null);

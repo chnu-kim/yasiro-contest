@@ -1,6 +1,7 @@
 // /api/games Route Handler의 로직. Route Handler는 이 함수들에 위임만 한다.
 // 익명 규칙: 응답·로그에 채널 ID, write_token, 관리자 실명이 나가지 않는다. 로그에는 코드와 error.name만 쓴다.
-import { checkSameOrigin, getSessionActor, parseAdminIds } from "./admin.ts";
+import { getSessionActor, parseAdminIds } from "./admin.ts";
+import { checkSameOrigin } from "../http.ts";
 import { searchCategories, ChzzkCategoryError } from "../chzzk-category.ts";
 import { conflictMessage } from "./diff.ts";
 import { createGame, getGame, listChanges, listGames, setHidden, updateGame } from "./repo.ts";

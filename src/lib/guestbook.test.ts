@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { validateMessage, getPostItStyle } from "./guestbook";
+import { validateMessage, getPostItStyle, handleGuestbookPost } from "./guestbook";
+import { FAKE_ADMIN_ID, applyMigrations, createTestD1, insertSession } from "./games/test-d1";
 
 describe("validateMessage", () => {
   it("정상 메시지는 trim된 값을 반환한다", () => {
@@ -46,5 +47,73 @@ describe("getPostItStyle", () => {
       expect(rotation).toBeGreaterThanOrEqual(-6);
       expect(rotation).toBeLessThanOrEqual(6);
     }
+  });
+});
+
+describe("handleGuestbookPost", () => {
+  const NOW = 1_792_900_000;
+  const ID = "0123456789abcdef0123456789abcdef";
+  const ORIGIN = "https://yasiro.stream";
+
+  function setup() {
+    const d = createTestD1();
+    applyMigrations(d, ["0001_sessions.sql", "0002_guestbook.sql"]);
+    insertSession(d, { id: ID, channelId: FAKE_ADMIN_ID, channelName: "표시이름", expiresAt: NOW + 100 });
+    insertSession(d, { id: "f".repeat(32), channelId: FAKE_ADMIN_ID, channelName: "표시이름", expiresAt: NOW });
+    return d;
+  }
+  const post = (body: string, headers: Record<string, string> = {}) =>
+    new Request(`${ORIGIN}/api/guestbook`, {
+      method: "POST",
+      headers: { origin: ORIGIN, cookie: `session_id=${ID}`, "content-type": "application/json", ...headers },
+      body,
+    });
+  const run = (d: ReturnType<typeof setup>, req: Request) =>
+    handleGuestbookPost(req, { db: d.db, now: () => NOW, newId: () => "note-1" });
+  const rows = (d: ReturnType<typeof setup>) => d.sqlite.prepare("SELECT * FROM guestbook").all();
+
+  it("stores the note with the session's channel and returns 201", async () => {
+    const d = setup();
+    const res = await run(d, post(JSON.stringify({ message: "  안녕  " })));
+    expect(res.status).toBe(201);
+    expect(await res.json()).toEqual({ id: "note-1" });
+    expect(rows(d)).toMatchObject([
+      { id: "note-1", message: "안녕", channel_id: FAKE_ADMIN_ID, channel_name: "표시이름" },
+    ]);
+  });
+  it("403 for cross-origin before anything else", async () => {
+    const d = setup();
+    const res = await run(d, post(JSON.stringify({ message: "x" }), { origin: "https://evil.example" }));
+    expect(res.status).toBe(403);
+    expect(typeof ((await res.json()) as { error: unknown }).error).toBe("string");
+    expect(rows(d)).toHaveLength(0);
+  });
+  it("401 without a cookie or with a malformed one", async () => {
+    const d = setup();
+    for (const cookie of ["", "session_id=nope"]) {
+      const res = await run(d, post(JSON.stringify({ message: "x" }), { cookie }));
+      expect(res.status).toBe(401);
+      expect(await res.json()).toEqual({ error: "로그인이 필요합니다." });
+    }
+  });
+  it("401 expired for unknown and expired sessions", async () => {
+    const d = setup();
+    for (const id of ["a".repeat(32), "f".repeat(32)]) {
+      const res = await run(d, post(JSON.stringify({ message: "x" }), { cookie: `session_id=${id}` }));
+      expect(res.status).toBe(401);
+      expect(await res.json()).toEqual({ error: "세션이 만료되었습니다. 다시 로그인해주세요." });
+    }
+  });
+  it("400 for bad JSON, missing/non-string message and failed validation", async () => {
+    const d = setup();
+    const bad = await run(d, post("{"));
+    expect([bad.status, await bad.json()]).toEqual([400, { error: "잘못된 요청 형식입니다." }]);
+    for (const body of ["null", "{}", JSON.stringify({ message: 1 })]) {
+      const res = await run(d, post(body));
+      expect([res.status, await res.json()]).toEqual([400, { error: "메시지를 입력해주세요." }]);
+    }
+    const long = await run(d, post(JSON.stringify({ message: "가".repeat(201) })));
+    expect(long.status).toBe(400);
+    expect(rows(d)).toHaveLength(0);
   });
 });

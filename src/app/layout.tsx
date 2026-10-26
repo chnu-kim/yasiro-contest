@@ -4,6 +4,7 @@ import './globals.css';
 import Nav from '@/components/Nav';
 import SkipLink from '@/components/SkipLink';
 import { siteDefaults } from '@/lib/seo';
+import { SESSION_COOKIE, findSession, parseSessionId } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,16 +17,10 @@ async function getSessionUser() {
     const db = env.DB;
 
     const cookieStore = await cookies();
-    const sessionId = cookieStore.get('session_id')?.value;
-    if (!sessionId) return null;
-
-    const row = await db
-      .prepare('SELECT channel_id, channel_name FROM sessions WHERE id = ? AND expires_at > unixepoch()')
-      .bind(sessionId)
-      .first<{ channel_id: string; channel_name: string }>();
-
-    if (!row) return null;
-    return { channelId: row.channel_id, channelName: row.channel_name };
+    const sessionId = parseSessionId(cookieStore.get(SESSION_COOKIE)?.value);
+    const found = await findSession(db, sessionId, Math.floor(Date.now() / 1000));
+    if (found.state !== 'active') return null;
+    return found.session;
   } catch {
     return null;
   }

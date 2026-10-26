@@ -52,9 +52,9 @@ const m = vi.hoisted(() => {
 
 vi.mock("./admin.ts", () => ({
   getSessionActor: m.getSessionActor,
-  checkSameOrigin: m.checkSameOrigin,
   parseAdminIds: m.parseAdminIds,
 }));
+vi.mock("../http.ts", () => ({ checkSameOrigin: m.checkSameOrigin }));
 vi.mock("./repo.ts", () => ({
   listGames: m.listGames,
   getGame: m.getGame,

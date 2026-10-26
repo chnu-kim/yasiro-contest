@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { readCookie, safeNextPath } from "@/lib/games/admin";
+import { readCookie, safeNextPath } from "@/lib/http";
+import { sessionCookie } from "@/lib/session";
 import { exchangeCode, fetchUser, generateState } from "@/lib/chzzk-auth";
 
 export async function GET(req: Request) {
@@ -11,12 +12,8 @@ export async function GET(req: Request) {
     return new Response("code 또는 state 파라미터가 없습니다.", { status: 400 });
   }
 
-  const cookieHeader = req.headers.get("cookie") ?? "";
-  const savedState = cookieHeader
-    .split(";")
-    .map((c) => c.trim())
-    .find((c) => c.startsWith("oauth_state="))
-    ?.split("=")[1];
+  const cookieHeader = req.headers.get("cookie");
+  const savedState = readCookie(cookieHeader, "oauth_state");
 
   if (!savedState || savedState !== state) {
     return new Response("유효하지 않은 state입니다. 다시 로그인하세요.", { status: 403 });
@@ -57,6 +54,6 @@ export async function GET(req: Request) {
   const headers = new Headers({ Location: origin + next });
   headers.append("Set-Cookie", "oauth_state=; Path=/; HttpOnly; Max-Age=0");
   headers.append("Set-Cookie", "oauth_next=; Path=/; HttpOnly; Max-Age=0");
-  headers.append("Set-Cookie", `session_id=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`);
+  headers.append("Set-Cookie", sessionCookie(sessionId));
   return new Response(null, { status: 302, headers });
 }
