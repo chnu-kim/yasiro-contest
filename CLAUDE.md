@@ -23,6 +23,7 @@ pnpm -s games:edit --find <키워드> | --search <검색어> | <ops.json> [--app
 pnpm preview        # Workers 런타임으로 로컬 미리보기
 pnpm shots [url] [경로...]  # 페이지 × 라이트/다크 × 1280/390 전체 스크린샷 → screenshots/index.html
 pnpm run deploy     # 수동 배포. `pnpm deploy`는 pnpm 예약어라 동작 안 함
+pnpm wrangler tail  # 운영 Worker 실시간 로그. 일반 터미널에서 실행한다(TTY가 아닌 셸·Claude Code `!`에서는 출력이 잡히지 않는다)
 ```
 
 main에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 `pnpm test` → `pnpm run deploy`를 실행한다. 테스트가 깨지면 배포되지 않는다.
