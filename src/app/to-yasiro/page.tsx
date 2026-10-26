@@ -8,6 +8,7 @@ export const metadata: Metadata = pageMetadata({
   description: '야시로 팬들이 남긴 한마디 방명록. 치지직 로그인 후 메모를 남겨보세요.',
 });
 import { getCloudflareContext } from '@opennextjs/cloudflare';
+import { SESSION_COOKIE, findSession, parseSessionId } from '@/lib/session';
 import GuestbookBoard from './GuestbookBoard';
 
 interface GuestbookRow {
@@ -22,23 +23,18 @@ async function getInitialData() {
     const { env } = await getCloudflareContext({ async: true });
 
     const cookieStore = await cookies();
-    const sessionId = cookieStore.get('session_id')?.value;
+    const sessionId = parseSessionId(cookieStore.get(SESSION_COOKIE)?.value);
 
-    const [notesResult, session] = await Promise.all([
+    const [notesResult, found] = await Promise.all([
       env.DB
         .prepare('SELECT id, message, channel_name, created_at FROM guestbook ORDER BY created_at DESC LIMIT 200')
         .all<GuestbookRow>(),
-      sessionId
-        ? env.DB
-            .prepare('SELECT channel_name FROM sessions WHERE id = ? AND expires_at > unixepoch()')
-            .bind(sessionId)
-            .first<{ channel_name: string }>()
-        : Promise.resolve(null),
+      findSession(env.DB, sessionId, Math.floor(Date.now() / 1000)),
     ]);
 
     return {
       notes: notesResult.results,
-      user: session ? { channelName: session.channel_name } : null,
+      user: found.state === 'active' ? { channelName: found.session.channelName } : null,
     };
   } catch {
     return { notes: [], user: null };

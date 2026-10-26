@@ -1,4 +1,4 @@
-import { safeNextPath } from "@/lib/games/admin";
+import { safeNextPath } from "@/lib/http";
 import { buildAuthorizationURL, generateState } from "@/lib/chzzk-auth";
 
 export function GET(req: Request) {
