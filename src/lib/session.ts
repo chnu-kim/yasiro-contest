@@ -2,7 +2,7 @@ import { readCookie } from "./http.ts";
 
 export const SESSION_COOKIE = "session_id";
 
-/** 세션 수명(초). 로그인 때 쿠키 Max-Age로 쓴다 */
+/** 쿠키 Max-Age(초). DB expires_at은 아직 callback이 치지직 토큰 TTL로 따로 정한다(같은 상수로 통일 예정) */
 export const SESSION_COOKIE_MAX_AGE = 2592000;
 
 /** 세션 ID 형식: generateState 출력(32자 소문자 hex). 형식이 이 한 곳에만 있다 */
