@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import './globals.css';
 import Nav from '@/components/Nav';
+import SiteFooter from '@/components/SiteFooter';
 import SkipLink from '@/components/SkipLink';
 import { siteDefaults } from '@/lib/seo';
 import { SESSION_COOKIE, findSession, parseSessionId } from '@/lib/session';
@@ -44,13 +45,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           }}
         />
       </head>
-      <body>
+      <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
         <SkipLink />
         <Nav initialUser={user} />
         {/* 스킵 링크 대상. tabIndex -1이어야 Safari에서도 포커스가 실제로 옮겨 온다 */}
-        <main id="main-content" tabIndex={-1} style={{ outline: 'none' }}>
+        <main id="main-content" tabIndex={-1} style={{ outline: 'none', flex: '1 0 auto' }}>
           {children}
         </main>
+        <SiteFooter />
       </body>
     </html>
   );

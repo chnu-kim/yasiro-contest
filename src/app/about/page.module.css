@@ -172,7 +172,7 @@
 
 /* ─── 마무리 ─── */
 .outro {
-  padding: 0 var(--page-x) var(--section-gap);
+  padding: 0 var(--page-x) var(--section-y);
 }
 
 .outroRow {

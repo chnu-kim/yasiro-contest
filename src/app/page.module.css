@@ -198,8 +198,7 @@
 .headLink:focus-visible,
 .featured:focus-visible,
 .row:focus-visible,
-.card:focus-visible,
-.channel:focus-visible {
+.card:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
@@ -432,74 +431,6 @@
   transform: translateX(4px);
 }
 
-/* ═════ 푸터: 브랜드·고지 한 줄 + 채널 한 줄 ═════ */
-.footer {
-  padding: var(--space-6) var(--gutter) var(--space-7);
-  border-top: 1px solid var(--border);
-}
-
-.footerTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.footerBrand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: 'Noto Serif KR', serif;
-  font-weight: 700;
-  font-size: 18px;
-}
-
-.copy {
-  font-size: var(--fs-sm);
-  color: var(--text-dim);
-}
-
-.channels {
-  list-style: none;
-  margin-top: var(--space-4);
-  display: flex;
-  flex-wrap: wrap;
-  border-top: 1px solid var(--border);
-}
-
-/* 링크 사이 짧은 세로 hairline(글자 높이만) */
-.channels li + li .channel::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 1px;
-  height: 14px;
-  margin-top: -7px;
-  background: var(--border-strong);
-}
-
-.channel {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-height: var(--tap);
-  margin-top: var(--space-2);
-  padding: 0 var(--space-4);
-  font-size: 15px;
-  color: var(--text-dim);
-  transition: color var(--dur-fast);
-}
-
-.channels li:first-child .channel {
-  padding-left: 0;
-}
-
-.channel:hover {
-  color: var(--text);
-}
-
 /* ═════ 태블릿 ═════ */
 @media (max-width: 1080px) {
   .char {
@@ -608,32 +539,6 @@
 
   .cardDesc {
     font-size: var(--fs-sm);
-  }
-
-  .footerTop {
-    flex-direction: row;
-  }
-
-  .channels {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 0;
-  }
-
-  .channels li .channel,
-  .channels li + li .channel {
-    display: flex;
-    margin-top: 0;
-    padding: 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .channels li + li .channel::before {
-    display: none;
-  }
-
-  .channels li:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
   }
 }
 

@@ -1,0 +1,106 @@
+/* 공용 푸터: 브랜드·고지 한 줄 + 채널 한 줄. 색은 토큰만 쓴다 */
+.footer {
+  padding: 32px var(--page-x) 48px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.copy {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.channels {
+  list-style: none;
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+}
+
+/* 링크 사이 짧은 세로 hairline(글자 높이만) */
+.channels li + li .channel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1px;
+  height: 14px;
+  margin-top: -7px;
+  background: var(--border-strong);
+}
+
+.channel {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--tap);
+  margin-top: 8px;
+  padding: 0 16px;
+  font-size: 15px;
+  color: var(--text-dim);
+  transition: color var(--dur-fast);
+}
+
+.channels li:first-child .channel {
+  padding-left: 0;
+}
+
+.channel:hover {
+  color: var(--text);
+}
+
+.channel:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .channels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 0;
+  }
+
+  .channels li .channel,
+  .channels li + li .channel {
+    display: flex;
+    margin-top: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .channels li + li .channel::before {
+    display: none;
+  }
+
+  .channels li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Button from '@/components/Button';
+import { CHANNELS, type ChannelId } from '@/lib/channels';
 import ChannelGlyph, { type ChannelKind } from '@/components/ChannelGlyph';
 import HeightRuler from '@/components/HeightRuler';
 import RoundStamp from '@/components/RoundStamp';
@@ -34,16 +35,20 @@ const PROFILE: { label: string; value: string }[] = [
 
 type Channel = { name: string; desc: string; href: string; kind: ChannelKind };
 
-const PRIMARY_CHANNELS: Channel[] = [
-  { name: '치지직', desc: '라이브 방송', href: 'https://chzzk.naver.com/d6e680f5b17eba0b078f978dd722c0f3', kind: 'broadcast' },
-  { name: '시로의 탐험일지', desc: '유튜브 · 다시보기', href: 'https://www.youtube.com/@시로의탐험일지', kind: 'journal' },
-];
-
-const SECONDARY_CHANNELS: Channel[] = [
-  { name: '유튜브', desc: '유튜브 · @yasiro0321', href: 'https://www.youtube.com/@yasiro0321', kind: 'play' },
-  { name: 'X', desc: '@yasiro__', href: 'https://x.com/yasiro__', kind: 'post' },
-  { name: '팬카페', desc: '방송 일정 공지', href: 'https://cafe.naver.com/terafore', kind: 'community' },
-];
+// 주소·문구는 src/lib/channels.ts가 정본. 여기서는 /about 배치(큰 카드 2 + 작은 카드 3)와 아이콘만 정한다
+const KIND: Record<ChannelId, ChannelKind> = {
+  chzzk: 'broadcast',
+  journal: 'journal',
+  youtube: 'play',
+  x: 'post',
+  cafe: 'community',
+};
+const toCard = (id: ChannelId): Channel => {
+  const c = CHANNELS.find((ch) => ch.id === id)!;
+  return { name: c.label, desc: c.desc, href: c.href, kind: KIND[id] };
+};
+const PRIMARY_CHANNELS: Channel[] = (['chzzk', 'journal'] as const).map(toCard);
+const SECONDARY_CHANNELS: Channel[] = (['youtube', 'x', 'cafe'] as const).map(toCard);
 
 // 위치는 yasiro4.png(1600×2277)에서 직접 잰 값. x·y는 그림 상자 대비 %.
 // 원화를 잘라 확인해서 장비가 분명히 보이는 4가지만 단다(지도 두루마리는 왼쪽 허리 가죽 홀더에 꽂힌 종이 말이).
