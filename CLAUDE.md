@@ -1,6 +1,6 @@
 # yasiro-contest
 
-치지직 스트리머 야시로 팬사이트 대회 출품 프로젝트. 출품작 여러 개가 디자인 토큰과 Nav를 공유하고, 각 출품작은 독립 페이지로 격리한다.
+치지직 스트리머 야시로의 비공식 팬사이트. 팬사이트 대회 출품으로 시작했고, 대회가 끝난 2026-11부터 사용자가 운영하는 팬사이트다. 페이지들이 디자인 토큰과 Nav를 공유한다.
 
 - 프로덕션: https://yasiro.stream · 레포: `chnu-kim/yasiro-contest`
 - 스택: Next.js 16.2.9 (App Router) · React 19 · TypeScript · pnpm · vitest
@@ -34,33 +34,33 @@ main에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 `pnpm test`
 src/app/
   layout.tsx            세션 조회(D1) + Nav + 테마 초기화 스크립트 + 기본 메타데이터(siteDefaults). force-dynamic
   sitemap.ts, robots.ts 검색엔진용. 페이지 목록은 src/lib/seo.ts SITE_PAGES
-  page.tsx              허브(/) — 히어로, 출품작 바로가기 카드, 최근 한마디
+  page.tsx              홈(/) — 히어로(상반신 크롭), 최근 탐험 띠(D1 games, lib/games/home.ts), 더 둘러보기 카드·채널 링크
   about/                소개 — 프로필, 주요 콘텐츠, 채널 링크
-  to-yasiro/            방명록 출품작 (GuestbookBoard, PostIt)
-  games/                플레이한 게임 출품작. page=서버(D1 읽기·관리자 판별), GamesBoard·GameCard·GameDetailDialog·Pagination·Poster(공개) +
+  games/                플레이한 게임. page=서버(D1 읽기·관리자 판별), GamesBoard·GameCard·GameDetailDialog·Pagination·Poster(공개) +
                         관리자 UI: AdminBar·GameEditForm·CategoryPicker·AddGameFlow·DialogFrame·Toast, adminApi(fetch 래퍼)·drafts(localStorage)
   auth/{login,callback,logout}/route.ts   치지직 OAuth (login?next=<경로>는 oauth_next 쿠키로 복귀). 로직은 src/lib/auth-routes.ts
-  api/guestbook/route.ts
   api/games/            관리자 API (route·[id]·[id]/hidden·[id]/changes·categories·youtube). 핸들러는 얇게, 로직은 src/lib/games/api.ts
-src/components/         Nav, PostIt, SkipLink, ClearStamp (공유)
+src/components/         Nav, SkipLink, ClearStamp (공유)
 scripts/games-{seed,export,edit}.ts   pnpm games:seed / games:export / games:edit 진입점 (얇게. 로직은 src/lib/games/seed.ts, ops.ts)
-src/lib/                순수 로직 + *.test.ts (session, auth-routes, http, chzzk-auth, guestbook, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta})
+src/lib/                순수 로직 + *.test.ts (session, auth-routes, http, chzzk-auth, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta,home})
 migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
 ```
 
 ## 검색·공유 (SEO)
 
-- 정본은 `src/lib/seo.ts`: 홈 제목·설명(야시로·치지직·버튜버·버츄얼, '비공식' 명시), `pageMetadata`, `SITE_PAGES`(sitemap), 허브 JSON-LD(`siteJsonLd`: WebSite + 야시로 Person, 공식 채널 sameAs).
+- 정본은 `src/lib/seo.ts`: 홈 제목·설명(야시로·치지직·버튜버·버츄얼, '비공식' 명시), `pageMetadata`, `SITE_PAGES`(sitemap), 홈 JSON-LD(`siteJsonLd`: WebSite + 야시로 Person, 공식 채널 sameAs).
 - 공개 페이지는 `export const metadata = pageMetadata({ path, title, description })`로 쓴다. 하위 metadata는 openGraph·twitter를 통째로 덮어써서(얕은 병합) 제목만 두면 공유 미리보기가 레이아웃 값으로 남는다. 제목 뒤 " | 야시로 팬사이트"는 레이아웃 template이 붙인다.
-- 새 출품작은 `SITE_PAGES`에도 넣는다. 공유 이미지는 `public/og.png`(1200×630).
+- 새 페이지는 `SITE_PAGES`에도 넣는다. 공유 이미지는 `public/og.png`(1200×630).
 - 검색엔진 소유 확인: 네이버 서치어드바이저는 `siteDefaults`의 `other['naver-site-verification']`, 구글 서치 콘솔은 메타 태그 없이 등록돼 있다. sitemap은 두 곳에 `https://yasiro.stream/sitemap.xml`로 제출한다.
 
-## 출품작 규칙
+## 페이지 규칙
 
-- 새 출품작은 `src/app/<name>/page.tsx` + `page.module.css`로 만든다. 허브(`/`)에는 바로가기 카드(`ENTRIES`) 한 장만 더하고, 내용 섹션은 넣지 않는다.
+- 새 페이지는 `src/app/<name>/page.tsx` + `page.module.css`로 만든다.
+- 홈(`/`)은 히어로 → 최근 탐험 띠 → 더 둘러보기(페이지 카드·채널 링크) → 푸터 순서다. 최근 탐험은 `buildHomeData`(첫 플레이 최신순, 다시보기 있는 게임만, 같은 영상은 하나만, 번호는 /games와 같음)가 고르고, D1을 못 읽으면(`pnpm dev`) 띠를 숨긴다. 썸네일은 유튜브 `hqdefault`를 `<img>`로 16:9에 잘라 쓴다.
 - 공유 레이어는 `globals.css`의 토큰·keyframe과 `src/components/`뿐. `globals.css`에 유틸리티 클래스를 넣지 않는다.
-- 새 출품작을 추가하면 `Nav.tsx`의 데스크톱 링크와 모바일 메뉴, 허브의 `ENTRIES`, `src/lib/seo.ts`의 `SITE_PAGES` 네 곳에 넣는다.
+- 새 페이지를 추가하면 `Nav.tsx`의 `LINKS`(데스크톱·모바일 공용), 홈 푸터의 `PAGES`와 '더 둘러보기' 카드, `src/lib/seo.ts`의 `SITE_PAGES`에 넣는다.
+- 없앤 페이지는 `next.config.ts` `redirects`로 홈에 308을 건다(`/to-yasiro` 방명록, 2026-11 제거).
 - 디자인 변경은 `pnpm shots`로 찍은 스크린샷을 직접 보고 확인한 뒤 사용자에게 보여 준다. 축소된 브라우저 화면만 보고 판단하지 않는다.
 - 검증·계산 로직은 `src/lib/`에 순수 함수로 빼고 테스트를 붙인다. 컴포넌트와 Route Handler는 얇게 유지한다.
 
@@ -71,11 +71,11 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - keyframe: `blink`, `float`(꿀붕이 부유), `fadeUp`(진입), `pinDrop`.
 - 폰트는 `layout.tsx`의 Google Fonts `<link>` 한 줄로 로드한다. 현재 로드되는 폰트는 Gaegu, Fredoka(500–700), Noto Sans KR, Noto Serif KR(600·700). 한국어 subset 문제 때문에 `next/font`는 쓰지 않는다. 새 폰트는 같은 URL에 추가하고, URL에 없는 폰트를 코드에 쓰지 않는다(조용히 폴백된다).
   - Noto Serif KR: 헤드라인·로고 / Noto Sans KR: 본문·UI / Fredoka: 영문 라벨과 숫자(한글 글리프 없음)
-  - Gaegu: 포스트잇 본문과 /about 장비 콜아웃만. `letter-spacing: 0`, 18px 이상
-- 컨셉은 "호기심 많은 탐험가". 탐험가 느낌은 캐릭터 장비(고글·쌍안경·지도 두루마리·파우치·부츠)와 현장 기록(기록 카드, 콜아웃, 눈금자, 스탬프, 테이프)으로 낸다. 지도 모티프는 허브의 "다음 목적지" 경로 한 곳만 쓴다. 장식은 화면당 스탬프 1개, 테이프 4개 이하.
-- 색: 작은 앰버 텍스트는 `--accent-text`, 주 버튼·FAB는 `--btn-primary-*`, `--accent`·`--brass`·`--eye`는 텍스트에 쓰지 않는다(AA 미달).
+  - Gaegu: /about 장비 콜아웃만. `letter-spacing: 0`, 18px 이상
+- 컨셉은 "호기심 많은 탐험가". 탐험가 느낌은 캐릭터 장비(고글·쌍안경·지도 두루마리·파우치·부츠)와 현장 기록(기록 카드, 콜아웃, 눈금자, 스탬프, 테이프)으로 낸다. 지도 모티프(점선 경로·웨이포인트)는 지금 쓰지 않는다(2026-11 홈 개편 때 "다음 목적지" 경로를 뺐다). 다시 쓰면 사이트 전체에서 한 곳만. 장식은 화면당 스탬프 1개, 테이프 4개 이하.
+- 색: 작은 앰버 텍스트는 `--accent-text`, 주 버튼은 `--btn-primary-*`, 진한 띠(홈 최근 탐험)는 `--band-*`, `--accent`·`--brass`·`--eye`는 텍스트에 쓰지 않는다(AA 미달).
 - 공유 컴포넌트(`src/components/`): Button, SectionLabel, StitchRule, TapeStrip, RoundStamp, HeightRuler, ChannelGlyph, KkulMark(Nav 로고·파비콘과 같은 꿀붕이 그림, 컬러), PawMark(꿀붕이 발자국 장식), icons. 장식 SVG는 `aria-hidden`.
-- 고정 버튼은 페이지당 1개. LIVE는 Nav 안의 pill이고 모바일 FAB가 없다.
+- 고정 버튼은 페이지당 1개. Nav의 "치지직" pill은 채널 링크다. 방송 상태를 조회하지 않으므로 LIVE로 표기하지 않는다.
 - 캐릭터·꿀붕이 PNG는 투명 배경이라 블렌드 없이 올린다. 캐릭터 패널은 `--tile`(라이트 `#EAE0D0`, 다크 `--surface`).
 - 강조 배지·구분선의 작은 사각 도트는 `borderRadius: 1`이 의도된 값이다.
 - 원형 도장은 사이트 전체 1개(`RoundStamp`, /about)가 원칙이다. 예외: 게임 정복 도장(`ClearStamp`, /games 카드·상세의 `clear` 게임). 정복한 게임마다 찍히는 데이터 표시라 개수 제한을 두지 않는다.
@@ -93,7 +93,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - Worker `yasiro-contest` · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
 - D1 `yasiro-db` (`69020930-766c-423b-8cbd-85d62eee3e02`) → `env.DB`. 타입은 `src/types/cloudflare.d.ts`
 - 접근: `const { env } = await getCloudflareContext({ async: true })` (`@opennextjs/cloudflare`)
-- 테이블: `auth_sessions`(0009, 아래 '세션'), `guestbook`, `games`, `game_vods`, `game_changes`(0007, 시드 0008), `sessions`(0001, 레거시. 읽지 않음, 0010에서 행 삭제, DROP은 0011 예정). 스키마 변경은 `d1-migration` 스킬로 한다.
+- 테이블: `auth_sessions`(0009, 아래 '세션'), `guestbook`(방명록 제거로 읽지 않음, DROP은 0011에 함께), `games`, `game_vods`, `game_changes`(0007, 시드 0008), `sessions`(0001, 레거시. 읽지 않음, 0010에서 행 삭제, DROP은 0011 예정). 스키마 변경은 `d1-migration` 스킬로 한다.
 - Worker secret: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI`, `ADMIN_CHANNEL_IDS`(쉼표 구분 관리자 채널 ID, 아래 '관리자') (`printf 'v' | pnpm wrangler secret put KEY`). Route Handler에서 `process.env`로 읽는다.
 - GitHub secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. 자격증명 원본은 1Password "Cloudflare R2 - yasiro-contest".
 - wrangler 4.x는 Node 22 이상이 필요하다.
@@ -101,7 +101,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 ### Route Handler
 
 - `NextResponse`와 `export const runtime = "edge"`를 쓰지 않는다. opennextjs 번들링에서 `Cannot read properties of undefined (reading 'default')` 에러가 난다. 네이티브 `Request`/`Response`를 쓴다.
-- 인증이 필요한 API는 `src/lib/session.ts`의 `readSessionId(cookie)` → `findSession(db, id, now)`(해시로 `auth_sessions` 조회, `expires_at > now`)를 쓴다. games는 `channel_name`을 읽지 않는 `findSessionChannel`. 쓰기는 `checkSameOrigin`(`src/lib/http.ts`)을 먼저 본다. `src/lib/guestbook.ts handleGuestbookPost`가 기준 패턴이다.
+- 인증이 필요한 API는 `src/lib/session.ts`의 `readSessionId(cookie)` → `findSession(db, id, now)`(해시로 `auth_sessions` 조회, `expires_at > now`)를 쓴다. games는 `channel_name`을 읽지 않는 `findSessionChannel`. 쓰기는 `checkSameOrigin`(`src/lib/http.ts`)을 먼저 본다. `src/lib/games/api.ts`의 쓰기 핸들러가 기준 패턴이다.
 - 네이티브 `fetch`·`ctx.waitUntil`을 deps로 넘길 때는 `(i, init) => fetch(i, init)`처럼 감싼다. `deps.fetch()`로 부르면 Workers에서 Illegal invocation이 난다.
 - `cookies()`를 쓰기 때문에 `layout.tsx`의 `export const dynamic = 'force-dynamic'`을 지우지 않는다.
 
@@ -125,7 +125,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ## 하네스 (`.claude/`)
 
-- 스킬: `new-entry`(새 출품작), `verify`(PR 전 검증), `d1-migration`(스키마 변경), `games-edit`(운영 /games 기록 추가·수정)
+- 스킬: `new-entry`(새 페이지), `verify`(PR 전 검증), `d1-migration`(스키마 변경), `games-edit`(운영 /games 기록 추가·수정)
 - hook: 기존 `migrations/*.sql` 수정 차단, Route Handler의 `NextResponse`·`runtime` 선언 감지
 - 권한: 테스트·lint·로컬 D1은 허용. 배포, 원격 D1, secret, `git push`는 매번 확인
 
@@ -151,6 +151,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 ### 관리자 (익명 규칙 포함)
 
 - 관리자 = `auth_sessions`(`expires_at > now`)의 `channel_id`가 허용 목록에 있는 사람. 허용 목록 = 야시로 채널 ID(`admin.ts`의 `YASIRO_CHANNEL_ID`, 공개 정보) ∪ Worker secret `ADMIN_CHANNEL_IDS`. 다른 관리자의 채널 ID는 `chzzk.naver.com/<id>`로 채널 이름이 드러나므로 **코드·migrations·테스트·주석·커밋에 쓰지 않는다**(테스트는 `test-d1.ts`의 `FAKE_ADMIN_ID`). 로컬 확인은 `pnpm exec opennextjs-cloudflare preview -- --port <p> --var ADMIN_CHANNEL_IDS:<가짜 ID>`(빌드는 `pnpm build:worker`)로 주입하고 로컬 D1 `auth_sessions`에 그 채널 ID로 `sha256(세션 ID)` 행을 넣은 뒤 Chrome에서 `__Host-session` 쿠키를 세션 ID로 설정한다(OAuth 불필요, 명령은 `verify` 스킬 '로그인 세션').
+- 방문자용 로그인 버튼은 없다(방명록 제거와 함께 뺐다). 관리자는 `/auth/login?next=/games`로 직접 로그인하고, 로그인 중에는 Nav에 자기 채널 이름과 로그아웃이 보인다.
 - **익명 표시(사용자 지시)**: 관리자의 치지직 채널 이름은 `games`·`game_changes`·API 응답·export·로그 어디에도 저장·표시·반환하지 않는다. 수정자 표시는 `actorNameFor(channelId)`로만 정한다(야시로 → "야시로", 그 밖의 허용 ID → "관리자", 시드 → "시스템"). 세션의 `channel_name`은 games 코드에서 SELECT하지 않는다. `channel_id`는 감사 컬럼(`games.updated_by_channel_id`, `game_changes.channel_id`)에만 저장하고 응답·props·로그로 내보내지 않는다. 테스트(`api.e2e.test.ts` 등)가 이를 고정한다. Nav의 로그인 표시는 기존대로 본인 브라우저에서 자기 채널 이름을 보인다(이 값은 layout의 `initialUser`로 직렬화되어 그 사용자의 HTML에만 들어간다).
 - 쓰기 API는 `checkSameOrigin`(CSRF) → 인증 → 본문 크기 → 모양 → 검증 순서이고, 동시 수정은 `version` 낙관적 잠금(충돌 시 409 + "관리자가 방금(HH:MM) 이 게임을 먼저 고쳤어요…")이다. 응답은 `Cache-Control: no-store`.
 - UI는 /games 안에서만: 관리자 띠(숨긴 게임 보기·게임 추가), 카드 호버/포커스 시 "수정" 칩(`@media (hover: none)`에서는 숨김), 상세 모달 하단 관리자 영역(숨기기·수정·변경 기록), 같은 모달의 수정 모드, 게임 추가 2단계. 수정 중 Esc·배경 클릭·닫기는 확인을 거치고(`DialogFrame intercept`), 로그인이 만료되면 입력을 `localStorage['yasiro-games-draft:<id|new>']`에 보존한다. 알림(`Toast`)은 열린 `<dialog>`(top layer) 위에 보이도록 dialog 안에도 렌더링하고, 한 번에 하나만 내용을 가진다.
