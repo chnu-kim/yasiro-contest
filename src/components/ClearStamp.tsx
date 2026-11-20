@@ -1,7 +1,8 @@
 // 게임 정복 도장(원형 탐험 도장). RoundStamp(/about 1개)와 같은 계열의 /games 전용 예외.
 // 굵은+가는 이중 링, 위 호 "EXPEDITION CLEAR", 가운데 "정복", 아래 호 "★ NO.{no} ★".
 // 실제 고무도장처럼 보이게 SVG 필터로 가장자리를 살짝 흔들고(feDisplacementMap) 인주가 빠진 점을 낸다(feTurbulence 마스크).
-// 바탕은 옅은 종이 워시(--paper-hi 90%)라 바쁜 포스터 위에서도 읽힌다.
+// 바탕 원판은 두지 않는다(종이 위에 찍힌 잉크만). 바탕이 있으면 스티커처럼 보인다.
+// 어두운 포스터에서도 읽히게 선을 굵게, 글씨도 같은 잉크색 테두리로 두껍게 찍는다.
 // props: no(게임 번호), size(px, 기본 88 — width/height 속성값이라 CSS가 덮어쓸 수 있다), rotate(deg, 기본 -12), className, style.
 // 색 --stamp. aria-hidden — 정복 여부는 카드·상세의 텍스트로 따로 전달한다.
 import { useId, type CSSProperties } from 'react';
@@ -48,19 +49,18 @@ export default function ClearStamp({
         <path id={top} d="M 18 50 A 32 32 0 0 1 82 50" />
         <path id={bottom} d="M 16 50 A 34 34 0 0 0 84 50" />
       </defs>
-      <circle cx="50" cy="50" r="47" fill="var(--paper-hi)" opacity="0.9" />
       <g filter={`url(#${ink})`} fill="currentColor" stroke="currentColor">
-        <circle cx="50" cy="50" r="45.5" fill="none" strokeWidth="4" />
-        <circle cx="50" cy="50" r="39.5" fill="none" strokeWidth="1.2" />
-        <text stroke="none" style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: 8.6, letterSpacing: 1.4 }}>
+        <circle cx="50" cy="50" r="45.5" fill="none" strokeWidth="5.4" />
+        <circle cx="50" cy="50" r="39.5" fill="none" strokeWidth="1.9" />
+        <text strokeWidth="0.35" strokeLinejoin="round" style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: 8.6, letterSpacing: 1.4 }}>
           <textPath href={`#${top}`} startOffset="50%" textAnchor="middle">EXPEDITION CLEAR</textPath>
         </text>
-        <text stroke="none" dominantBaseline="hanging" style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: 8.6, letterSpacing: 1.2 }}>
+        <text strokeWidth="0.35" strokeLinejoin="round" dominantBaseline="hanging" style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: 8.6, letterSpacing: 1.2 }}>
           <textPath href={`#${bottom}`} startOffset="50%" textAnchor="middle">★ NO.{no} ★</textPath>
         </text>
-        <line x1="22" y1="40" x2="78" y2="40" strokeWidth="1" />
-        <line x1="22" y1="62" x2="78" y2="62" strokeWidth="1" />
-        <text x="50" y="58.5" textAnchor="middle" stroke="none" style={{ fontFamily: "'Noto Serif KR', serif", fontWeight: 700, fontSize: 21 }}>
+        <line x1="22" y1="40" x2="78" y2="40" strokeWidth="1.6" />
+        <line x1="22" y1="62" x2="78" y2="62" strokeWidth="1.6" />
+        <text x="50" y="58.5" textAnchor="middle" strokeWidth="0.9" strokeLinejoin="round" style={{ fontFamily: "'Noto Serif KR', serif", fontWeight: 700, fontSize: 21 }}>
           정복
         </text>
       </g>

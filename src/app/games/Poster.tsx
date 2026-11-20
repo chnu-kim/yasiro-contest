@@ -10,7 +10,7 @@ import styles from './Poster.module.css';
 // 치지직 posterImageUrl 스냅샷. next/image는 쓰지 않는다(next.config가 unoptimized라 이점이 없고
 // 원격 호스트 등록만 늘어난다). 포스터가 없거나 로드에 실패하면 "표본 라벨" 카드로 대체한다:
 // 제목이 이 게임을 가리키는 다시보기가 있으면 그 썸네일을 "현장 사진"으로 붙이고(fieldPhoto), 없으면 꿀붕이 발자국 워터마크.
-// 아래쪽 종이 라벨(번호·이름·꼬리말)은 둘 다 같다. 표본 카드는 정복 도장을 오른쪽 위로 옮겨 라벨을 가리지 않는다(stampTopWhenEmpty). 도장은 항상 포스터 안쪽 모서리에 찍고, 크기·여백은 부모의 --stamp-size/--stamp-inset로 정한다.
+// 아래쪽 종이 라벨(번호·이름·꼬리말)은 둘 다 같다. 표본 카드는 정복 도장을 오른쪽 위로 옮겨 라벨을 가리지 않는다(stampTopWhenEmpty). 도장은 항상 포스터 안쪽 모서리에 찍고, 크기는 포스터 폭의 36%(표본 카드 위쪽은 32%), 여백은 부모의 --stamp-inset로 정한다.
 export default function Poster({
   game,
   showNo = true,
