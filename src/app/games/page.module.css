@@ -61,6 +61,31 @@
   color: var(--stamp);
 }
 
+/* 기록 숫자: 새 기록이 있을 때만 지난 값(--from) → 지금 값(--to)으로 한 번 올라간다. 같으면 움직임 없음.
+   자릿수 폭을 미리 잡아 옆 통계가 흔들리지 않게 한다 */
+@property --count-n {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.count {
+  --count-n: var(--to);
+  display: inline-block;
+  min-width: calc(var(--digits) * 1ch);
+  font-variant-numeric: tabular-nums;
+  counter-reset: count var(--count-n);
+  animation: countUp calc(var(--dur-slow) * 1.5) var(--ease-out) var(--dur-fast) both;
+}
+
+.count::after {
+  content: counter(count);
+}
+
+@keyframes countUp {
+  from { --count-n: var(--from); }
+}
+
 /* ─── 검색·필터 ─── */
 .controls {
   display: flex;

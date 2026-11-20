@@ -92,7 +92,7 @@ export default function GameDetailDialog({
         <>
           <div className={styles.sheet}>
             <div className={styles.poster}>
-              <Poster eager nameWideOnly game={game} stampTopWhenEmpty />
+              <Poster eager nameWideOnly game={game} stampTopWhenEmpty stampAnimate />
             </div>
 
             <div className={styles.head}>

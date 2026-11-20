@@ -32,6 +32,19 @@
   pointer-events: none;
 }
 
+/* 상세를 열 때 한 번만: 도장이 위에서 내려와 '쿵' 찍힌다. 회전은 인라인 transform이라 scale 속성만 움직인다.
+   길이는 --dur-base(250ms) 기준이라 모션 줄이기에서는 즉시 끝난다 */
+.stampIn {
+  animation: stampIn calc(var(--dur-base) * 1.2) var(--ease-out) var(--dur-fast) both;
+}
+
+@keyframes stampIn {
+  0% { opacity: 0; scale: 1.7; }
+  55% { opacity: 1; scale: 0.92; }
+  80% { scale: 1.03; }
+  100% { opacity: 1; scale: 1; }
+}
+
 /* 표본 카드(이미지 없음)는 오른쪽 위(발자국 자리) — 아래 라벨 쪽지를 가리지 않는다 */
 .stampTop {
   bottom: auto;

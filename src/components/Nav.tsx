@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { PAGE_TRANSITION } from '@/lib/page-transition';
 import { usePathname, useRouter } from 'next/navigation';
 import { Moon, Sun, Menu, X } from 'lucide-react';
 import KkulMark from './KkulMark';
@@ -61,9 +62,11 @@ export default function Nav({ initialUser }: NavProps) {
   };
 
   return (
-    <header className={styles.nav}>
+    // 페이지 전환 때 메뉴는 제자리에 고정(본문만 바뀐다)
+    <header className={styles.nav} style={{ viewTransitionName: 'site-nav' }}>
       <Link
         href="/"
+        transitionTypes={PAGE_TRANSITION}
         className={styles.logo}
         aria-label="야시로 홈"
         aria-current={pathname === '/' ? 'page' : undefined}
@@ -78,6 +81,7 @@ export default function Nav({ initialUser }: NavProps) {
           <Link
             key={l.href}
             href={l.href}
+            transitionTypes={PAGE_TRANSITION}
             className={styles.link}
             aria-current={isCurrent(pathname, l.href) ? 'page' : undefined}
           >
@@ -134,6 +138,7 @@ export default function Nav({ initialUser }: NavProps) {
               <Link
                 key={l.href}
                 href={l.href}
+                transitionTypes={PAGE_TRANSITION}
                 className={styles.mobileItem}
                 aria-current={isCurrent(pathname, l.href) ? 'page' : undefined}
                 onClick={closeMenu}
