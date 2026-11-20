@@ -5,6 +5,7 @@ import Nav from '@/components/Nav';
 import SiteFooter from '@/components/SiteFooter';
 import SkipLink from '@/components/SkipLink';
 import { siteDefaults } from '@/lib/seo';
+import { SEEN_STATS_KEY } from '@/lib/games/seen-stats';
 import { SESSION_COOKIE, findSession, parseSessionId } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
@@ -41,7 +42,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('yasiro-theme')||localStorage.getItem('yashiro-theme')||'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}`,
+            // 테마 + /games 기록 숫자가 지난번에 본 값(--seen-total/--seen-clear). 그린 직후부터 쓰여야 깜빡이지 않아서 여기서 읽는다
+            __html: `try{var d=document.documentElement,t=localStorage.getItem('yasiro-theme')||localStorage.getItem('yashiro-theme')||'light';d.setAttribute('data-theme',t);var s=JSON.parse(localStorage.getItem('${SEEN_STATS_KEY}')||'null');if(s&&Number.isInteger(s.total)&&Number.isInteger(s.clear)){d.style.setProperty('--seen-total',s.total);d.style.setProperty('--seen-clear',s.clear);}}catch(e){}`,
           }}
         />
       </head>

@@ -61,7 +61,8 @@
   color: var(--stamp);
 }
 
-/* 기록 숫자: 들어올 때 한 번 0 → 값. 자릿수 폭을 미리 잡아 옆 통계가 흔들리지 않게 한다 */
+/* 기록 숫자: 새 기록이 있을 때만 지난 값(--from) → 지금 값(--to)으로 한 번 올라간다. 같으면 움직임 없음.
+   자릿수 폭을 미리 잡아 옆 통계가 흔들리지 않게 한다 */
 @property --count-n {
   syntax: '<integer>';
   inherits: false;
@@ -82,7 +83,7 @@
 }
 
 @keyframes countUp {
-  from { --count-n: 0; }
+  from { --count-n: var(--from); }
 }
 
 /* ─── 검색·필터 ─── */

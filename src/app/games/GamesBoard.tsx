@@ -33,6 +33,7 @@ import {
   yearLabel,
 } from '@/lib/games/labels';
 import { yearGroups } from '@/lib/games/years';
+import { SEEN_STATS_KEY, serializeSeenStats } from '@/lib/games/seen-stats';
 import { addedMessage, errorMessage, hiddenMessage, savedMessage, unhiddenMessage } from '@/lib/games/client';
 import type { GamesPageData, GamesQueryState, GameRecord } from '@/lib/games/types';
 import { adminApi } from './adminApi';
@@ -110,6 +111,20 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   const hiddenCount = list.length - visible.length;
   const source = isAdmin && showHidden ? list : visible;
   const stats = useMemo(() => countStats(visible), [visible]);
+  // 지금 본 숫자를 기억한다. html의 --seen-*는 올라가는 애니메이션이 끝난 뒤에 맞춰서,
+  // 다른 페이지에 갔다가 돌아와도(클라이언트 이동) 같은 상승을 다시 보여 주지 않는다
+  useEffect(() => {
+    try {
+      localStorage.setItem(SEEN_STATS_KEY, serializeSeenStats(stats));
+    } catch {
+      // 저장소를 못 쓰면 다음에도 정지 상태로 보일 뿐이다
+    }
+    window.setTimeout(() => {
+      const root = document.documentElement.style;
+      root.setProperty('--seen-total', String(stats.total));
+      root.setProperty('--seen-clear', String(stats.clear));
+    }, 1500);
+  }, [stats]);
   const years = useMemo(() => availableYears(visible), [visible]);
   const page = useMemo(() => selectPage(source, state), [source, state]);
   // 날짜순이면 현재 페이지를 첫 플레이 연도별로 나눈다(이름순은 null). 개수는 source 기준이라 숨김 보기에서는 숨긴 게임도 센다
@@ -327,11 +342,11 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
         <dl className={styles.stats}>
           <div className={styles.stat}>
             <dt>기록된 게임</dt>
-            <dd><CountUp to={stats.total} /></dd>
+            <dd><CountUp kind="total" to={stats.total} /></dd>
           </div>
           <div className={styles.stat}>
             <dt>정복</dt>
-            <dd className={styles.statClear}><CountUp to={stats.clear} /></dd>
+            <dd className={styles.statClear}><CountUp kind="clear" to={stats.clear} /></dd>
           </div>
         </dl>
       </section>
@@ -497,15 +512,16 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   );
 }
 
-// 페이지에 들어올 때 0부터 한 번 올라가는 숫자. CSS만 쓴다(@property 정수 애니메이션 + counter):
-// 서버가 그린 화면에서 바로 시작하므로 hydration 깜빡임이 없고, 지원하지 않는 브라우저는 최종값만 보인다.
+// 새 기록이 생겼을 때만 "지난번에 본 값 → 지금 값"으로 한 번 올라가는 숫자. 지난 값은 layout head 스크립트가
+// html의 --seen-total/--seen-clear로 미리 깔아 두므로 서버가 그린 첫 화면부터 맞다(깜빡임 없음). 처음 온 사람·변화 없음은 정지.
+// CSS(@property 정수 애니메이션 + counter)만으로 움직이고, 지원하지 않는 브라우저는 최종값만 보인다.
 // 보이는 숫자는 장식(aria-hidden)이고 실제 값은 srOnly 텍스트로 읽힌다.
-function CountUp({ to }: { to: number }) {
+function CountUp({ kind, to }: { kind: 'total' | 'clear'; to: number }) {
   return (
     <>
       <span
         className={styles.count}
-        style={{ '--to': to, '--digits': String(to).length } as CSSProperties}
+        style={{ '--to': to, '--from': `min(var(--seen-${kind}, ${to}), ${to})`, '--digits': String(to).length } as CSSProperties}
         aria-hidden="true"
       />
       <span className={styles.srOnly}>{to}</span>
