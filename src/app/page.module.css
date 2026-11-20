@@ -138,6 +138,16 @@
   transform: translate(-50%, -9.5%);
 }
 
+/* 실측 눈금자. .char와 같은 기준으로 계산한다:
+   그림 위끝 = top - 9.5% × 높이, 머리끝 = +10%, 발끝 = +95.5% (1600px → 40px ~ 1408px) */
+.ruler {
+  position: absolute;
+  right: 72px; /* 오른쪽으로 뻗는 "149.8 cm" 라벨 폭만큼 안쪽 */
+  top: 40px;
+  height: 1368px;
+  width: 64px;
+}
+
 /* ═════ 섹션 공통 ═════ */
 .log,
 .more {
@@ -350,7 +360,7 @@
 
 .card {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) auto;
+  grid-template-columns: 56px minmax(0, 1fr) auto auto;
   align-items: center;
   gap: var(--space-5);
   min-height: 112px;
@@ -387,6 +397,39 @@
   font-size: 15px;
   color: var(--text-dim);
   word-break: keep-all;
+}
+
+/* 기입란: 작은 라벨 + 밑줄 친 값 (현장 기록 양식) */
+.entry {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  min-width: 64px;
+}
+
+.entryLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
+.entryValue {
+  width: 100%;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--border-strong);
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-lg);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 단위(cm·개)는 한글이 섞이므로 본문 글꼴 */
+.entryValue small {
+  margin-left: 2px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-dim);
 }
 
 .cardEnd {
@@ -474,6 +517,11 @@
     height: 1250px;
   }
 
+  /* 861~1080px: 그림 옆에 눈금자 자리가 없어 옷 위로 지나가므로 숨긴다(860px 이하는 아래에서 다시 보인다) */
+  .ruler {
+    display: none;
+  }
+
   .featured {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
@@ -509,6 +557,14 @@
     top: 0;
     height: 1000px;
     transform: translate(-50%, -9.2%);
+  }
+
+  /* 1000px, top 0, -9.2%: 머리끝 8px, 발끝 863px */
+  .ruler {
+    display: block;
+    top: 8px;
+    height: 855px;
+    right: var(--gutter);
   }
 
   .heroBody {
@@ -599,5 +655,17 @@
 
   .channels li:last-child:nth-child(odd) {
     grid-column: 1 / -1;
+  }
+}
+
+/* 좁은 화면: 기입란을 남기고 화살표는 뺀다(카드 전체가 링크) */
+@media (max-width: 480px) {
+  .card {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    gap: var(--space-4);
+  }
+
+  .cardEnd {
+    display: none;
   }
 }

@@ -5,6 +5,7 @@ import styles from './page.module.css';
 import Button from '@/components/Button';
 import KkulMark from '@/components/KkulMark';
 import { ArrowIcon } from '@/components/icons';
+import HeightRuler from '@/components/HeightRuler';
 import KkulCrop from './_components/KkulCrop';
 import { HOME_DESCRIPTION, HOME_TITLE, jsonLdString, pageMetadata, siteJsonLd } from '@/lib/seo';
 import { buildHomeData, type Expedition, type HomeData } from '@/lib/games/home';
@@ -100,6 +101,10 @@ export default async function Home() {
               priority
               className={styles.char}
             />
+            {/* 실측 키 눈금자: 그림 시트의 머리끝(10%)·발끝(95.5%)에 맞춘 149.8cm. 아래는 그림과 함께 잘린다 */}
+            <div className={styles.ruler}>
+              <HeightRuler side="right" />
+            </div>
           </div>
         </div>
       </section>
@@ -178,6 +183,10 @@ export default async function Home() {
                 <span className={styles.cardTitle}>야시로 소개</span>
                 <span className={styles.cardDesc}>프로필과 찾아가는 길</span>
               </span>
+              <span className={styles.entry}>
+                <span className={styles.entryLabel}>키</span>
+                <span className={styles.entryValue}>149.8<small>cm</small></span>
+              </span>
               <span className={styles.cardEnd}>
                 <ArrowIcon direction="right" size={20} />
               </span>
@@ -189,8 +198,16 @@ export default async function Home() {
               <span className={styles.cardBody}>
                 <span className={styles.cardTitle}>플레이한 게임</span>
                 <span className={styles.cardDesc}>
-                  {home ? `탐험한 게임 ${home.total}개와 다시보기` : '탐험한 게임과 다시보기'}
+                  {home ? `정복 ${home.clear}개 · 다시보기` : '탐험한 게임과 다시보기'}
                 </span>
+              </span>
+              <span className={styles.entry}>
+                {home && (
+                  <>
+                    <span className={styles.entryLabel}>기록</span>
+                    <span className={styles.entryValue}>{home.total}<small>개</small></span>
+                  </>
+                )}
               </span>
               <span className={styles.cardEnd}>
                 <ArrowIcon direction="right" size={20} />
