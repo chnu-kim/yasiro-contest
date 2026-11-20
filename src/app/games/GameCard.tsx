@@ -24,7 +24,7 @@ export default function GameCard({
   return (
     <li className={game.hidden ? `${styles.card} ${styles.isHidden}` : styles.card}>
       <div className={styles.cardCover}>
-        <Poster game={game} stampSize={88} stampStyle={{ right: -12, bottom: -18 }} stampTopWhenEmpty />
+        <Poster game={game} stampTopWhenEmpty />
       </div>
       <div className={styles.cardBody}>
         <Title className={styles.cardTitle}>

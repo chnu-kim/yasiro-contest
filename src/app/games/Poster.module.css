@@ -22,6 +22,22 @@
   --tone-4: #3A3024;
 }
 
+/* 정복 도장: 포스터 안쪽 오른쪽 아래. 크기·여백은 부모가 --stamp-size/--stamp-inset로 정한다 */
+.stamp {
+  position: absolute;
+  right: var(--stamp-inset, 8px);
+  bottom: var(--stamp-inset, 8px);
+  width: var(--stamp-size, 80px);
+  height: var(--stamp-size, 80px);
+  pointer-events: none;
+}
+
+/* 표본 카드(이미지 없음)는 오른쪽 위(발자국 자리) — 아래 라벨 쪽지를 가리지 않는다 */
+.stampTop {
+  bottom: auto;
+  top: var(--stamp-inset, 8px);
+}
+
 .t0 { --tone: var(--tone-0); }
 .t1 { --tone: var(--tone-1); }
 .t2 { --tone: var(--tone-2); }

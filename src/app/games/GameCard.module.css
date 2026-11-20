@@ -7,6 +7,8 @@
 }
 
 .cardCover {
+  --stamp-size: 80px;
+  --stamp-inset: 8px;
   transition: transform var(--dur-base) ease, filter var(--dur-base) ease;
 }
 
@@ -183,10 +185,8 @@
     font-size: 15px;
   }
 
-  .cardCover :global(svg) {
-    width: 72px !important;
-    height: 72px !important;
-    right: -10px !important;
-    bottom: -14px !important;
+  .cardCover {
+    --stamp-size: 64px;
+    --stamp-inset: 6px;
   }
 }

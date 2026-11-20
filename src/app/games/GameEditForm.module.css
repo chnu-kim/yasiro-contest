@@ -34,6 +34,8 @@
 }
 
 .poster {
+  --stamp-size: 96px;
+  --stamp-inset: 12px;
   min-width: 0;
 }
 
@@ -773,11 +775,9 @@
     display: inline;
   }
 
-  .poster :global(svg) {
-    width: 60px !important;
-    height: 60px !important;
-    right: -14px !important;
-    bottom: -14px !important;
+  .poster {
+    --stamp-size: 80px;
+    --stamp-inset: 10px;
   }
 
   .cat .outline {

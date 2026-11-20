@@ -330,8 +330,13 @@
   }
 
   /* LIVE를 앞으로 빼서 아이콘 버튼 두 개를 한 묶음으로 둔다 */
+  /* 보이는 pill은 30px 그대로, 링크 탭 영역만 44px을 보장한다(옆 테마 버튼과 겹치지 않게 padding으로 오른쪽만) */
   .live {
     order: -1;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    min-width: var(--tap);
     padding: 0 var(--space-2) 0 0;
   }
 

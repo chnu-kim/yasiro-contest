@@ -404,7 +404,7 @@ export default function GameEditForm({
 
         <div className={styles.side}>
           <div className={styles.poster}>
-            <Poster eager nameWideOnly game={preview} stampSize={108} stampStyle={{ right: -22, bottom: -24 }} />
+            <Poster eager nameWideOnly game={preview} stampTopWhenEmpty />
           </div>
           <div id={fieldDomId('category')} tabIndex={-1} className={styles.cat}>
             {form.category ? (

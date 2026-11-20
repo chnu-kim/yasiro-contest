@@ -1,15 +1,17 @@
 // 게임 정복 도장(원형 "CLEAR / 정복"). RoundStamp(사이트 전체 1개)와 별개인 /games 전용 예외.
-// props: size(px, 기본 88), rotate(deg, 기본 -12), style(position 등). 색 --stamp, 바탕 --paper-hi. aria-hidden —
+// props: size(px, 기본 88 — width/height 속성값이라 CSS가 덮어쓸 수 있다), rotate(deg, 기본 -12), className, style. 색 --stamp, 바탕 --paper-hi. aria-hidden —
 // 정복 여부는 카드·상세의 텍스트로 따로 전달한다.
 import type { CSSProperties } from 'react';
 
 export default function ClearStamp({
   size = 88,
   rotate = -12,
+  className,
   style,
 }: {
   size?: number;
   rotate?: number;
+  className?: string;
   style?: CSSProperties;
 }) {
   return (
@@ -17,6 +19,7 @@ export default function ClearStamp({
       viewBox="0 0 100 100"
       width={size}
       height={size}
+      className={className}
       aria-hidden="true"
       focusable="false"
       style={{ color: 'var(--stamp)', transform: `rotate(${rotate}deg)`, flexShrink: 0, ...style }}

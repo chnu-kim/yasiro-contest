@@ -17,6 +17,8 @@
 }
 
 .poster {
+  --stamp-size: 96px;
+  --stamp-inset: 12px;
   grid-area: poster;
   align-self: start;
   position: sticky; /* 다시보기 목록을 내려도 왼쪽 열이 비지 않게 */
@@ -204,11 +206,9 @@
     line-height: 1.3;
   }
 
-  .poster svg {
-    width: 60px !important;
-    height: 60px !important;
-    right: -14px !important;
-    bottom: -14px !important;
+  .poster {
+    --stamp-size: 80px;
+    --stamp-inset: 10px;
   }
 
   .facts {

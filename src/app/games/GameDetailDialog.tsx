@@ -92,7 +92,7 @@ export default function GameDetailDialog({
         <>
           <div className={styles.sheet}>
             <div className={styles.poster}>
-              <Poster eager nameWideOnly game={game} stampSize={108} stampStyle={{ right: -22, bottom: -24 }} />
+              <Poster eager nameWideOnly game={game} stampTopWhenEmpty />
             </div>
 
             <div className={styles.head}>

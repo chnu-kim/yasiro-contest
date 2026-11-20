@@ -376,29 +376,39 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
         <div className={styles.selects}>
           <div className={styles.field}>
             <label htmlFor="game-year" className={styles.label}>첫 플레이 연도</label>
-            <select
-              id="game-year"
-              className={`${styles.select} ${styles.selectYear}`}
-              value={state.year}
-              onChange={(e) => change({ year: parseYearFilter(e.target.value) })}
-            >
-              {yearOptions.map((y) => (
-                <option key={y} value={y}>{yearLabel(y)}</option>
-              ))}
-            </select>
+            <span className={`${styles.selectWrap} ${styles.selectWrapYear}`}>
+              <select
+                id="game-year"
+                className={styles.select}
+                value={state.year}
+                onChange={(e) => change({ year: parseYearFilter(e.target.value) })}
+              >
+                {yearOptions.map((y) => (
+                  <option key={y} value={y}>{yearLabel(y)}</option>
+                ))}
+              </select>
+              <svg className={styles.selectArrow} width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">
+                <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
           </div>
           <div className={styles.field}>
             <label htmlFor="game-sort" className={styles.label}>정렬</label>
-            <select
-              id="game-sort"
-              className={`${styles.select} ${styles.selectSort}`}
-              value={state.sort}
-              onChange={(e) => change({ sort: parseSortKey(e.target.value) })}
-            >
-              {SORT_KEYS.map((key) => (
-                <option key={key} value={key}>{SORT_LABEL[key]}</option>
-              ))}
-            </select>
+            <span className={`${styles.selectWrap} ${styles.selectWrapSort}`}>
+              <select
+                id="game-sort"
+                className={styles.select}
+                value={state.sort}
+                onChange={(e) => change({ sort: parseSortKey(e.target.value) })}
+              >
+                {SORT_KEYS.map((key) => (
+                  <option key={key} value={key}>{SORT_LABEL[key]}</option>
+                ))}
+              </select>
+              <svg className={styles.selectArrow} width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">
+                <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
           </div>
         </div>
       </section>
