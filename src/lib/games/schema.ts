@@ -69,7 +69,11 @@ function trimmedString(v: unknown, max: number = Number.POSITIVE_INFINITY): stri
   return t.length >= 1 && t.length <= max ? t : null;
 }
 
-/** 포스터 스냅샷 URL: https, 자격 증명 없음, 치지직 이미지 CDN(pstatic.net 또는 그 하위 도메인)만.
+/** Steam 스토어 이미지 호스트(라이브러리 캡슐). steamstatic.com의 다른 하위 도메인은 받지 않는다 */
+const STEAM_POSTER_HOSTS: ReadonlySet<string> = new Set(["shared.akamai.steamstatic.com", "cdn.cloudflare.steamstatic.com"]);
+
+/** 포스터 스냅샷 URL: https, 자격 증명 없음, 호스트는 치지직 이미지 CDN(pstatic.net 또는 그 하위 도메인)이나
+ *  Steam 스토어 이미지 호스트 두 곳(STEAM_POSTER_HOSTS, 정확히 일치)만.
  *  검증(schema)과 CLI 스냅샷(chzzk-category)이 같은 규칙을 쓴다. */
 export function isPosterUrl(v: unknown): v is string {
   if (typeof v !== "string") return false;
@@ -84,7 +88,7 @@ export function isPosterUrl(v: unknown): v is string {
     u.protocol === "https:" &&
     u.username === "" &&
     u.password === "" &&
-    (host === "pstatic.net" || host.endsWith(".pstatic.net"))
+    (host === "pstatic.net" || host.endsWith(".pstatic.net") || STEAM_POSTER_HOSTS.has(host))
   );
 }
 
@@ -125,7 +129,7 @@ function validateGame(raw: unknown, i: number, issues: ValidationIssue[]): Game 
   let posterUrl: string | undefined;
   if ("posterUrl" in raw) {
     if (isPosterUrl(raw.posterUrl)) posterUrl = raw.posterUrl;
-    else add("posterUrl", "치지직 이미지 CDN(pstatic.net)의 https URL이어야 합니다 (없으면 키를 생략)");
+    else add("posterUrl", "치지직 이미지 CDN(pstatic.net)이나 Steam 스토어 이미지(shared.akamai.steamstatic.com, cdn.cloudflare.steamstatic.com)의 https URL이어야 합니다 (없으면 키를 생략)");
   }
 
   const firstPlayed = raw.firstPlayed;

@@ -26,7 +26,7 @@ export interface Game {
   originalTitle?: string;
   /** 치지직 categoryId. 있으면 목록 안에서 고유 */
   categoryId?: string;
-  /** 치지직 포스터 스냅샷. https + pstatic.net(하위 도메인 포함) + 자격 증명 없음 (isPosterUrl) */
+  /** 포스터 스냅샷(치지직 카테고리 우선, 없으면 Steam 라이브러리 캡슐). https + pstatic.net(하위 도메인 포함) 또는 Steam 스토어 이미지 호스트 두 곳 + 자격 증명 없음 (isPosterUrl) */
   posterUrl?: string;
   /** 첫 플레이 날짜 YYYY-MM-DD. null = 날짜 기록 없음 */
   firstPlayed: string | null;
@@ -122,7 +122,7 @@ export interface ChzzkCategory {
   categoryType: "GAME";
   categoryId: string;
   categoryValue: string;
-  /** isPosterUrl(https, pstatic.net, 자격 증명 없음)을 통과하지 못하면 null */
+  /** isPosterUrl(https, pstatic.net 또는 Steam 스토어 이미지 호스트, 자격 증명 없음)을 통과하지 못하면 null */
   posterImageUrl: string | null;
 }
 

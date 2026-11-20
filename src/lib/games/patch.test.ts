@@ -188,6 +188,15 @@ describe("validateForm", () => {
     const dup = validateForm(form({ category: { categoryId: "Other_Cat", posterUrl: null } }), [other, base], base.id);
     expect(dup).toEqual([{ field: "category", label: "치지직 카테고리", message: "이미 목록에 있는 카테고리예요." }]);
   });
+  it("Steam 스토어 포스터는 통과, 비슷한 호스트·http는 포스터 오류", () => {
+    const steam = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1/library_600x900.jpg";
+    expect(validateForm(form({ category: { categoryId: "Stellar_Blade", posterUrl: steam } }), [], base.id)).toEqual([]);
+    for (const posterUrl of ["https://akamai.steamstatic.com/x.jpg", "http://cdn.cloudflare.steamstatic.com/x.jpg"]) {
+      expect(validateForm(form({ category: { categoryId: "Stellar_Blade", posterUrl } }), [], base.id), posterUrl).toEqual([
+        { field: "category", label: "치지직 카테고리", message: "포스터 주소가 올바르지 않아요. 카테고리를 다시 골라 주세요." },
+      ]);
+    }
+  });
   it("첫 플레이·정복 여부·여러 이슈는 FIELD_ORDER 순", () => {
     const issues = validateForm(
       form({ name: "", firstPlayed: "", status: "nope" as never, vods: [{ ...V2, url: "x" }, { ...V1, title: "" }] }),

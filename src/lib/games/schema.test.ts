@@ -148,6 +148,10 @@ describe("validateGames: valid input", () => {
     };
     expect(validateGames([g])).toEqual({ ok: true, games: [g] });
   });
+  it("accepts a Steam store library capsule as posterUrl", () => {
+    const g = { ...base(), posterUrl: "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/library_600x900.jpg" };
+    expect(validateGames([g])).toEqual({ ok: true, games: [g] });
+  });
   it("accepts null firstPlayed with any vod date", () => {
     const g = { ...base(), firstPlayed: null, vods: [{ title: "t", url: "https://youtu.be/dQw4w9WgXcQ", date: "1999-01-01" }] };
     expect(validateGames([g]).ok).toBe(true);
@@ -260,6 +264,8 @@ describe("validateGames: top-level and element shape", () => {
       "https://evilpstatic.net/x.jpg",
       "https://user:pw@nng-phinf.pstatic.net/x.jpg",
       "https://user@nng-phinf.pstatic.net/x.jpg",
+      "https://akamai.steamstatic.com/x.jpg",
+      "http://shared.akamai.steamstatic.com/x.jpg",
     ]) {
       expect(paths([{ ...base(), posterUrl }]), String(posterUrl)).toEqual(["[0].posterUrl"]);
     }
@@ -485,6 +491,33 @@ describe("isPosterUrl", () => {
   it("accepts https on pstatic.net or its subdomains, with query", () => {
     for (const u of ["https://nng-phinf.pstatic.net/x.png", "https://pstatic.net/x.png", "https://a.b.pstatic.net/x.png?type=f&w=1"]) {
       expect(isPosterUrl(u), u).toBe(true);
+    }
+  });
+  it("accepts https on the two Steam store asset hosts exactly", () => {
+    for (const u of [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/library_600x900.jpg",
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/library_600x900_2x.jpg?t=1",
+    ]) {
+      expect(isPosterUrl(u), u).toBe(true);
+    }
+  });
+  it("rejects look-alike Steam hosts, other steamstatic subdomains, http and credentials", () => {
+    for (const u of [
+      "https://steamstatic.com/x.jpg",
+      "https://akamai.steamstatic.com/x.jpg",
+      "https://cloudflare.steamstatic.com/x.jpg",
+      "https://cdn.akamai.steamstatic.com/x.jpg",
+      "https://a.shared.akamai.steamstatic.com/x.jpg",
+      "https://x.cdn.cloudflare.steamstatic.com/x.jpg",
+      "https://shared.akamai.steamstatic.com.evil.com/x.jpg",
+      "https://steamstatic.com.evil.com/x.jpg",
+      "https://evilshared.akamai.steamstatic.com/x.jpg",
+      "http://shared.akamai.steamstatic.com/x.jpg",
+      "http://cdn.cloudflare.steamstatic.com/x.jpg",
+      "https://u:p@shared.akamai.steamstatic.com/x.jpg",
+      "https://u@cdn.cloudflare.steamstatic.com/x.jpg",
+    ]) {
+      expect(isPosterUrl(u), u).toBe(false);
     }
   });
   it("rejects other hosts, credentials, non-https and non-strings", () => {
