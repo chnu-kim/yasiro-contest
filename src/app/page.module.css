@@ -143,7 +143,7 @@
 }
 
 .heroRight {
-  --panel-top: 18%;
+  --panel-top: 24%;
   grid-area: panel;
   position: relative;
   justify-self: center;
@@ -357,6 +357,13 @@
   font-size: var(--fs-lg);
 }
 
+.vodTitle {
+  font-size: var(--fs-sm);
+  color: var(--band-dim);
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
 .vodMeta {
   display: flex;
   align-items: center;
@@ -438,10 +445,12 @@
   transform: translateX(-50%);
 }
 
+/* hqdefault(4:3)의 위아래 검은 띠가 정사각 틀에 남지 않게 키운다 */
 .miniThumb {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1.34);
 }
 
 .miniBody {

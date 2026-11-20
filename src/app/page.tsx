@@ -158,6 +158,7 @@ export default async function Home() {
                       <span className={styles.thumbPlay} aria-hidden="true">▶ 다시보기</span>
                     </span>
                     <span className={styles.vodName}>{e.name}</span>
+                    {i === 0 && <span className={styles.vodTitle}>{e.vodTitle}</span>}
                     <span className={styles.vodMeta}>
                       <time dateTime={e.firstPlayed}>{shortDate(e.firstPlayed)}</time>
                       {e.status !== 'unknown' && (
