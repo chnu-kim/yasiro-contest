@@ -1,5 +1,5 @@
 // 작은 UI 아이콘(인라인 SVG, currentColor, aria-hidden). props: size(기본 20), strokeWidth(기본 1.75), style.
-// PenIcon: 깃펜 — "한마디 남기기"·쪽지 쓰기(✏️ 이모지 대체). ArrowIcon: direction 'right'|'down'|'up-right'(외부 링크 ↗).
+// ArrowIcon: direction 'right'|'down'|'up-right'(외부 링크 ↗).
 import type { CSSProperties, ReactNode } from 'react';
 
 type IconProps = { size?: number; strokeWidth?: number; style?: CSSProperties };
@@ -22,16 +22,6 @@ function Svg({ size = 20, strokeWidth = 1.75, style, children }: IconProps & { c
     >
       {children}
     </svg>
-  );
-}
-
-export function PenIcon(props: IconProps) {
-  return (
-    <Svg {...props}>
-      <path d="M20.5 3.5c-6.5.6-11.2 4.9-12.6 12.2 6.6-.9 11.3-5.4 12.6-12.2Z" />
-      <path d="M7.9 15.7 4 20.5" />
-      <path d="M11 12.6l3.4-3.4" />
-    </Svg>
   );
 }
 

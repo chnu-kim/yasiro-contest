@@ -1,5 +1,5 @@
-/* 공유 Nav. 브레이크포인트 860px 하나 — 그 이하는 워드마크 + LIVE + 테마 + 햄버거(링크·로그인은 메뉴 안).
-   (로그인 상태 이름+로그아웃까지 한 줄에 들어가는 최소 폭이 약 860px)
+/* 공유 Nav. 브레이크포인트 860px 하나 — 그 이하는 워드마크 + 치지직 + 테마 + 햄버거(링크·관리자 로그아웃은 메뉴 안).
+   (관리자 로그인 상태 이름+로그아웃까지 한 줄에 들어가는 최소 폭이 약 860px)
    주의: .nav에 backdrop-filter/transform/filter를 걸지 않는다 — 걸면 .nav가
    position: fixed 자식(backdrop·mobileMenu)의 기준 상자가 돼 바깥 탭 닫기가 깨진다.
    반투명 + blur는 ::before에 둔다. */
@@ -154,26 +154,6 @@
   gap: var(--space-1);
 }
 
-/* 로그인은 보조 — 테두리만 있는 고스트. LIVE(채움)보다 아래 위계 */
-.loginBtn {
-  display: inline-flex;
-  align-items: center;
-  height: 40px;
-  padding: 0 var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  color: var(--text);
-  white-space: nowrap;
-  transition: background var(--dur-fast), border-color var(--dur-fast);
-}
-
-.loginBtn:hover {
-  background: var(--accent-bg);
-  border-color: var(--border-strong);
-}
-
 .userName {
   max-width: 120px;
   overflow: hidden;
@@ -209,7 +189,7 @@
   text-decoration-color: currentColor;
 }
 
-/* LIVE: 링크 자체는 44px 높이 히트 영역, 보이는 pill은 안쪽 32px */
+/* 치지직 채널 pill(클래스 이름은 예전 LIVE 그대로): 링크 자체는 44px 높이 히트 영역, 보이는 pill은 안쪽 32px */
 .live {
   display: inline-flex;
   align-items: center;
@@ -227,10 +207,9 @@
   border: 1.5px solid var(--live-border);
   background: transparent;
   color: var(--text);
-  font-family: 'Fredoka', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: var(--tracking-label);
+  letter-spacing: 0.02em;
   line-height: 1;
   white-space: nowrap;
   transition: background var(--dur-fast), border-color var(--dur-fast);
@@ -254,10 +233,8 @@
 .logo:focus-visible,
 .link:focus-visible,
 .iconBtn:focus-visible,
-.loginBtn:focus-visible,
 .textBtn:focus-visible,
-.mobileItem:focus-visible,
-.mobileLogin:focus-visible {
+.mobileItem:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
@@ -328,24 +305,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.mobileLogin {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: var(--tap);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-strong);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  color: var(--text);
-  transition: background var(--dur-fast);
-}
-
-.mobileLogin:hover {
-  background: var(--accent-bg);
 }
 
 /* ═══════ 모바일·태블릿 (≤860px) ═══════ */

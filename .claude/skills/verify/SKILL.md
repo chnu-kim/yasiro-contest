@@ -42,7 +42,7 @@ pnpm wrangler d1 execute yasiro-db --local --command "INSERT INTO auth_sessions 
 echo "$ID"   # 쿠키 값
 ```
 
-- curl: `curl -H "cookie: __Host-session=$ID" http://localhost:<port>/to-yasiro`
+- curl: `curl -H "cookie: __Host-session=$ID" http://localhost:<port>/games`
 - Chrome: 그 localhost 페이지의 DevTools 콘솔에서 `document.cookie = "__Host-session=<ID>; Path=/; Secure"` 후 새로고침(JS로 만든 쿠키라 HttpOnly는 아니지만 로컬 확인에는 충분하다). localhost는 secure context라 `Secure`·`__Host-` 쿠키가 동작한다. Safari는 localhost의 Secure 쿠키를 다르게 다룰 수 있으니 Chrome으로 본다.
 - 쓰기 요청(POST 등)은 `Origin` 헤더가 같은 출처여야 한다(`checkSameOrigin`). curl이면 `-H "origin: http://localhost:<port>"`.
 - 레거시 `sessions` 테이블과 `session_id` 쿠키는 더 이상 읽지 않는다.
@@ -51,11 +51,11 @@ echo "$ID"   # 쿠키 값
 
 ## 3. 브라우저 확인
 
-서버를 띄운 채 `pnpm shots http://localhost:<port> [바뀐 경로...]`를 실행한다. 경로를 빼면 `/`, `/about`, `/to-yasiro` 전부를 라이트/다크 × 1280/390 전체 페이지로 찍는다(설치된 Chrome 사용, dev 오버레이·애니메이션 제거). 결과 PNG를 Read로 원본 크기 그대로 보고, 사용자에게는 `screenshots/index.html` 절대 경로를 준다(`open`으로 열어도 된다).
+서버를 띄운 채 `pnpm shots http://localhost:<port> [바뀐 경로...]`를 실행한다. 경로를 빼면 `/`, `/about`, `/games` 전부를 라이트/다크 × 1280/390 전체 페이지로 찍는다(설치된 Chrome 사용, dev 오버레이·애니메이션 제거). 결과 PNG를 Read로 원본 크기 그대로 보고, 사용자에게는 `screenshots/index.html` 절대 경로를 준다(`open`으로 열어도 된다).
 
 상호작용은 스크린샷으로 안 잡히니 Claude in Chrome으로 따로 본다. Nav를 건드렸다면 ≤480px 햄버거 메뉴를 열고, 바깥을 눌렀을 때 닫히는지 확인한다.
 
-함께 볼 것: 콘솔 에러와 hydration 경고, 다크 모드 캐릭터 패널, ≤480px LIVE FAB이 마지막 요소를 가리지 않는지, 폰트가 폴백되지 않았는지(computed `font-family`).
+함께 볼 것: 콘솔 에러와 hydration 경고, 다크 모드 캐릭터 패널, 폰트가 폴백되지 않았는지(computed `font-family`).
 
 ## 4. 보고
 

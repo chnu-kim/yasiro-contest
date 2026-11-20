@@ -16,11 +16,10 @@ interface NavProps {
   initialUser: NavUser | null;
 }
 
-// 새 출품작을 추가하면 여기 한 줄 — 데스크톱 링크와 모바일 메뉴가 같은 목록을 쓴다
+// 새 페이지를 추가하면 여기 한 줄 — 데스크톱 링크와 모바일 메뉴가 같은 목록을 쓴다
 const LINKS = [
   { href: '/about', label: '소개' },
   { href: '/games', label: '게임' },
-  { href: '/to-yasiro', label: '야시로에게' },
 ] as const;
 
 const LIVE_URL = 'https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3';
@@ -94,27 +93,25 @@ export default function Nav({ initialUser }: NavProps) {
           <span className={styles.iconDark} aria-hidden="true"><Sun size={17} strokeWidth={1.8} /></span>
         </button>
 
-        <div className={styles.account}>
-          {user ? (
-            <>
-              <span className={styles.userName} title={user.channelName}>{user.channelName}</span>
-              <button onClick={logout} className={styles.textBtn}>로그아웃</button>
-            </>
-          ) : (
-            <a href="/auth/login" className={styles.loginBtn}>치지직 로그인</a>
-          )}
-        </div>
+        {/* 방문자용 로그인 버튼은 두지 않는다. 관리자는 /auth/login?next=/games 로 직접 들어온다 */}
+        {user && (
+          <div className={styles.account}>
+            <span className={styles.userName} title={user.channelName}>{user.channelName}</span>
+            <button onClick={logout} className={styles.textBtn}>로그아웃</button>
+          </div>
+        )}
 
         <a
           href={LIVE_URL}
           target="_blank"
           rel="noreferrer"
           className={styles.live}
-          aria-label="야시로 치지직 라이브 (새 탭에서 열림)"
+          aria-label="야시로 치지직 채널 (새 탭에서 열림)"
         >
+          {/* 실제 방송 상태를 받기 전까지는 늘 켜진 것처럼 보이는 LIVE 대신 채널 링크로 표기한다 */}
           <span className={styles.livePill}>
             <span className={styles.liveDot} aria-hidden="true" />
-            LIVE
+            치지직
           </span>
         </a>
 
@@ -145,16 +142,12 @@ export default function Nav({ initialUser }: NavProps) {
                 {l.label}
               </Link>
             ))}
-            <div className={styles.mobileAccount}>
-              {user ? (
-                <>
-                  <span className={styles.mobileUser}>{user.channelName}</span>
-                  <button onClick={logout} className={styles.textBtn}>로그아웃</button>
-                </>
-              ) : (
-                <a href="/auth/login" className={styles.mobileLogin} onClick={closeMenu}>치지직 로그인</a>
-              )}
-            </div>
+            {user && (
+              <div className={styles.mobileAccount}>
+                <span className={styles.mobileUser}>{user.channelName}</span>
+                <button onClick={logout} className={styles.textBtn}>로그아웃</button>
+              </div>
+            )}
           </nav>
         </>
       )}
