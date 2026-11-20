@@ -73,6 +73,7 @@
   line-height: 1.5;
   color: var(--text);
   word-break: keep-all;
+  text-wrap: balance;
   max-width: 15em;
 }
 
@@ -206,20 +207,21 @@
 /* ═════ 최근 탐험 ═════ */
 .logGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* 대표 1편 : 기록 표 = 6 : 5. 화면이 넓을수록 썸네일도 커진다(1024에서 약 280px, 1440에서 약 370px) */
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
   gap: var(--space-5);
   align-items: start;
 }
 
 .logGridSingle {
   grid-template-columns: minmax(0, 1fr);
-  max-width: calc((100% - var(--space-5)) / 2);
+  max-width: calc((100% - var(--space-5)) * 6 / 11);
 }
 
-/* 가장 최근 1편: 썸네일(오버레이 없음) + 오른쪽 기록 */
+/* 가장 최근 1편: 썸네일(오버레이 없음) + 오른쪽 기록. 썸네일 3 : 글 2 */
 .featured {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   gap: var(--space-5);
   align-items: end;
   border-radius: var(--radius-md);
@@ -438,11 +440,6 @@
     height: 1250px;
   }
 
-
-  .featured {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-3);
-  }
 }
 
 /* ═════ 모바일: 제목 → 그림 → 리드·CTA → 기록 표 ═════ */
