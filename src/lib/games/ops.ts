@@ -3,7 +3,7 @@
 // 변경 기록(game_changes, 수정자 '관리자')이 사이트에서 저장한 것과 같게 남는다.
 import { YASIRO_CHANNEL_ID, actorNameFor, parseAdminIds } from "./admin.ts";
 import { createGame, getGame, listChanges, setHidden, updateGame } from "./repo.ts";
-import { youtubeVideoId } from "./schema.ts";
+import { isChzzkPosterUrl, youtubeVideoId } from "./schema.ts";
 import { sqlValue } from "./seed.ts";
 import type { Actor, GameInput, GamePatch, GamesDb, GamesDbStatement, Vod, WriteContext, WriteResult } from "./types.ts";
 
@@ -197,6 +197,11 @@ async function runOne(db: GamesDb, op: GameOp, ctx: WriteContext, lines: string[
     case "update": {
       const current = await mustGet(db, op.id);
       lines.push(`수정 ${op.id} · ${await summaryOf(db, await updateGame(db, op.id, op.patch, current.version, ctx))}`);
+      // 요약은 "포스터 바뀜"뿐이라 Steam 포스터 추가와 카테고리 포스터 덮어쓰기가 구분되지 않는다
+      if (op.patch.posterUrl !== undefined && op.patch.category === undefined && current.categoryId !== undefined) {
+        const what = isChzzkPosterUrl(current.posterUrl) ? "카테고리 포스터를 덮어써요" : "--apply 전에 확인해 주세요";
+        lines.push(`  주의: ${op.id}는 치지직 카테고리(${current.categoryId})가 있어요. ${what}.`);
+      }
       return;
     }
     case "move-vods":

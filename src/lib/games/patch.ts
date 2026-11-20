@@ -1,7 +1,7 @@
 // 수정 모드 폼 로직(클라이언트). 서버(repo.ts)와 같은 validateCandidate·diffGames를 쓴다. 순수 함수.
 import { diffGames, FIELD_LABEL, FIELD_ORDER } from "./diff.ts";
 import { formatDate } from "./query.ts";
-import { CHZZK_VOD_MESSAGE, GAME_STATUSES, isChzzkUrl, isValidIsoDate, validateCandidate } from "./schema.ts";
+import { CHZZK_VOD_MESSAGE, GAME_STATUSES, isChzzkPosterUrl, isChzzkUrl, isValidIsoDate, validateCandidate } from "./schema.ts";
 import type {
   CategoryLink,
   Game,
@@ -24,23 +24,31 @@ export function gameToForm(game: Game | null): GameForm {
   if (game === null) {
     return { name: "", originalTitle: "", category: null, firstPlayed: "", undated: false, status: "unknown", vods: [] };
   }
+  // 포스터가 치지직 카테고리 포스터(pstatic.net)면 카테고리 쪽에, 아니면(Steam 캡슐) 카테고리 밖 포스터로 연다.
+  // 카테고리 C + Steam 포스터를 C의 포스터로 열면, 포스터 없는 카테고리로 바꿀 때 Steam 포스터가 지워진다
+  const categoryPoster = game.categoryId !== undefined && isChzzkPosterUrl(game.posterUrl) ? game.posterUrl : null;
   const form: GameForm = {
     name: game.name,
     originalTitle: game.originalTitle ?? "",
-    category: game.categoryId === undefined ? null : { categoryId: game.categoryId, posterUrl: game.posterUrl ?? null },
+    category: game.categoryId === undefined ? null : { categoryId: game.categoryId, posterUrl: categoryPoster },
     firstPlayed: game.firstPlayed ?? "",
     undated: game.firstPlayed === null,
     status: game.status,
     vods: game.vods.map((v) => ({ title: v.title, url: v.url, date: v.date })),
   };
-  // 카테고리 없이 붙은 포스터(Steam)는 따로 들고 있어야 저장할 때 지워지지 않는다
-  if (game.categoryId === undefined && game.posterUrl !== undefined) form.posterUrl = game.posterUrl;
+  // 카테고리 밖 포스터(Steam)는 따로 들고 있어야 저장·카테고리 변경 때 지워지지 않는다
+  if (game.posterUrl !== undefined && categoryPoster === null) form.posterUrl = game.posterUrl;
   return form;
 }
 
 /** 폼이 저장할 포스터. 치지직 카테고리 포스터가 우선, 없으면 카테고리 밖 포스터(Steam), 둘 다 없으면 null */
 export function formPosterUrl(form: GameForm): string | null {
   return form.category?.posterUrl ?? form.posterUrl ?? null;
+}
+
+/** 카테고리 연결을 해제해도 포스터(카테고리 밖 Steam 포스터)가 남는가. 해제 버튼 문구('표본 라벨로' 여부)에 쓴다 */
+export function unlinkKeepsPoster(form: GameForm): boolean {
+  return formPosterUrl({ ...form, category: null }) !== null;
 }
 
 export function formToRaw(id: string, form: GameForm): Record<string, unknown> {

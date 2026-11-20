@@ -313,7 +313,9 @@ export interface GameForm {
   /** null = 치지직 카테고리 연결 없음(표본 라벨) */
   category: CategoryLink | null;
   /** 카테고리 밖에서 붙은 포스터(Steam 캡슐). 실제 포스터는 category?.posterUrl ?? posterUrl (formPosterUrl).
-   *  카테고리 없이 포스터가 있는 게임에만 있다. 폼 UI는 이 값을 고치지 않는다(patch.posterUrl·games:edit로 바꾼다) */
+   *  게임의 포스터가 치지직 카테고리 포스터(pstatic.net, isChzzkPosterUrl)가 아니거나 카테고리가 없으면 여기에 둔다.
+   *  그래서 카테고리를 바꾸거나 해제해도 남고, 포스터 있는 카테고리를 고르면 카테고리 포스터가 이긴다.
+   *  폼 UI는 이 값을 고치지 않는다(patch.posterUrl·games:edit로 바꾼다) */
   posterUrl?: string;
   /** YYYY-MM-DD 또는 "" (input[type=date] 값) */
   firstPlayed: string;

@@ -156,6 +156,33 @@ describe("runOps", () => {
     expect(rec.writes().join("\n")).toContain(`poster_url = '${steam}'`);
   });
 
+  it("update patch.posterUrl: 치지직 카테고리가 있는 게임이면 미리보기에 경고를 붙인다", async () => {
+    d1 = createGamesTestDb();
+    const chzzk = "https://nng-phinf.pstatic.net/x.png";
+    const a = (await seed({ name: "에이", categoryId: "Cat_A", posterUrl: chzzk, firstPlayed: null, status: "clear", vods: [] })).id;
+    const b = (await seed({ name: "비", categoryId: "Cat_B", firstPlayed: null, status: "clear", vods: [] })).id;
+    const steam = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2455920/library_600x900.jpg";
+    const out = await runOps(
+      d1.db,
+      [
+        { op: "update", id: a, patch: { posterUrl: steam } },
+        { op: "update", id: b, patch: { posterUrl: steam } },
+        { op: "update", id: b, patch: { category: { categoryId: "Cat_C", posterUrl: null }, posterUrl: null } },
+      ],
+      ctx(),
+    );
+    expect(out).toEqual({
+      ok: true,
+      lines: [
+        `수정 ${a} · 포스터 바뀜`,
+        `  주의: ${a}는 치지직 카테고리(Cat_A)가 있어요. 카테고리 포스터를 덮어써요.`,
+        `수정 ${b} · 포스터 바뀜`,
+        `  주의: ${b}는 치지직 카테고리(Cat_B)가 있어요. --apply 전에 확인해 주세요.`,
+        expect.stringMatching(new RegExp(`^수정 ${b} · `)),
+      ],
+    });
+  });
+
   it("바뀐 게 없는 수정·숨김은 '변화 없음'으로 알린다", async () => {
     d1 = createGamesTestDb();
     await seed({ name: "에이", firstPlayed: null, status: "clear", vods: [] });

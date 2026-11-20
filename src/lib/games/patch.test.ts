@@ -15,6 +15,7 @@ import {
   issuesToFormIssues,
   parseDraft,
   serializeDraft,
+  unlinkKeepsPoster,
   suggestFirstPlayed,
   validateForm,
 } from "./patch.ts";
@@ -338,5 +339,36 @@ describe("카테고리 없는 포스터(Steam)", () => {
     const broken = JSON.parse(serializeDraft(s));
     broken.form.posterUrl = 1;
     expect(parseDraft(JSON.stringify(broken))).toBeNull();
+  });
+
+  describe("카테고리 C + Steam 포스터(카테고리 포스터 없음)로 저장된 게임", () => {
+    const linkedSteam: Game = { ...steamGame, categoryId: "C" };
+
+    it("gameToForm은 Steam 포스터를 카테고리 포스터가 아니라 posterUrl로 연다", () => {
+      const f = gameToForm(linkedSteam);
+      expect(f.category).toEqual({ categoryId: "C", posterUrl: null });
+      expect(f.posterUrl).toBe(STEAM);
+      expect(formToPatch(linkedSteam, f)).toEqual({});
+    });
+    it("포스터 없는 다른 카테고리로 바꿔도 Steam 포스터를 지우지 않는다", () => {
+      const f = { ...gameToForm(linkedSteam), category: { categoryId: "D", posterUrl: null } };
+      expect(formToPatch(linkedSteam, f)).toEqual({ category: { categoryId: "D", posterUrl: null }, posterUrl: STEAM });
+    });
+    it("포스터 있는 카테고리로 바꾸면 카테고리 포스터가 이긴다", () => {
+      const f = { ...gameToForm(linkedSteam), category: { categoryId: "D", posterUrl: POSTER } };
+      expect(formToPatch(linkedSteam, f)).toEqual({ category: { categoryId: "D", posterUrl: POSTER } });
+    });
+    it("연결을 해제해도 Steam 포스터는 남는다", () => {
+      expect(unlinkKeepsPoster(gameToForm(linkedSteam))).toBe(true);
+      expect(unlinkKeepsPoster(gameToForm(base))).toBe(false);
+      const f = { ...gameToForm(linkedSteam), category: null };
+      expect(formPosterUrl(f)).toBe(STEAM);
+      expect(formToPatch(linkedSteam, f)).toEqual({ category: null, posterUrl: STEAM });
+    });
+    it("치지직 카테고리 포스터는 지금처럼 category.posterUrl로 연다", () => {
+      const f = gameToForm(base);
+      expect(f.category).toEqual({ categoryId: base.categoryId, posterUrl: POSTER });
+      expect("posterUrl" in f).toBe(false);
+    });
   });
 });

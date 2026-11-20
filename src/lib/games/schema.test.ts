@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   compareCanonical,
   compareName,
+  isChzzkPosterUrl,
   isPosterUrl,
   GamesValidationError,
   isValidIsoDate,
@@ -534,6 +535,18 @@ describe("isPosterUrl", () => {
     ]) {
       expect(isPosterUrl(u), String(u)).toBe(false);
     }
+  });
+});
+
+describe("isChzzkPosterUrl", () => {
+  it("치지직 이미지 CDN(pstatic.net) 포스터만 true", () => {
+    expect(isChzzkPosterUrl("https://nng-phinf.pstatic.net/x.png")).toBe(true);
+    expect(isChzzkPosterUrl("https://pstatic.net/x.png")).toBe(true);
+    expect(isChzzkPosterUrl("https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1/library_600x900.jpg")).toBe(false);
+    expect(isChzzkPosterUrl("https://pstatic.net.evil.com/x.png")).toBe(false);
+    expect(isChzzkPosterUrl("http://nng-phinf.pstatic.net/x.png")).toBe(false);
+    expect(isChzzkPosterUrl("not a url")).toBe(false);
+    expect(isChzzkPosterUrl(undefined)).toBe(false);
   });
 });
 

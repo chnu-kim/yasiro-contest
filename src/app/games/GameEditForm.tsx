@@ -10,6 +10,7 @@ import {
   changedLabels,
   fieldDomId,
   formPosterUrl,
+  unlinkKeepsPoster,
   formToInput,
   formToPatch,
   gameToForm,
@@ -414,7 +415,7 @@ export default function GameEditForm({
             ) : (
               <p className={styles.catId}>
                 <span>치지직 카테고리</span>
-                <span className={styles.catNone}>연결 없음 · 표본 라벨</span>
+                <span className={styles.catNone}>{posterUrl !== null ? '연결 없음' : '연결 없음 · 표본 라벨'}</span>
               </p>
             )}
             {errorText('category')}
@@ -434,7 +435,7 @@ export default function GameEditForm({
             </button>
             {form.category && (
               <button type="button" className={styles.unlink} onClick={() => patchForm({ category: null })}>
-                연결 해제 · 표본 라벨로
+                {unlinkKeepsPoster(form) ? '연결 해제' : '연결 해제 · 표본 라벨로'}
               </button>
             )}
           </div>
