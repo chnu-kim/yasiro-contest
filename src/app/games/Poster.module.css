@@ -74,6 +74,31 @@
   opacity: 0.22;
 }
 
+/* 현장 사진: 위쪽에 사진처럼 붙인 다시보기 썸네일, 아래는 같은 표본 라벨 */
+.field {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.photo {
+  display: block;
+  margin: 14px 2px 0;
+  padding: 5px;
+  background: var(--paper-hi);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transform: rotate(-2deg);
+}
+
+/* hqdefault(4:3)의 위아래 검은 띠를 16:9로 잘라 낸다 */
+.photo img {
+  display: block;
+  width: 100%;
+  height: auto; /* width·height 속성(480×360)이 aspect-ratio를 덮지 않게 */
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 /* 표본 라벨: 아래쪽 종이 쪽지 */
 .label {
   position: relative;

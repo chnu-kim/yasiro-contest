@@ -42,7 +42,7 @@ src/app/
   api/games/            관리자 API (route·[id]·[id]/hidden·[id]/changes·categories·youtube). 핸들러는 얇게, 로직은 src/lib/games/api.ts
 src/components/         Nav, SkipLink, ClearStamp (공유)
 scripts/games-{seed,export,edit}.ts   pnpm games:seed / games:export / games:edit 진입점 (얇게. 로직은 src/lib/games/seed.ts, ops.ts)
-src/lib/                순수 로직 + *.test.ts (session, auth-routes, http, chzzk-auth, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta,home})
+src/lib/                순수 로직 + *.test.ts (session, auth-routes, http, chzzk-auth, chzzk-category(검색·slugify만), games/{schema,query,labels,rows,repo,admin,diff,patch,client,api,seed,youtube-meta,home,media})
 migrations/             D1 마이그레이션 (wrangler 관리)
 _design/                원본 디자인 핸드오프 (gitignored)
 ```
@@ -144,7 +144,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 검증 규칙의 정본은 `src/lib/games/schema.ts`(`validateGames`, `validateCandidate`)다. 서버(`repo.ts`)와 클라이언트 폼(`patch.ts validateForm`)이 같은 함수를 쓴다. 다시보기는 유튜브 링크만(치지직 다시보기는 한 달 뒤 삭제). `firstPlayed`는 `YYYY-MM-DD` 또는 `null`. 정복 여부는 `clear | fail | endless | unknown`(endless는 정복 개념이 없는 온라인 게임, unknown은 카드에 표시 없음·상세 "기록 없음"). 게임이 아닌 항목(저챗, 룰렛 자체, 갈틱폰 등)은 넣지 않는다(`seed-data.test.ts`가 시드를 검사). 종겜룰렛(데이)에서 플레이한 게임은 그 게임으로 기록한다.
 - 삭제는 숨김(soft delete, `hidden=1`)이다. 숨긴 게임은 방문자 목록·개수·상세·API에서 빠지고, 탐험 번호(NO.)는 숨기지 않은 게임만으로 매긴다(`indexWithHidden`, 숨긴 게임은 "—").
 - 목록 상태(q, status, year, sort, page)의 정본은 URL이다. `GamesBoard`가 `useSearchParams`로 읽고 `history.pushState/replaceState`로 쓴다. 로직은 `src/lib/games`(query·labels)에만 두고 컴포넌트에 복제하지 않는다.
-- 포스터는 `<img>`(loading lazy, 없거나 실패하면 "표본 라벨" 카드: 꿀붕이 발자국 워터마크 + SPECIMEN NO.·이름·"포스터 미확보" 라벨. 모바일은 번호만, 상세 모바일은 발자국만). `next/image`는 쓰지 않는다. `posterUrl`은 `isPosterUrl`(https, `pstatic.net` 또는 하위 도메인, 자격 증명 없음)만 통과한다.
+- 포스터는 `<img>`(loading lazy, 없거나 실패하면 "표본 라벨" 카드: 첫 다시보기 썸네일을 사진처럼 붙인 "현장 사진"(`media.ts fieldPhoto`, 꼬리말 "그날 방송 장면 · MM.DD". 한 방송에서 여러 게임을 했으면 다른 게임 장면일 수 있다), 다시보기도 없으면 꿀붕이 발자국 워터마크 + SPECIMEN NO.·이름·"포스터 미확보" 라벨. 목록 카드는 표본 카드의 정복 도장을 오른쪽 위로 옮긴다(`stampTopWhenEmpty`). 모바일은 번호만, 상세 모바일은 발자국만). `next/image`는 쓰지 않는다. `posterUrl`은 `isPosterUrl`(https, `pstatic.net` 또는 하위 도메인, 자격 증명 없음)만 통과한다.
 - scripts/*.ts는 `node --experimental-strip-types`로 `src/lib`의 `.ts`를 직접 import한다(그래서 lib 런타임 import는 `./x.ts` 상대경로, erasable 구문만: enum·namespace·생성자 parameter property 금지). `MODULE_TYPELESS_PACKAGE_JSON` 경고는 스크립트에서 `--disable-warning`으로 끈다. `"type": "module"`을 넣으면 Next·ESLint 설정 해석이 바뀌므로 넣지 않는다.
 - 로컬 치지직 검색(관리자 게임 추가)은 `.dev.vars`의 `CHZZK_CLIENT_ID`·`CHZZK_CLIENT_SECRET`을 쓴다. 1Password 환경 `chzzk-local-dev`를 마운트한 파일이라 내용을 출력·커밋하지 않는다.
 
