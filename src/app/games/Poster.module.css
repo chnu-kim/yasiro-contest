@@ -22,13 +22,15 @@
   --tone-4: #3A3024;
 }
 
-/* 정복 도장: 포스터 안쪽 오른쪽 아래. 크기·여백은 부모가 --stamp-size/--stamp-inset로 정한다 */
+/* 정복 도장: 포스터 안쪽 오른쪽 아래. 크기는 포스터 폭의 36%(카드·상세·화면 폭과 상관없이 같은 비율),
+   여백은 부모가 --stamp-inset로 정한다 */
 .stamp {
   position: absolute;
   right: var(--stamp-inset, 8px);
   bottom: var(--stamp-inset, 8px);
-  width: var(--stamp-size, 80px);
-  height: var(--stamp-size, 80px);
+  width: 36%;
+  height: auto;
+  aspect-ratio: 1;
   pointer-events: none;
 }
 
@@ -49,9 +51,8 @@
 .stampTop {
   bottom: auto;
   top: var(--stamp-inset, 8px);
-  /* 사진 속 얼굴·제목 글자를 덜 가리도록 8px 작게 */
-  width: calc(var(--stamp-size, 80px) - 8px);
-  height: calc(var(--stamp-size, 80px) - 8px);
+  /* 사진 속 얼굴·제목 글자를 덜 가리도록 조금 작게 */
+  width: 32%;
 }
 
 .t0 { --tone: var(--tone-0); }

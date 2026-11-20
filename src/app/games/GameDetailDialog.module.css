@@ -17,7 +17,6 @@
 }
 
 .poster {
-  --stamp-size: 96px;
   --stamp-inset: 12px;
   grid-area: poster;
   align-self: start;
@@ -207,8 +206,6 @@
   }
 
   .poster {
-    /* 모바일 포스터는 96px 폭이라 도장은 절반 이하로 */
-    --stamp-size: 48px;
     --stamp-inset: 6px;
   }
 

@@ -7,7 +7,6 @@
 }
 
 .cardCover {
-  --stamp-size: 80px;
   --stamp-inset: 8px;
   transition: transform var(--dur-base) ease, filter var(--dur-base) ease;
 }
@@ -186,7 +185,6 @@
   }
 
   .cardCover {
-    --stamp-size: 64px;
     --stamp-inset: 6px;
   }
 }
