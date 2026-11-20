@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PAGE_TRANSITION } from '@/lib/page-transition';
 import styles from './page.module.css';
 import Button from '@/components/Button';
 import { ArrowIcon } from '@/components/icons';
@@ -103,7 +104,7 @@ export default async function Home() {
                 <span className={styles.label}>FIELD LOG</span>
                 <h2 id="log-title" className={styles.h2}>최근 탐험</h2>
               </div>
-              <Link href="/games" className={styles.headLink}>
+              <Link transitionTypes={PAGE_TRANSITION} href="/games" className={styles.headLink}>
                 전체 기록 보기
                 <ArrowIcon direction="right" size={16} />
               </Link>
@@ -160,7 +161,7 @@ export default async function Home() {
             </div>
           </div>
           <div className={styles.cards}>
-            <Link href="/about" className={styles.card}>
+            <Link transitionTypes={PAGE_TRANSITION} href="/about" className={styles.card}>
               <span className={styles.cardIcon} aria-hidden="true">
                 <KkulCrop kind="front" size={56} style={{ position: 'relative' }} />
               </span>
@@ -174,7 +175,7 @@ export default async function Home() {
                 <ArrowIcon direction="right" size={20} />
               </span>
             </Link>
-            <Link href="/games" className={styles.card}>
+            <Link transitionTypes={PAGE_TRANSITION} href="/games" className={styles.card}>
               <span className={styles.cardIcon} aria-hidden="true">
                 <KkulCrop kind="pot" size={56} style={{ position: 'relative' }} />
               </span>
