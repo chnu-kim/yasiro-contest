@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import Button from '@/components/Button';
 import KkulMark from '@/components/KkulMark';
 import { ArrowIcon } from '@/components/icons';
-import HeightRuler from '@/components/HeightRuler';
 import KkulCrop from './_components/KkulCrop';
 import { HOME_DESCRIPTION, HOME_TITLE, jsonLdString, pageMetadata, siteJsonLd } from '@/lib/seo';
 import { buildHomeData, type Expedition, type HomeData } from '@/lib/games/home';
@@ -101,10 +100,6 @@ export default async function Home() {
               priority
               className={styles.char}
             />
-            {/* 실측 키 눈금자: 그림 시트의 머리끝(10%)·발끝(95.5%)에 맞춘 149.8cm. 아래는 그림과 함께 잘린다 */}
-            <div className={styles.ruler}>
-              <HeightRuler side="right" />
-            </div>
           </div>
         </div>
       </section>
@@ -183,10 +178,8 @@ export default async function Home() {
                 <span className={styles.cardTitle}>야시로 소개</span>
                 <span className={styles.cardDesc}>프로필과 찾아가는 길</span>
               </span>
-              <span className={styles.entry}>
-                <span className={styles.entryLabel}>키</span>
-                <span className={styles.entryValue}>149.8<small>cm</small></span>
-              </span>
+              {/* 키는 /about 키 측정판이 맡는다. 빈 칸으로 두어 두 카드의 화살표 자리를 맞춘다 */}
+              <span className={styles.entry} aria-hidden="true" />
               <span className={styles.cardEnd}>
                 <ArrowIcon direction="right" size={20} />
               </span>
