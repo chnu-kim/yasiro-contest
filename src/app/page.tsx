@@ -63,7 +63,7 @@ export default async function Home() {
             <h1 id="hero-title" className={styles.title}>야시로</h1>
           </div>
           <div className={styles.heroBody}>
-            <p className={styles.lead}>호기심 많은 탐험가. 처음 보는 게임을 하나씩 정복해 나가요.</p>
+            <p className={styles.lead}>호기심 많은 탐험가, 벌꿀오소리 야시로</p>
             <div className={styles.actions}>
               <Button href={CHZZK_LIVE_URL} external size="lg" iconEnd={<ArrowIcon direction="up-right" size={18} />}>
                 방송 입장하기
