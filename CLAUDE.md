@@ -94,8 +94,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - Worker `yasiro-contest`(레포 개명과 무관하게 그대로 둔다. 바꾸면 새 Worker가 생겨 secret·도메인을 옮겨야 한다) · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
 - D1 `yasiro-db` (`69020930-766c-423b-8cbd-85d62eee3e02`) → `env.DB`. 타입은 `src/types/cloudflare.d.ts`
 - 접근: `const { env } = await getCloudflareContext({ async: true })` (`@opennextjs/cloudflare`)
-- 테이블: `auth_sessions`(0009, 아래 '세션'), `games`, `game_vods`, `game_changes`(0007, 시드 0008). 레거시 `guestbook`(0002, 방명록 제거 #38)·`sessions`(0001, 0010에서 행 삭제)는 0011에서 DROP한다(원격 적용 전에는 운영 DB에 아직 있다. 절차는 아래 '0011 배포 순서'. 원격 적용을 확인하면 완료형으로 고친다). 스키마 변경은 `d1-migration` 스킬로 한다.
-- **0011 배포 순서**: 테이블을 쓰는 코드가 이미 없어서 코드 의존이 없다. 머지 전·후 어느 때 적용해도 된다. 사람이 실행한다: 먼저 지워지는 테이블만 백업한다: `pnpm wrangler d1 export yasiro-db --remote --table guestbook --output <file>`(방명록 1건이 지워진다). `--table` 없이 전체를 내보내면 `auth_sessions`·`game_changes`의 채널 ID·이름까지 파일에 들어가므로 쓰지 않는다. `sessions`는 0010 뒤 행이 0이라 받지 않는다(확인하려면 `SELECT count(*) FROM sessions`, 0이 아니면 그 행을 어떻게 할지 사람이 먼저 정한다) → `pnpm wrangler d1 migrations list yasiro-db --remote`로 대기 목록이 0011 하나뿐인지 확인 → `migrations apply --remote`. 백업 파일은 `chmod 600`으로 로컬에만 두고 커밋하지 않으며, 보관할 필요가 없어지면 지운다.
+- 테이블: `auth_sessions`(0009, 아래 '세션'), `games`, `game_vods`, `game_changes`(0007, 시드 0008). 레거시 `guestbook`(0002, 방명록 제거 #38)·`sessions`(0001)는 0011로 DROP했다(2026-11-20 원격 적용, 방명록 1건은 로컬 백업 `~/Documents/project/yasiro-ops/guestbook-backup-20261120.sql`). 스키마 변경은 `d1-migration` 스킬로 한다.
 - Worker secret: `CHZZK_CLIENT_ID`, `CHZZK_CLIENT_SECRET`, `CHZZK_REDIRECT_URI`, `ADMIN_CHANNEL_IDS`(쉼표 구분 관리자 채널 ID, 아래 '관리자') (`printf 'v' | pnpm wrangler secret put KEY`). Route Handler에서 `process.env`로 읽는다.
 - GitHub secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. 자격증명 원본은 1Password "Cloudflare R2 - yasiro-contest".
 - wrangler 4.x는 Node 22 이상이 필요하다.
@@ -112,7 +111,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 - 정본은 `src/lib/session.ts`: 세션 ID(32바이트 hex 64자), 쿠키 `__Host-session`(`Path=/; Secure; HttpOnly; SameSite=Lax`), 절대 수명 `SESSION_TTL_SECONDS`(7일. 쿠키 Max-Age와 DB `expires_at`이 같은 값, 치지직 토큰 TTL과 무관). DB에는 `SHA-256(세션 ID)`(`auth_sessions.id_hash`)만 저장하고 원본 ID는 DB·로그에 남기지 않는다.
 - 로그인·로그아웃 로직은 `src/lib/auth-routes.ts`(Route Handler는 env·ctx 주입만). callback은 토큰 교환 → 사용자 조회 → 치지직 access·refresh 토큰을 `ctx.waitUntil`로 바로 폐기(best-effort, 실패해도 로그인 진행) → 기존 세션 행 삭제·만료 행 정리 → 새 세션. 치지직 토큰은 어디에도 저장하지 않는다. 로그에는 상태 코드·에러 이름만 남긴다.
 - callback은 성공·실패 모두 `oauth_state`·`oauth_next`를 지운다. `CHZZK_*`가 없으면 login·callback은 500이다.
-- 레거시 `session_id` 쿠키는 읽지 않는다. 로그인·로그아웃 때 `session_id` 쿠키만 지운다. 레거시 `sessions` 테이블은 0011에서 DROP한다(원격 적용 전에는 운영에 아직 있다. 절차는 '0011 배포 순서').
+- 레거시 `session_id` 쿠키는 읽지 않는다. 로그인·로그아웃 때 `session_id` 쿠키만 지운다. 레거시 `sessions` 테이블은 0011로 DROP했다.
 - **배포 순서(#37, 0009·0010 적용 완료. 기록용)**: `migrations list yasiro-db --remote`로 대기 목록이 0009(`auth_sessions` 추가)·0010(레거시 `sessions` 행 삭제) 둘뿐인지 확인 → `migrations apply --remote` → 머지한다. 0010 적용 시점에 기존 로그인은 모두 한 번 로그아웃된다.
   - 배포 확인 뒤 `SELECT count(*) FROM sessions`가 0인지 본다. 적용부터 배포 완료까지는 옛 코드가 돌고 있어 그 사이 로그인하면 토큰이 든 레거시 행이 다시 생긴다. 0이 아니면 `DELETE FROM sessions`를 한 번 더 실행한다(사람이 실행).
   - 0010은 DB에서 행만 지운다. 치지직 쪽 토큰 폐기가 아니라서 이미 복사된 토큰(옛 D1 export·백업 포함)은 만료될 때까지 유효하다. 기존 행의 토큰을 폐기할지, 만료를 기다릴지는 사람이 정한다(폐기하려면 0010 적용 전에 원격 D1에서 읽어야 한다). 옛 백업 파일은 지운다.

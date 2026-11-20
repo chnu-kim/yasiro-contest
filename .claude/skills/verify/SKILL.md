@@ -45,7 +45,7 @@ echo "$ID"   # 쿠키 값
 - curl: `curl -H "cookie: __Host-session=$ID" http://localhost:<port>/games`
 - Chrome: 그 localhost 페이지의 DevTools 콘솔에서 `document.cookie = "__Host-session=<ID>; Path=/; Secure"` 후 새로고침(JS로 만든 쿠키라 HttpOnly는 아니지만 로컬 확인에는 충분하다). localhost는 secure context라 `Secure`·`__Host-` 쿠키가 동작한다. Safari는 localhost의 Secure 쿠키를 다르게 다룰 수 있으니 Chrome으로 본다.
 - 쓰기 요청(POST 등)은 `Origin` 헤더가 같은 출처여야 한다(`checkSameOrigin`). curl이면 `-H "origin: http://localhost:<port>"`.
-- 레거시 `session_id` 쿠키는 더 이상 읽지 않는다. 레거시 `sessions` 테이블은 0011에서 DROP한다(원격 적용 전에는 운영에 아직 있다. 절차는 CLAUDE.md '0011 배포 순서'. 로컬은 `migrations apply --local`이면 이미 없다).
+- 레거시 `session_id` 쿠키는 더 이상 읽지 않는다. 레거시 `sessions`·`guestbook` 테이블은 0011로 DROP했다(로컬도 `migrations apply --local`이면 없다).
 
 서버는 `run_in_background`로 띄우고, 확인이 끝나면 종료한다.
 
