@@ -32,6 +32,7 @@ import {
   STATUS_FILTER_LABEL,
   yearLabel,
 } from '@/lib/games/labels';
+import { yearGroups } from '@/lib/games/years';
 import { addedMessage, errorMessage, hiddenMessage, savedMessage, unhiddenMessage } from '@/lib/games/client';
 import type { GamesPageData, GamesQueryState, GameRecord } from '@/lib/games/types';
 import { adminApi } from './adminApi';
@@ -111,6 +112,8 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   const stats = useMemo(() => countStats(visible), [visible]);
   const years = useMemo(() => availableYears(visible), [visible]);
   const page = useMemo(() => selectPage(source, state), [source, state]);
+  // 날짜순이면 현재 페이지를 첫 플레이 연도별로 나눈다(이름순은 null). 개수는 source 기준이라 숨김 보기에서는 숨긴 게임도 센다
+  const groups = useMemo(() => yearGroups(source, state, page.items), [source, state, page.items]);
 
   useEffect(() => {
     if (toast === null || toastHeld) return;
@@ -140,6 +143,7 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   const openGame: BoardGame | undefined = openId === null ? undefined : list.find((g) => g.id === openId);
   const open = openGame === undefined ? null : openGame.id;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const triggerIdRef = useRef<string | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
 
   // 닫힌 뒤(닫기 버튼·Esc·배경 클릭·URL 변경 모두) 포커스를 연 카드로 돌린다.
@@ -147,7 +151,9 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   useEffect(() => {
     if (open !== null) return;
     const trigger = triggerRef.current;
+    const triggerId = triggerIdRef.current;
     triggerRef.current = null;
+    triggerIdRef.current = null;
     // 숨김으로 닫힌 경우는 카드(이제 목록에 없음)보다 알림의 되돌리기가 먼저다. 링크로 바로 연 상세도 마찬가지
     if (focusUndoRef.current) {
       focusUndoRef.current = false;
@@ -158,7 +164,17 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
       }
     }
     if (trigger === null) return;
-    if (trigger.isConnected) trigger.focus();
+    if (trigger.isConnected) return trigger.focus();
+    // 수정으로 첫 플레이 연도가 바뀌면 카드가 다른 연도 목록으로 옮겨 가며 새로 그려진다. 같은 게임에서 연 버튼
+    // (제목 버튼 data-role="open" 또는 "수정" 칩 data-role="edit")을 다시 찾고, 없으면(숨긴 게임엔 칩이 없다) 제목 버튼으로 간다
+    const find = (role: string) =>
+      triggerId === null
+        ? null
+        : document.querySelector<HTMLButtonElement>(
+            `button[data-game-id="${CSS.escape(triggerId)}"][data-role="${role}"]`,
+          );
+    const moved = find(trigger.dataset.role === 'edit' ? 'edit' : 'open') ?? find('open');
+    if (moved !== null) moved.focus();
     else topRef.current?.focus({ preventScroll: true });
   }, [open]);
 
@@ -200,6 +216,7 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
 
   const onOpen = (game: BoardGame, trigger: HTMLButtonElement, edit = false) => {
     triggerRef.current = trigger;
+    triggerIdRef.current = game.id;
     setEditFor(edit ? game.id : null);
     window.history.pushState({ [DETAIL_ENTRY]: true }, '', detailUrl(game.id));
   };
@@ -269,6 +286,23 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   const yearOptions = yearFilterOptions(years, state.year);
 
   const active = hasActiveFilter(state);
+
+  const renderCard = (game: BoardGame, titleAs: 'h2' | 'h3') => (
+    <GameCard
+      key={game.id}
+      game={game}
+      titleAs={titleAs}
+      onOpen={onOpen}
+      admin={
+        isAdmin
+          ? {
+              onEdit: (g, trigger) => onOpen(g, trigger, true),
+              onUnhide: (g) => void toggleHidden(g, false).then((m) => m !== null && showToast(m)),
+            }
+          : undefined
+      }
+    />
+  );
 
   return (
     <>
@@ -382,24 +416,23 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
 
       {page.total > 0 ? (
         <>
-          <ul className={styles.grid}>
-            {page.items.map((game) => (
-              <GameCard
-                key={game.id}
-                game={game}
-                onOpen={onOpen}
-                admin={
-                  isAdmin
-                    ? {
-                        onEdit: (g, trigger) => onOpen(g, trigger, true),
-                        onUnhide: (g) =>
-                          void toggleHidden(g, false).then((m) => m !== null && showToast(m)),
-                      }
-                    : undefined
-                }
-              />
-            ))}
-          </ul>
+          {groups === null ? (
+            <ul className={styles.grid}>{page.items.map((game) => renderCard(game, 'h2'))}</ul>
+          ) : (
+            groups.map((group) => (
+              <section key={group.key} className={styles.yearGroup}>
+                <div className={styles.yearHead}>
+                  <h2 className={group.kind === 'year' ? styles.yearNum : styles.yearNone}>
+                    {group.heading}
+                    {group.kind === 'year' && <span className={styles.srOnly}>년</span>}
+                  </h2>
+                  <p className={styles.yearCount}>{group.countText}</p>
+                  <span className={styles.yearRule} aria-hidden="true" />
+                </div>
+                <ul className={styles.grid}>{group.items.map((game) => renderCard(game, 'h3'))}</ul>
+              </section>
+            ))
+          )}
           <Pagination
             page={page.page}
             pageCount={page.pageCount}
