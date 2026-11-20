@@ -108,7 +108,7 @@ describe("buildHomeData", () => {
     expect(buildHomeData(games, 4).featured?.videoId).toBe("hhhhhhhhhhh");
   });
 
-  it("같은 첫 영상을 쓰는 게임은 더 최근(목록 앞) 것 하나만 남긴다", () => {
+  it("같은 첫 영상을 쓰는 게임은 더 최근(목록 앞) 것 하나만 남긴다. 여러 게임 방송은 대표 칸이 되지 못한다", () => {
     const shared = vod("iiiiiiiiiii", "2026-10-30", "이름-plant랑 이름-bonk 했어요");
     const games = [
       g("plant", "2026-10-30", [shared]),
@@ -116,7 +116,9 @@ describe("buildHomeData", () => {
       g("mole", "2026-10-29", [own("mole", "jjjjjjjjjjj", "2026-10-29")]),
     ];
     const data = buildHomeData(games, 4);
-    expect([data.featured?.id, ...data.rows.map((e) => e.id)]).toEqual(["bonk", "mole"]);
+    // plant는 bonk와 첫 영상이 같아 빠지고, 그 영상은 두 게임 방송이라 bonk는 글자 줄로 간다
+    expect(data.featured?.id).toBe("mole");
+    expect(data.rows.map((e) => e.id)).toEqual(["bonk"]);
   });
 
   it("대표 칸 포함 limit개까지만 돌려준다", () => {
