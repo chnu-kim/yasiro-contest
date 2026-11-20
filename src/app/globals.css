@@ -54,7 +54,6 @@ body {
   --btn-primary-fg: #FFFFFF;
   --live-border: var(--brass);
 
-
   /* 타입 스케일 */
   --fs-xs: 12px;               /* Fredoka 대문자 라벨 하한 */
   --fs-sm: 14px;               /* 보조 텍스트 하한 */
@@ -147,7 +146,6 @@ body {
   --btn-primary-bg: var(--accent);
   --btn-primary-bg-hover: #F7BC5E;
   --btn-primary-fg: #17120D;
-
 
   --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45);
   --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.45);
