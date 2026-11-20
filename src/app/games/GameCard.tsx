@@ -13,8 +13,11 @@ export default function GameCard({
   game,
   onOpen,
   admin,
+  titleAs: Title = 'h2',
 }: {
   game: BoardGame;
+  /** 연도 구분선(h2) 아래에서는 h3 */
+  titleAs?: 'h2' | 'h3';
   onOpen: (game: BoardGame, trigger: HTMLButtonElement) => void;
   admin?: CardAdmin;
 }) {
@@ -24,7 +27,7 @@ export default function GameCard({
         <Poster game={game} stampSize={88} stampStyle={{ right: -12, bottom: -18 }} stampTopWhenEmpty />
       </div>
       <div className={styles.cardBody}>
-        <h2 className={styles.cardTitle}>
+        <Title className={styles.cardTitle}>
           <button
             type="button"
             className={styles.cardOpen}
@@ -34,7 +37,7 @@ export default function GameCard({
           >
             {game.name}
           </button>
-        </h2>
+        </Title>
         <p className={styles.cardMeta}>
           {game.hidden && <span className={styles.hiddenChip}>숨김</span>}
           <span className={styles.date}>{formatDate(game.firstPlayed)}</span>

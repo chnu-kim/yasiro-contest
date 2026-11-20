@@ -32,6 +32,7 @@ import {
   STATUS_FILTER_LABEL,
   yearLabel,
 } from '@/lib/games/labels';
+import { yearGroups } from '@/lib/games/years';
 import { addedMessage, errorMessage, hiddenMessage, savedMessage, unhiddenMessage } from '@/lib/games/client';
 import type { GamesPageData, GamesQueryState, GameRecord } from '@/lib/games/types';
 import { adminApi } from './adminApi';
@@ -111,6 +112,8 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   const stats = useMemo(() => countStats(visible), [visible]);
   const years = useMemo(() => availableYears(visible), [visible]);
   const page = useMemo(() => selectPage(source, state), [source, state]);
+  // 날짜순이면 현재 페이지를 첫 플레이 연도별로 나눈다(이름순은 null). 개수는 source 기준이라 숨김 보기에서는 숨긴 게임도 센다
+  const groups = useMemo(() => yearGroups(source, state, page.items), [source, state, page.items]);
 
   useEffect(() => {
     if (toast === null || toastHeld) return;
@@ -270,6 +273,23 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
 
   const active = hasActiveFilter(state);
 
+  const renderCard = (game: BoardGame, titleAs: 'h2' | 'h3') => (
+    <GameCard
+      key={game.id}
+      game={game}
+      titleAs={titleAs}
+      onOpen={onOpen}
+      admin={
+        isAdmin
+          ? {
+              onEdit: (g, trigger) => onOpen(g, trigger, true),
+              onUnhide: (g) => void toggleHidden(g, false).then((m) => m !== null && showToast(m)),
+            }
+          : undefined
+      }
+    />
+  );
+
   return (
     <>
       {isAdmin && (
@@ -382,24 +402,23 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
 
       {page.total > 0 ? (
         <>
-          <ul className={styles.grid}>
-            {page.items.map((game) => (
-              <GameCard
-                key={game.id}
-                game={game}
-                onOpen={onOpen}
-                admin={
-                  isAdmin
-                    ? {
-                        onEdit: (g, trigger) => onOpen(g, trigger, true),
-                        onUnhide: (g) =>
-                          void toggleHidden(g, false).then((m) => m !== null && showToast(m)),
-                      }
-                    : undefined
-                }
-              />
-            ))}
-          </ul>
+          {groups === null ? (
+            <ul className={styles.grid}>{page.items.map((game) => renderCard(game, 'h2'))}</ul>
+          ) : (
+            groups.map((group) => (
+              <section key={group.key} className={styles.yearGroup}>
+                <div className={styles.yearHead}>
+                  <h2 className={group.kind === 'year' ? styles.yearNum : styles.yearNone}>
+                    {group.heading}
+                    {group.kind === 'year' && <span className={styles.srOnly}>년</span>}
+                  </h2>
+                  <p className={styles.yearCount}>{group.countText}</p>
+                  <span className={styles.yearRule} aria-hidden="true" />
+                </div>
+                <ul className={styles.grid}>{group.items.map((game) => renderCard(game, 'h3'))}</ul>
+              </section>
+            ))
+          )}
           <Pagination
             page={page.page}
             pageCount={page.pageCount}
