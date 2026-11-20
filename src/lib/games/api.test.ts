@@ -223,6 +223,13 @@ describe("parseGamePatch", () => {
     });
   });
 
+  it("posterUrl은 category와 따로 받는다(문자열·null)", () => {
+    const steam = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1/library_600x900.jpg";
+    expect(parseGamePatch({ posterUrl: steam })).toEqual({ posterUrl: steam });
+    expect(parseGamePatch({ posterUrl: null })).toEqual({ posterUrl: null });
+    expect(parseGamePatch({ category: null, posterUrl: steam })).toEqual({ category: null, posterUrl: steam });
+  });
+
   it("입력을 바꾸지 않는다", () => {
     const body = Object.freeze({ category: Object.freeze({ categoryId: "C", posterUrl: null }), vods: Object.freeze([]) });
     expect(() => parseGamePatch(body)).not.toThrow();
@@ -244,6 +251,8 @@ describe("parseGamePatch", () => {
     ["category posterUrl 없음", { category: { categoryId: "C" } }],
     ["category posterUrl 숫자", { category: { categoryId: "C", posterUrl: 1 } }],
     ["category 키 초과", { category: { categoryId: "C", posterUrl: null, x: 1 } }],
+    ["posterUrl 숫자", { posterUrl: 1 }],
+    ["posterUrl 객체", { posterUrl: {} }],
     ["firstPlayed 숫자", { firstPlayed: 1 }],
     ["status 숫자", { status: 1 }],
     ["status null", { status: null }],

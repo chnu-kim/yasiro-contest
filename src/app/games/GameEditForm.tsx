@@ -9,6 +9,7 @@ import {
   changedFields,
   changedLabels,
   fieldDomId,
+  formPosterUrl,
   formToInput,
   formToPatch,
   gameToForm,
@@ -285,13 +286,14 @@ export default function GameEditForm({
     patchForm({ vods: form.vods.map((v, j) => (j === i ? { ...v, date } : v)) });
 
   const no = initialBase?.no ?? '—';
+  const posterUrl = formPosterUrl(form);
   const preview: IndexedGame = {
     id: base?.id ?? 'new-game',
     name: form.name.trim() === '' ? '새 게임' : form.name.trim(),
     firstPlayed: null,
     status: form.status,
     vods: [],
-    ...(form.category?.posterUrl ? { posterUrl: form.category.posterUrl } : {}),
+    ...(posterUrl !== null ? { posterUrl } : {}),
     ordinal: initialBase?.ordinal ?? 0,
     no,
   };

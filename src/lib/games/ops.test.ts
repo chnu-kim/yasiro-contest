@@ -145,6 +145,17 @@ describe("runOps", () => {
     expect(rec.writes().join("\n")).not.toContain("실명");
   });
 
+  it("update patch.posterUrl: 카테고리 없는 게임에 Steam 포스터를 붙인다", async () => {
+    d1 = createGamesTestDb();
+    await seed({ name: "에이", firstPlayed: null, status: "clear", vods: [] });
+    const steam = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2455920/library_600x900.jpg?t=1766096052";
+    const rec = recordingDb(d1.db);
+    const out = await runOps(rec.db, [{ op: "update", id: "에이", patch: { posterUrl: steam } }], ctx());
+    expect(out).toEqual({ ok: true, lines: ["수정 에이 · 포스터 바뀜"] });
+    expect(await getGame(d1.db, "에이", { includeHidden: true })).toMatchObject({ posterUrl: steam, version: 2 });
+    expect(rec.writes().join("\n")).toContain(`poster_url = '${steam}'`);
+  });
+
   it("바뀐 게 없는 수정·숨김은 '변화 없음'으로 알린다", async () => {
     d1 = createGamesTestDb();
     await seed({ name: "에이", firstPlayed: null, status: "clear", vods: [] });

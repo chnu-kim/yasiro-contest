@@ -63,6 +63,12 @@ describe("changeSummary", () => {
       changeSummary("update", game({ categoryId: "c", posterUrl: "https://a.pstatic.net/1" }), game({ categoryId: "c", posterUrl: "https://a.pstatic.net/2" })),
     ).toBe("포스터 바뀜");
   });
+  it("카테고리 없는 게임의 포스터(Steam)만 붙이거나 떼도 '포스터 바뀜'", () => {
+    const steam = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1/library_600x900.jpg";
+    expect(diffGames(game(), game({ posterUrl: steam }))).toEqual(["category"]);
+    expect(changeSummary("update", game(), game({ posterUrl: steam }))).toBe("포스터 바뀜");
+    expect(changeSummary("update", game({ posterUrl: steam }), game())).toBe("포스터 바뀜");
+  });
   it("첫 플레이·정복 여부", () => {
     expect(changeSummary("update", game({ firstPlayed: "2026-10-10" }), game({ firstPlayed: null }))).toBe("첫 플레이 2026.10.10 → 날짜 기록 없음");
     expect(changeSummary("update", game(), game({ status: "clear" }))).toBe("정복 여부 모름 → 정복");

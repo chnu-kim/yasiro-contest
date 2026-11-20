@@ -6,6 +6,7 @@ import {
   draftKey,
   DRAFT_KEY_PREFIX,
   fieldDomId,
+  formPosterUrl,
   formToInput,
   formToPatch,
   formToRaw,
@@ -294,5 +295,48 @@ describe("draft", () => {
     expect(bad((s) => (s.baseVersion = "3"))).toBeNull();
     expect(bad((s) => (s.baseVersion = 1.5))).toBeNull();
     expect(bad((s) => (s.savedAt = "x"))).toBeNull();
+  });
+});
+
+describe("카테고리 없는 포스터(Steam)", () => {
+  const STEAM = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2455920/library_600x900.jpg?t=1766096052";
+  const steamGame: Game = { id: "mimic-logic", name: "미믹 로직", originalTitle: "Mimic Logic", posterUrl: STEAM, firstPlayed: "2026-10-10", status: "unknown", vods: [V1] };
+
+  it("gameToForm은 카테고리 밖 포스터를 posterUrl로 남긴다", () => {
+    const f = gameToForm(steamGame);
+    expect(f.category).toBeNull();
+    expect(f.posterUrl).toBe(STEAM);
+    expect(formPosterUrl(f)).toBe(STEAM);
+    expect("posterUrl" in gameToForm(base)).toBe(false);
+  });
+  it("열고 그대로면 변화 없음(포스터를 지우지 않는다)", () => {
+    expect(formToPatch(steamGame, gameToForm(steamGame))).toEqual({});
+    expect(changedFields(steamGame, gameToForm(steamGame))).toEqual([]);
+    expect(formToRaw(steamGame.id, gameToForm(steamGame)).posterUrl).toBe(STEAM);
+  });
+  it("이름만 고치면 name만 보낸다", () => {
+    expect(formToPatch(steamGame, { ...gameToForm(steamGame), name: "미믹 로직 2" })).toEqual({ name: "미믹 로직 2" });
+  });
+  it("카테고리 포스터가 우선, 카테고리 포스터가 없으면 Steam 포스터", () => {
+    const linked = { ...gameToForm(steamGame), category: { categoryId: "C", posterUrl: POSTER } };
+    expect(formPosterUrl(linked)).toBe(POSTER);
+    expect(formToPatch(steamGame, linked)).toEqual({ category: { categoryId: "C", posterUrl: POSTER } });
+    const bare = { ...gameToForm(steamGame), category: { categoryId: "C", posterUrl: null } };
+    expect(formPosterUrl(bare)).toBe(STEAM);
+    expect(formToRaw("x", bare)).toMatchObject({ categoryId: "C", posterUrl: STEAM });
+    expect(formToPatch(steamGame, bare)).toEqual({ category: { categoryId: "C", posterUrl: null }, posterUrl: STEAM });
+  });
+  it("포스터 없는 폼", () => {
+    expect(formPosterUrl(gameToForm(null))).toBeNull();
+    expect(formPosterUrl(form({ category: { categoryId: "C", posterUrl: null } }))).toBeNull();
+  });
+  it("draft 왕복, 옛 draft(posterUrl 없음)도 읽는다", () => {
+    const s = { form: gameToForm(steamGame), baseVersion: 2, savedAt: 1 };
+    expect(parseDraft(serializeDraft(s))).toEqual(s);
+    const old = { form: gameToForm(base), baseVersion: 2, savedAt: 1 };
+    expect(parseDraft(serializeDraft(old))).toEqual(old);
+    const broken = JSON.parse(serializeDraft(s));
+    broken.form.posterUrl = 1;
+    expect(parseDraft(JSON.stringify(broken))).toBeNull();
   });
 });

@@ -266,6 +266,9 @@ export interface GamePatch {
   originalTitle?: string | null;
   /** null = 연결 해제(categoryId·posterUrl 둘 다 제거 → 표본 라벨) */
   category?: CategoryLink | null;
+  /** 포스터만 바꾸기(카테고리 없는 게임의 Steam 캡슐 등). null = 포스터 제거(categoryId는 그대로).
+   *  category와 함께 오면 category를 먼저 적용하고 그 위에 posterUrl을 덮어쓴다(posterUrl이 이긴다) */
+  posterUrl?: string | null;
   firstPlayed?: string | null;
   status?: GameStatus;
   /** 전체 교체. 순서는 서버가 날짜 오름차순으로 정렬 */
@@ -309,6 +312,9 @@ export interface GameForm {
   originalTitle: string;
   /** null = 치지직 카테고리 연결 없음(표본 라벨) */
   category: CategoryLink | null;
+  /** 카테고리 밖에서 붙은 포스터(Steam 캡슐). 실제 포스터는 category?.posterUrl ?? posterUrl (formPosterUrl).
+   *  카테고리 없이 포스터가 있는 게임에만 있다. 폼 UI는 이 값을 고치지 않는다(patch.posterUrl·games:edit로 바꾼다) */
+  posterUrl?: string;
   /** YYYY-MM-DD 또는 "" (input[type=date] 값) */
   firstPlayed: string;
   /** "날짜 기록 없음" 체크. true면 firstPlayed는 무시하고 null로 저장 */

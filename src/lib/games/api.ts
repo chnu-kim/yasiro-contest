@@ -113,7 +113,7 @@ export function parseGameInput(body: unknown): GameInput | null {
   return out;
 }
 
-const PATCH_KEYS = ["name", "originalTitle", "category", "firstPlayed", "status", "vods"];
+const PATCH_KEYS = ["name", "originalTitle", "category", "posterUrl", "firstPlayed", "status", "vods"];
 
 export function parseGamePatch(body: unknown): GamePatch | null {
   if (!isObj(body) || !onlyKeys(body, PATCH_KEYS)) return null;
@@ -136,6 +136,10 @@ export function parseGamePatch(body: unknown): GamePatch | null {
       if (c.posterUrl !== null && typeof c.posterUrl !== "string") return null;
       out.category = { categoryId: c.categoryId, posterUrl: c.posterUrl };
     }
+  }
+  if ("posterUrl" in body) {
+    if (body.posterUrl !== null && typeof body.posterUrl !== "string") return null;
+    out.posterUrl = body.posterUrl;
   }
   if ("firstPlayed" in body) {
     if (body.firstPlayed !== null && typeof body.firstPlayed !== "string") return null;
