@@ -357,7 +357,7 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
         </div>
 
         <div className={styles.field}>
-          <span id="status-label" className={styles.label}>정복 여부</span>
+          <span id="status-label" className={`${styles.label} ${styles.labelHideMobile}`}>정복 여부</span>
           <div role="group" aria-labelledby="status-label" className={styles.segment}>
             {STATUS_FILTERS.map((key) => (
               <button
@@ -375,7 +375,7 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
 
         <div className={styles.selects}>
           <div className={styles.field}>
-            <label htmlFor="game-year" className={styles.label}>첫 플레이 연도</label>
+            <label htmlFor="game-year" className={`${styles.label} ${styles.labelHideMobile}`}>첫 플레이 연도</label>
             <span className={`${styles.selectWrap} ${styles.selectWrapYear}`}>
               <select
                 id="game-year"
@@ -393,7 +393,7 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
             </span>
           </div>
           <div className={styles.field}>
-            <label htmlFor="game-sort" className={styles.label}>정렬</label>
+            <label htmlFor="game-sort" className={`${styles.label} ${styles.labelHideMobile}`}>정렬</label>
             <span className={`${styles.selectWrap} ${styles.selectWrapSort}`}>
               <select
                 id="game-sort"
