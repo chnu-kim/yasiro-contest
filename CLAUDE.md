@@ -57,7 +57,8 @@ _design/                원본 디자인 핸드오프 (gitignored)
 ## 페이지 규칙
 
 - 새 페이지는 `src/app/<name>/page.tsx` + `page.module.css`로 만든다.
-- 홈(`/`)은 히어로 → 최근 탐험 띠 → 더 둘러보기(페이지 카드·채널 링크) → 푸터 순서다. 최근 탐험은 `buildHomeData`(첫 플레이 최신순, 다시보기 있는 게임만, 같은 영상은 하나만, 번호는 /games와 같음)가 고르고, D1을 못 읽으면(`pnpm dev`) 띠를 숨긴다. 썸네일은 유튜브 `hqdefault`를 `<img>`로 16:9에 잘라 쓴다.
+- 홈(`/`)은 히어로(상자 없이 크게 세운 일러스트, 아래는 바탕에 스며드는 mask) → FIELD LOG 최근 탐험(큰 썸네일 1장 + 기록 줄 3개) → ARCHIVE 더 둘러보기(꿀붕이 카드 2장, 게임 카드에 기록 수 기입란) → 푸터(채널 링크) 순서다. 최근 탐험은 `buildHomeData`(첫 플레이 최신순, 다시보기 있는 게임만, 같은 영상은 하나만, 번호는 /games와 같음)가 고르고, D1을 못 읽으면(`pnpm dev`) 섹션을 숨긴다. 썸네일은 유튜브 `hqdefault`를 `<img>`로 16:9에 잘라 쓰고, 위에 칩을 얹지 않는다.
+- 홈에는 야시로 얼굴을 히어로 그림과 대표 썸네일 1장으로만 둔다(반복하면 소재를 돌려 쓴 페이지로 읽힌다). 키는 /about 키 측정판이 맡는다.
 - 공유 레이어는 `globals.css`의 토큰·keyframe과 `src/components/`뿐. `globals.css`에 유틸리티 클래스를 넣지 않는다.
 - 새 페이지를 추가하면 `Nav.tsx`의 `LINKS`(데스크톱·모바일 공용), 홈 푸터의 `PAGES`와 '더 둘러보기' 카드, `src/lib/seo.ts`의 `SITE_PAGES`에 넣는다.
 - 없앤 페이지는 `next.config.ts` `redirects`로 홈에 308을 건다(`/to-yasiro` 방명록, 2026-11 제거).
@@ -73,7 +74,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
   - Noto Serif KR: 헤드라인·로고 / Noto Sans KR: 본문·UI / Fredoka: 영문 라벨과 숫자(한글 글리프 없음)
   - Gaegu: /about 장비 콜아웃만. `letter-spacing: 0`, 18px 이상
 - 컨셉은 "호기심 많은 탐험가". 탐험가 느낌은 캐릭터 장비(고글·쌍안경·지도 두루마리·파우치·부츠)와 현장 기록(기록 카드, 콜아웃, 눈금자, 스탬프, 테이프)으로 낸다. 지도 모티프(점선 경로·웨이포인트)는 지금 쓰지 않는다(2026-11 홈 개편 때 "다음 목적지" 경로를 뺐다). 다시 쓰면 사이트 전체에서 한 곳만. 장식은 화면당 스탬프 1개, 테이프 4개 이하.
-- 색: 작은 앰버 텍스트는 `--accent-text`, 주 버튼은 `--btn-primary-*`, 진한 띠(홈 최근 탐험)는 `--band-*`, `--accent`·`--brass`·`--eye`는 텍스트에 쓰지 않는다(AA 미달).
+- 색: 작은 앰버 텍스트는 `--accent-text`, 주 버튼은 `--btn-primary-*`, `--accent`·`--brass`·`--eye`는 텍스트에 쓰지 않는다(AA 미달).
 - 공유 컴포넌트(`src/components/`): Button, SectionLabel, StitchRule, TapeStrip, RoundStamp, HeightRuler, ChannelGlyph, KkulMark(Nav 로고·파비콘과 같은 꿀붕이 그림, 컬러), PawMark(꿀붕이 발자국 장식), icons. 장식 SVG는 `aria-hidden`.
 - 고정 버튼은 페이지당 1개. Nav의 "치지직" pill은 채널 링크다. 방송 상태를 조회하지 않으므로 LIVE로 표기하지 않는다.
 - 캐릭터·꿀붕이 PNG는 투명 배경이라 블렌드 없이 올린다. 캐릭터 패널은 `--tile`(라이트 `#EAE0D0`, 다크 `--surface`).
