@@ -54,6 +54,13 @@ body {
   --btn-primary-fg: #FFFFFF;
   --live-border: var(--brass);
 
+  /* 진한 띠(홈 "최근 탐험"). 괄호 안 숫자는 --band-bg 위 대비 */
+  --band-bg: #2A1F14;
+  --band-text: #F0E4C8;        /* 12.75 */
+  --band-dim: #C8B38E;         /* 7.89 */
+  --band-accent: #F0B84A;      /* 띠 위 앰버 라벨 텍스트 8.94 */
+  --band-clear: #F09A7E;       /* 띠 위 '정복' 칩 7.38 */
+
   /* 타입 스케일 */
   --fs-xs: 12px;               /* Fredoka 대문자 라벨 하한 */
   --fs-sm: 14px;               /* 보조 텍스트 하한 */
@@ -144,6 +151,12 @@ body {
   --btn-primary-bg: var(--accent);
   --btn-primary-bg-hover: #F7BC5E;
   --btn-primary-fg: #17120D;
+
+  --band-bg: #2E2318;          /* 다크에서는 바탕보다 한 단계 밝은 종이 */
+  --band-text: #F0E4C8;        /* 12.15 */
+  --band-dim: #C8B38E;         /* 7.52 */
+  --band-accent: #F0B84A;      /* 8.51 */
+  --band-clear: #F09A7E;       /* 7.03 */
 
   --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45);
   --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.45);

@@ -33,10 +33,9 @@
 
 /* ═════ HERO ═════ */
 .hero {
-  padding: var(--space-7) var(--gutter) var(--space-8);
-  min-height: calc(100svh - var(--nav-h));
+  padding: var(--space-6) var(--gutter) 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .heroInner {
@@ -120,7 +119,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4) var(--space-6);
-  margin: 0;
+  margin: 0 0 var(--space-8);
   animation: fadeUp var(--dur-slow) var(--ease-out) 80ms both;
 }
 
@@ -144,200 +143,377 @@
 }
 
 .heroRight {
+  --panel-top: 18%;
   grid-area: panel;
   position: relative;
   justify-self: center;
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
+  aspect-ratio: 9 / 10;
+  align-self: end;
   animation: fadeUp var(--dur-slow) var(--ease-out) 120ms both;
 }
 
+/* 액자는 배경만 그린다. 그림은 charClip 안에서 액자 위로 머리가 나오고, 아래(허벅지)에서 잘린다 */
 .panel {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 4 / 5;
+  position: absolute;
+  inset: var(--panel-top) 0 0 6%;
   background:
-    radial-gradient(ellipse at 50% 38%, var(--accent-bg), transparent 62%),
+    radial-gradient(ellipse at 50% 30%, var(--accent-bg), transparent 62%),
     var(--tile);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-bottom: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   box-shadow: var(--shadow-md);
 }
 
 :global([data-theme="dark"]) .panel {
   border-color: var(--border-strong);
   background:
-    radial-gradient(circle at 50% 24%, rgba(242, 179, 61, 0.16), transparent 34%),
+    radial-gradient(circle at 50% 24%, rgba(242, 179, 61, 0.16), transparent 40%),
     radial-gradient(ellipse at 50% 60%, rgba(240, 226, 196, 0.06), transparent 70%),
     var(--tile);
 }
 
-/* 캐릭터 시트는 여백이 넓다. 확대해서 인물이 패널을 채우게 한다 */
+.charClip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* 캐릭터 시트(1600×2277)는 위아래 여백이 있다. 1.8배로 키워 얼굴·상반신이 액자를 채우게 한다 */
 .char {
-  object-fit: contain;
-  object-position: center;
-  transform: scale(1.16);
-  transform-origin: 50% 52%;
+  position: absolute;
+  left: 53%;
+  top: 2%;
+  height: 180%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 10px 18px rgba(40, 25, 10, 0.18));
 }
 
 .kkulHero {
   position: absolute;
-  left: -28px;
-  bottom: -14px;
+  left: -20px;
+  bottom: 12px;
   animation: float 3.5s ease-in-out infinite;
   animation-delay: 0.5s;
   z-index: var(--z-raised);
   filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.18));
 }
 
-/* ═════ 다음 목적지 ═════ */
-.waypoints {
-  padding: var(--space-8) var(--gutter) var(--section-gap);
-  border-top: 1px dashed var(--border-strong);
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ═════ 최근 탐험 (진한 띠) ═════ */
+.band {
+  padding: var(--space-7) var(--gutter) var(--space-8);
+  background: var(--band-bg);
+  color: var(--band-text);
   scroll-margin-top: var(--nav-h);
 }
 
-/* 출발점(좁은 열) + 출품작 카드. 핀 높이에 점선 한 줄이 지나간다 */
-.route {
-  --pin-y: 20px;
-  --start-w: 120px;
-  position: relative;
-  display: grid;
-  grid-template-columns: var(--start-w) minmax(0, 1fr);
-  margin-top: var(--space-7);
-}
-
-/* 점선은 한 요소로 그려 점 간격이 이음매에서 어긋나지 않게: 꿀붕이 중심 → 마지막 핀 중심 */
-.route::before {
-  content: '';
-  position: absolute;
-  left: calc(var(--start-w) / 2);
-  right: calc((100% - var(--start-w)) / var(--stops) / 2);
-  top: var(--pin-y);
-  border-top: 3px dotted var(--route);
-}
-
-.start {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.kkulRoute {
-  position: relative;
-  z-index: 1;
-  margin-top: calc(var(--pin-y) - 48px);
-  animation: float 3.5s ease-in-out infinite;
-}
-
-.stops {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(var(--stops), minmax(0, 1fr));
-}
-
-.stop {
-  position: relative;
-  padding: 64px var(--space-3) 0;
-}
-
-.pin {
-  position: absolute;
-  top: calc(var(--pin-y) - 20px);
-  left: 50%;
-  margin-left: -20px;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--paper-hi);
-  border: 2px solid var(--brass);
-  box-shadow: var(--shadow-sm);
-  font-family: 'Fredoka', sans-serif;
-  font-weight: 600;
-  font-size: var(--fs-sm);
-  color: var(--text);
-  z-index: 1;
-  animation: pinDrop var(--dur-base) var(--ease-out) 0.3s both;
-}
-
-.entryCard {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  height: 100%;
-  padding: var(--space-5) var(--space-5) var(--space-7);
-  background: var(--paper-hi);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--dur-fast), box-shadow var(--dur-fast), border-color var(--dur-fast);
-}
-
-.entryCard:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--border-strong);
-}
-
-.entryCard:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
-}
-
-.entryTitle {
-  font-family: 'Noto Serif KR', serif;
-  font-weight: 700;
-  font-size: var(--fs-xl);
-  line-height: var(--lh-tight);
-  word-break: keep-all;
-}
-
-.entryDesc {
-  font-size: var(--fs-sm);
-  color: var(--text-dim);
-  line-height: 1.6;
-}
-
-.entryArrow {
-  position: absolute;
-  right: var(--space-5);
-  bottom: var(--space-5);
-  color: var(--accent-text);
-  display: inline-flex;
-  transition: transform var(--dur-fast);
-}
-
-.entryCard:hover .entryArrow {
-  transform: translateX(4px);
-}
-
-/* ═════ 한마디 ═════ */
-.notesSection {
-  padding: var(--section-gap) var(--gutter);
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-}
-
-.notesHeader {
+.bandHead {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--space-4);
   flex-wrap: wrap;
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--space-6);
 }
 
-.notesBoard {
+.bandKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: 'Fredoka', sans-serif;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  color: var(--band-accent);
+}
+
+.bandKicker::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--band-accent);
+}
+
+.bandTitle {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-tight);
+  margin: var(--space-2) 0 0;
+}
+
+.bandMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap);
+  font-size: var(--fs-sm);
+  color: var(--band-dim);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color var(--dur-fast);
+}
+
+.bandMore:hover {
+  color: var(--band-text);
+}
+
+.bandMore:focus-visible,
+.vodLink:focus-visible {
+  outline: 2px solid var(--band-accent);
+  outline-offset: 3px;
+}
+
+/* 첫 칸은 2×2, 나머지 4칸은 오른쪽 2×2 */
+.vods {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: var(--space-6) var(--space-5);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.vodFeature {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.vodLink {
+  display: grid;
+  gap: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: #000;
+}
+
+/* hqdefault(4:3)의 위아래 검은 띠를 16:9 틀로 잘라 낸다 */
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.vodLink:hover .thumb img {
+  transform: scale(1.04);
+}
+
+.thumbNo,
+.thumbPlay {
+  position: absolute;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  background: rgba(20, 14, 8, 0.8);
+  color: #F0E4C8;
+}
+
+.thumbNo {
+  left: var(--space-2);
+  top: var(--space-2);
+}
+
+.thumbPlay {
+  right: var(--space-2);
+  bottom: var(--space-2);
+}
+
+.vodName {
+  margin-top: var(--space-1);
+  font-weight: 700;
+  font-size: var(--fs-base);
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.vodFeature .vodName {
+  font-size: var(--fs-lg);
+}
+
+.vodMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: 'Fredoka', sans-serif;
+  font-size: var(--fs-sm);
+  color: var(--band-dim);
+}
+
+.vodChip {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  padding: 1px 8px;
+  border: 1px solid var(--band-dim);
+  border-radius: var(--radius-sm);
+}
+
+.vodChipClear {
+  color: var(--band-clear);
+  border-color: var(--band-clear);
+}
+
+/* ═════ 더 둘러보기 ═════ */
+.more {
+  padding: var(--space-7) var(--gutter) var(--space-8);
+}
+
+.moreCards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.miniCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--paper-hi);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.miniCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.miniCard:focus-visible,
+.channel:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.miniIcon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--tile);
+  display: grid;
+  place-items: center;
+}
+
+/* 소개 카드: 그림 시트에서 얼굴 부분만 */
+.miniChar {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  height: 360%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+.miniThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.miniTitle {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+}
+
+.miniDesc {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.miniArrow {
+  display: inline-flex;
+  color: var(--accent-text);
+  transition: transform var(--dur-fast);
+}
+
+.miniCard:hover .miniArrow {
+  transform: translateX(4px);
+}
+
+.miniCount {
+  display: grid;
+  justify-items: end;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: var(--fs-xl);
+  line-height: 1;
+}
+
+.miniCount small {
+  margin-top: 4px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 500;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
+.channels {
+  list-style: none;
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  font-size: var(--fs-sm);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--paper-hi);
+  transition: border-color var(--dur-fast), background var(--dur-fast);
+}
+
+.channel:hover {
+  border-color: var(--brass);
+  background: var(--accent-bg);
 }
 
 /* ═════ 푸터 ═════ */
@@ -422,8 +598,8 @@
     grid-template-columns: 1fr;
     grid-template-areas:
       'text'
-      'panel'
-      'facts';
+      'facts'
+      'panel';
     row-gap: var(--space-6);
   }
 
@@ -435,6 +611,7 @@
   .facts {
     flex-wrap: nowrap;
     gap: var(--space-3);
+    margin-bottom: 0;
   }
 
   .facts > div {
@@ -451,64 +628,20 @@
   }
 }
 
-/* waypoint: 좁은 화면에서는 카드를 쌓고 점선은 세로로 */
+@media (max-width: 900px) {
+  .vods {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-4);
+  }
+
+  .vodFeature {
+    grid-row: auto;
+  }
+}
+
 @media (max-width: 720px) {
-  .route {
+  .moreCards {
     grid-template-columns: 1fr;
-    margin-top: var(--space-6);
-  }
-
-  .start {
-    flex-direction: row;
-    gap: var(--space-3);
-    margin-bottom: var(--space-3);
-  }
-
-  /* 세로 점선: 꿀붕이 → 01 → 02. 핀 사이 구간만 잇는다 */
-  .route::before {
-    display: none;
-  }
-
-  .stop::before {
-    content: '';
-    position: absolute;
-    left: 19px;
-    top: calc(-1 * var(--space-4));
-    height: var(--space-4);
-    border-left: 3px dotted var(--route);
-  }
-
-  .stop:first-child::before {
-    top: calc(-1 * var(--space-3) - 8px);
-    height: calc(var(--space-3) + 8px);
-  }
-
-  .stop:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 19px;
-    top: 40px;
-    bottom: 0;
-    border-left: 3px dotted var(--route);
-  }
-
-  .kkulRoute {
-    margin: 0 -6px;
-  }
-
-  .stops {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-  }
-
-  .stop {
-    padding: 0 0 0 56px;
-  }
-
-  .pin {
-    top: 0;
-    left: 0;
-    margin-left: 0;
   }
 }
 
@@ -529,16 +662,7 @@
     margin-bottom: var(--space-5);
   }
 
-  .panel {
-    aspect-ratio: 5 / 6;
-  }
-
   .kkulHero {
     left: -6px;
-  }
-
-  .notesBoard {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-5) var(--space-3);
   }
 }
