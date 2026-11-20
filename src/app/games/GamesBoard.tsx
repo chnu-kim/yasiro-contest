@@ -165,11 +165,15 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
     }
     if (trigger === null) return;
     if (trigger.isConnected) return trigger.focus();
-    // 수정으로 첫 플레이 연도가 바뀌면 카드가 다른 연도 목록으로 옮겨 가며 새로 그려진다. 같은 게임의 제목 버튼을 다시 찾는다
-    const moved =
+    // 수정으로 첫 플레이 연도가 바뀌면 카드가 다른 연도 목록으로 옮겨 가며 새로 그려진다. 같은 게임에서 연 버튼
+    // (제목 버튼 data-role="open" 또는 "수정" 칩 data-role="edit")을 다시 찾고, 없으면(숨긴 게임엔 칩이 없다) 제목 버튼으로 간다
+    const find = (role: string) =>
       triggerId === null
         ? null
-        : document.querySelector<HTMLButtonElement>(`button[data-game-id="${CSS.escape(triggerId)}"]`);
+        : document.querySelector<HTMLButtonElement>(
+            `button[data-game-id="${CSS.escape(triggerId)}"][data-role="${role}"]`,
+          );
+    const moved = find(trigger.dataset.role === 'edit' ? 'edit' : 'open') ?? find('open');
     if (moved !== null) moved.focus();
     else topRef.current?.focus({ preventScroll: true });
   }, [open]);

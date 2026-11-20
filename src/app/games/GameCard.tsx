@@ -33,6 +33,7 @@ export default function GameCard({
             className={styles.cardOpen}
             aria-haspopup="dialog"
             data-game-id={game.id}
+            data-role="open"
             onClick={(e) => onOpen(game, e.currentTarget)}
           >
             {game.name}
@@ -51,6 +52,8 @@ export default function GameCard({
         <button
           type="button"
           className={styles.editChip}
+          data-game-id={game.id}
+          data-role="edit"
           aria-label={`${game.name} 수정`}
           onClick={(e) => admin.onEdit(game, e.currentTarget)}
         >
