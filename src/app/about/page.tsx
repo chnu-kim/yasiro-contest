@@ -33,9 +33,7 @@ const PROFILE: { label: string; value: string }[] = [
   { label: '소속', value: '테라포레 (TERRAFORET)' },
 ];
 
-type Channel = { name: string; desc: string; href: string; kind: ChannelKind };
-
-// 주소·문구는 src/lib/channels.ts가 정본. 여기서는 /about 배치(큰 카드 2 + 작은 카드 3)와 아이콘만 정한다
+// 주소·문구는 src/lib/channels.ts가 정본. 여기서는 아이콘 종류만 정한다
 const KIND: Record<ChannelId, ChannelKind> = {
   chzzk: 'broadcast',
   journal: 'journal',
@@ -43,12 +41,6 @@ const KIND: Record<ChannelId, ChannelKind> = {
   x: 'post',
   cafe: 'community',
 };
-const toCard = (id: ChannelId): Channel => {
-  const c = CHANNELS.find((ch) => ch.id === id)!;
-  return { name: c.label, desc: c.desc, href: c.href, kind: KIND[id] };
-};
-const PRIMARY_CHANNELS: Channel[] = (['chzzk', 'journal'] as const).map(toCard);
-const SECONDARY_CHANNELS: Channel[] = (['youtube', 'x', 'cafe'] as const).map(toCard);
 
 // 위치는 yasiro4.png(1600×2277)에서 직접 잰 값. x·y는 그림 상자 대비 %.
 // 원화를 잘라 확인해서 장비가 분명히 보이는 4가지만 단다(지도 두루마리는 왼쪽 허리 가죽 홀더에 꽂힌 종이 말이).
@@ -152,17 +144,27 @@ export default function About() {
         <h2 id="channel-title" style={h2Style}>
           야시로 찾아가기
         </h2>
-        <ul className={styles.primaryList}>
-          {PRIMARY_CHANNELS.map((ch) => (
-            <li key={ch.href} style={{ position: 'relative' }}>
-              <ChannelCard ch={ch} large />
-            </li>
-          ))}
-        </ul>
-        <ul className={styles.secondaryList}>
-          {SECONDARY_CHANNELS.map((ch) => (
-            <li key={ch.href}>
-              <ChannelCard ch={ch} />
+        <ul className={styles.channelList}>
+          {CHANNELS.map((ch) => (
+            <li key={ch.id}>
+              <a
+                href={ch.href}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.row}
+                aria-label={`${ch.label} ${ch.desc} (새 탭에서 열림)`}
+              >
+                <span style={{ color: 'var(--accent-text)', display: 'inline-flex' }}>
+                  <ChannelGlyph kind={KIND[ch.id]} size={24} />
+                </span>
+                <span className={styles.text}>
+                  <span className={styles.name}>{ch.label}</span>
+                  <span className={styles.desc}>{ch.desc}</span>
+                </span>
+                <span className={styles.arrow} aria-hidden="true">
+                  <ArrowIcon direction="up-right" size={16} />
+                </span>
+              </a>
             </li>
           ))}
         </ul>
@@ -208,36 +210,5 @@ function Callout({ label, x, y, side }: { label: string; x: number; y: number; s
         {label}
       </span>
     </>
-  );
-}
-
-function ChannelCard({ ch, large = false }: { ch: Channel; large?: boolean }) {
-  return (
-    <a
-      href={ch.href}
-      target="_blank"
-      rel="noreferrer"
-      className={`${styles.channelCard} ${large ? styles.channelLarge : ''}`}
-      aria-label={`${ch.name} ${ch.desc} (새 탭에서 열림)`}
-    >
-      <span className={styles.channelIcon} style={{ color: 'var(--accent-text)' }}>
-        <ChannelGlyph kind={ch.kind} size={large ? 32 : 24} />
-      </span>
-      <span style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, minWidth: 0 }}>
-        <span
-          style={
-            large
-              ? { fontFamily: "'Noto Serif KR', serif", fontSize: 'var(--fs-xl)', fontWeight: 700, lineHeight: 'var(--lh-tight)' }
-              : { fontSize: 'var(--fs-base)', fontWeight: 600 }
-          }
-        >
-          {ch.name}
-        </span>
-        <span style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-dim)' }}>{ch.desc}</span>
-      </span>
-      <span className={styles.channelArrow} aria-hidden="true">
-        <ArrowIcon direction="up-right" size={large ? 20 : 16} />
-      </span>
-    </a>
   );
 }

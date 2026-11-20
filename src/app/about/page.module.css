@@ -109,65 +109,80 @@
 }
 
 /* ─── 채널 ─── */
-.primaryList {
+/* 기록장 색인처럼 hairline으로 나눈 한 가지 행 목록. 바탕·그림자·카드 테두리는 쓰지 않는다 */
+.channelList {
   list-style: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border-strong);
 }
 
-.secondaryList {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
+.channelList li {
+  border-bottom: 1px solid var(--border);
 }
 
-.channelCard {
-  display: flex;
+.row {
+  display: grid;
+  grid-template-columns: 24px 200px 1fr 16px;
   align-items: center;
-  gap: var(--space-3);
-  height: 100%;
-  min-height: var(--tap);
-  padding: var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  transition:
-    border-color var(--dur-fast),
-    background var(--dur-fast),
-    transform var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out);
+  column-gap: var(--space-4);
+  min-height: 64px;
+  padding: var(--space-3) 0;
+  color: var(--text);
+  text-decoration: none;
 }
 
-.channelLarge {
-  padding: var(--space-6);
-  background: var(--paper-hi);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
+/* 데스크톱에서는 text 래퍼를 풀어 name·desc가 각각 칸을 차지한다 */
+.text {
+  display: contents;
 }
 
-.channelCard:hover {
-  border-color: var(--brass);
-  background: var(--accent-bg);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.name {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: var(--lh-tight);
+  color: var(--text);
+  transition: color 150ms;
 }
 
-.channelCard:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
-}
-
-.channelArrow {
+.desc {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
   color: var(--text-dim);
-  flex-shrink: 0;
-  transition: transform var(--dur-base) var(--ease-out);
 }
 
-.channelCard:hover .channelArrow {
+.arrow {
+  color: var(--text-dim);
+  display: inline-flex;
+  transition:
+    transform 150ms,
+    color 150ms;
+}
+
+.row:hover .name,
+.row:hover .arrow {
+  color: var(--accent-text);
+}
+
+.row:hover .arrow {
   transform: translate(2px, -2px);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow {
+    transition: color 150ms;
+  }
+
+  .row:hover .arrow {
+    transform: none;
+  }
 }
 
 /* ─── 마무리 ─── */
@@ -212,9 +227,20 @@
     padding: var(--space-7) var(--space-5) var(--space-5);
   }
 
-  .primaryList,
-  .secondaryList {
-    grid-template-columns: 1fr;
+  .row {
+    grid-template-columns: 24px 1fr 16px;
+    column-gap: var(--space-3);
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .name {
+    font-size: 17px;
   }
 }
 
