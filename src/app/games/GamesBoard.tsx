@@ -430,6 +430,13 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
         게임 이름과 포스터는 치지직 카테고리 정보를 따릅니다. 비공식 팬 사이트의 기록이라 빠진 게임이 있을 수 있어요.
       </p>
 
+      {/* 방문자용 로그인 버튼이 없으므로 관리자(야시로 포함)는 여기서 들어온다. 허용 목록에 없으면 로그인돼도 관리 UI가 안 보인다 */}
+      {!isAdmin && (
+        <p className={styles.adminLogin}>
+          <a href="/auth/login?next=/games">관리자 로그인</a>
+        </p>
+      )}
+
       {openGame && <GameDetailDialog key={openGame.id} game={openGame} admin={adminDetail} onClose={onClose} />}
       {isAdmin && adding && (
         <AddGameFlow

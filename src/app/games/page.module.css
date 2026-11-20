@@ -293,6 +293,32 @@
   color: var(--text-dim);
 }
 
+.adminLogin {
+  margin-top: var(--space-2);
+}
+
+.adminLogin a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: color var(--dur-fast), text-decoration-color var(--dur-fast);
+}
+
+.adminLogin a:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+.adminLogin a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 /* ─── 모바일 ─── */
 @media (max-width: 640px) {
   .page {
