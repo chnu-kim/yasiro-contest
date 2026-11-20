@@ -25,28 +25,28 @@ body {
    대비는 WCAG 2.x 계산값. 괄호 안 숫자는 --bg / --surface / --paper-hi 위 */
 :root {
   /* 면 */
-  --bg: #EFE6D2;               /* 페이지 바탕 */
-  --surface: #E4D7BC;          /* 패널 */
-  --paper-hi: #F7F0DE;         /* 카드·라벨 종이 */
-  --tile: #EAE0D0;             /* 캐릭터 패널. 다크는 --surface */
-  --border: rgba(60, 40, 20, 0.22);
-  --border-strong: rgba(60, 40, 20, 0.45);
+  --bg: #FBFAF7;               /* 페이지 바탕 (종이 흰색) */
+  --surface: #EEE6D6;          /* 패널 */
+  --paper-hi: #F7F1E5;         /* 카드·라벨 종이 */
+  --tile: #EBE3D4;             /* 캐릭터 패널. 다크는 --surface */
+  --border: rgba(60, 40, 20, 0.15);
+  --border-strong: rgba(60, 40, 20, 0.40);
 
   /* 글자 */
-  --text: #2A1F14;             /* 12.97 / 11.30 */
-  --text-dim: #6B5640;         /* 5.58 / 4.87 / 6.10 */
+  --text: #2A1F14;             /* 15.42 / 12.97 / 14.31 */
+  --text-dim: #66523D;         /* 7.09 / 5.96 / 6.58 */
 
   /* 앰버 — 역할별로 나눈다 */
   --accent: #B8680A;           /* 비텍스트(아이콘·큰 도형). 텍스트·흰 글씨 배경 금지 (흰 글씨 4.18) */
   --accent-d: #8A4E08;         /* 라이트 주 버튼 배경 (흰 글씨 6.62) */
-  --accent-text: #7A4E08;      /* 작은 앰버 텍스트 전용 (5.79 / 5.05 / 6.32) */
-  --accent-bg: rgba(184, 104, 10, 0.12);
-  --brass: #97752F;            /* 링·도트·프레임. 텍스트 금지 (비텍스트 3.45 / 3.01) */
+  --accent-text: #7A4E08;      /* 작은 앰버 텍스트 전용 (6.89 / 5.79 / 6.39) */
+  --accent-bg: rgba(184, 104, 10, 0.10);
+  --brass: #97752F;            /* 링·도트·프레임. 텍스트 금지 (비텍스트 4.10 / 3.45) */
   --route: #7A4A22;            /* 허브 waypoint 점선 경로 전용 */
-  --stamp: #A8452A;            /* 원형 스탬프(RoundStamp, /about 1곳) + 예외: /games 정복 도장(ClearStamp, 정복 게임마다). CLAUDE.md 스타일 참고 (4.77) */
+  --stamp: #A8452A;            /* 원형 스탬프(RoundStamp, /about 1곳) + 예외: /games 정복 도장(ClearStamp, 정복 게임마다). CLAUDE.md 스타일 참고 (5.67 / 4.77) */
   --eye: #F2B33D;              /* 호박색 포인트. 화면당 3곳 이하, 텍스트 금지 */
-  --tape: rgba(214, 190, 140, 0.75);  /* --text 라벨 9.45 이상 */
-  --focus: #8A4E08;            /* 포커스 링 (--surface 위 4.65) */
+  --tape: rgba(196, 164, 102, 0.62);  /* --text 라벨 9.52 */
+  --focus: #8A4E08;            /* 포커스 링 (--bg 6.34 / --surface 5.33) */
 
   /* 주 버튼·LIVE pill — 테마별 값이 토큰에 들어 있어 :global 셀렉터 없이 inline으로 쓴다 */
   --btn-primary-bg: var(--accent-d);
@@ -79,7 +79,8 @@ body {
   --section-gap: 96px;
   --section-y: 80px;           /* 홈 섹션 위아래 여백 */
   --gutter: 48px;
-  --container: 1200px;
+  --container: 1200px;         /* 콘텐츠 폭(padding 제외). 전체 폭 블록의 좌우 padding은 --page-x */
+  --page-x: max(var(--gutter), calc((100% - var(--container)) / 2));
 
   /* 모서리 */
   --radius-sm: 3px;
@@ -87,9 +88,9 @@ body {
   --radius-pill: 999px;
 
   /* 그림자 */
-  --shadow-sm: 0 2px 6px rgba(40, 25, 10, 0.15);
-  --shadow-md: 0 8px 20px rgba(40, 25, 10, 0.20);
-  --shadow-lg: 0 12px 32px rgba(40, 25, 10, 0.25);
+  --shadow-sm: 0 2px 6px rgba(40, 25, 10, 0.10);
+  --shadow-md: 0 8px 20px rgba(40, 25, 10, 0.12);
+  --shadow-lg: 0 12px 32px rgba(40, 25, 10, 0.16);
 
   /* 레이어 — 모달은 항상 Nav 위 */
   --z-raised: 10;

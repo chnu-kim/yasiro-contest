@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Moon, Sun, Menu, X } from 'lucide-react';
 import KkulMark from './KkulMark';
+import { CHZZK_LIVE_URL } from '@/lib/channels';
 import styles from './Nav.module.css';
 
 interface NavUser {
@@ -21,8 +22,6 @@ const LINKS = [
   { href: '/about', label: '소개' },
   { href: '/games', label: '게임' },
 ] as const;
-
-const LIVE_URL = 'https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3';
 
 const isCurrent = (pathname: string, href: string) =>
   pathname === href || pathname.startsWith(`${href}/`);
@@ -102,7 +101,7 @@ export default function Nav({ initialUser }: NavProps) {
         )}
 
         <a
-          href={LIVE_URL}
+          href={CHZZK_LIVE_URL}
           target="_blank"
           rel="noreferrer"
           className={styles.live}

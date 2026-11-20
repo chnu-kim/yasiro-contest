@@ -1,8 +1,6 @@
 /* /games 플레이한 게임. 색은 전부 globals.css 토큰. 시안: Main(데스크톱) · MobileDark(≤640px) */
 .page {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: var(--space-8) var(--gutter) 96px;
+  padding: var(--space-8) var(--page-x) var(--section-y);
   color: var(--text);
 }
 
@@ -157,9 +155,22 @@
   font-weight: 600;
 }
 
+.selectWrap {
+  position: relative;
+  display: block;
+}
+
+.selectWrapYear { min-width: 132px; }
+.selectWrapSort { min-width: 168px; }
+
+/* 기기 기본 화살표 대신 인라인 SVG(currentColor)를 얹어 라이트·다크 모두 토큰 색을 따른다 */
 .select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
   height: 48px;
-  padding: 0 12px;
+  min-height: var(--tap);
+  padding: 0 36px 0 12px;
   background: var(--paper-hi);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
@@ -168,8 +179,14 @@
   color: var(--text);
 }
 
-.selectYear { min-width: 132px; }
-.selectSort { min-width: 168px; }
+.selectArrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  pointer-events: none;
+}
 
 .segBtn:focus-visible,
 .select:focus-visible,
@@ -211,6 +228,11 @@
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
+}
+
+/* 탭 영역 padding이 글자 시작을 밀어내지 않게 음수 margin으로 시각 정렬 */
+.statusRow .linkBtn {
+  margin-inline: -12px;
 }
 
 /* ─── 카드 그리드 ─── */
@@ -398,11 +420,19 @@
     gap: 10px;
   }
 
-  .select {
-    height: var(--tap);
-    min-width: 0;
+  .selectWrap {
     width: 100%;
-    padding: 0 10px;
+    min-width: 0;
+  }
+
+  .select {
+    height: 44px;
+    min-width: 0;
+    padding: 0 32px 0 10px;
+  }
+
+  .selectArrow {
+    right: 10px;
   }
 
   .statusRow {

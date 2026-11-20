@@ -3,29 +3,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
 import Button from '@/components/Button';
-import KkulMark from '@/components/KkulMark';
 import { ArrowIcon } from '@/components/icons';
 import KkulCrop from './_components/KkulCrop';
 import { HOME_DESCRIPTION, HOME_TITLE, jsonLdString, pageMetadata, siteJsonLd } from '@/lib/seo';
 import { buildHomeData, type Expedition, type HomeData } from '@/lib/games/home';
 import { listGames } from '@/lib/games/repo';
+import { CHZZK_LIVE_URL } from '@/lib/channels';
 import { STATUS_TEXT } from '@/lib/games/labels';
 
 export const metadata: Metadata = pageMetadata({ path: '/', title: { absolute: HOME_TITLE }, description: HOME_DESCRIPTION });
 
-const CHZZK_LIVE = 'https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3';
-
 // 홈 "최근 탐험": 제목이 그 게임을 가리키는 썸네일이 있는 가장 최근 1편(대표 칸) + 나머지 글자 기록 줄. 합쳐 4개
 const EXPEDITION_COUNT = 4;
-
-// 주소는 /about "야시로 찾아가기"와 같다. 홈에서는 푸터에 둔다
-const CHANNELS = [
-  { href: 'https://chzzk.naver.com/d6e680f5b17eba0b078f978dd722c0f3', label: '치지직' },
-  { href: 'https://www.youtube.com/@yasiro0321', label: '유튜브' },
-  { href: 'https://www.youtube.com/@시로의탐험일지', label: '시로의 탐험일지' },
-  { href: 'https://x.com/yasiro__', label: 'X' },
-  { href: 'https://cafe.naver.com/terafore', label: '팬카페' },
-] as const;
 
 const FACTS = [
   { term: '소속', value: '테라포레' },
@@ -76,7 +65,7 @@ export default async function Home() {
           <div className={styles.heroBody}>
             <p className={styles.lead}>호기심 많은 탐험가. 처음 보는 게임을 하나씩 정복해 나가요.</p>
             <div className={styles.actions}>
-              <Button href={CHZZK_LIVE} external size="lg" iconEnd={<ArrowIcon direction="up-right" size={18} />}>
+              <Button href={CHZZK_LIVE_URL} external size="lg" iconEnd={<ArrowIcon direction="up-right" size={18} />}>
                 방송 입장하기
               </Button>
             </div>
@@ -210,30 +199,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {/* ══ FOOTER ══ */}
-      <footer className={styles.footer}>
-        <div className={styles.container}>
-          <div className={styles.footerTop}>
-            <span className={styles.footerBrand}>
-              <KkulMark size={24} />
-              야시로
-            </span>
-            <span className={styles.copy}>© 2026 비공식 팬사이트</span>
-          </div>
-          <ul className={styles.channels} aria-label="야시로 채널">
-            {CHANNELS.map((c) => (
-              <li key={c.href}>
-                <a href={c.href} target="_blank" rel="noreferrer" className={styles.channel}>
-                  {c.label}
-                  <ArrowIcon direction="up-right" size={14} />
-                  <span className={styles.srOnly}>(새 탭에서 열림)</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </footer>
     </div>
   );
 }

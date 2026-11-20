@@ -34,6 +34,8 @@
 }
 
 .poster {
+  --stamp-size: 96px;
+  --stamp-inset: 12px;
   min-width: 0;
 }
 
@@ -773,11 +775,10 @@
     display: inline;
   }
 
-  .poster :global(svg) {
-    width: 60px !important;
-    height: 60px !important;
-    right: -14px !important;
-    bottom: -14px !important;
+  .poster {
+    /* 모바일 포스터는 96px 폭이라 도장은 절반 이하로 */
+    --stamp-size: 48px;
+    --stamp-inset: 6px;
   }
 
   .cat .outline {
