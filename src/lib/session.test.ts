@@ -118,13 +118,6 @@ describe("findSession", () => {
     expect((await findSession(d.db, ID, NOW + 100)).state).toBe("expired");
     expect((await findSession(d.db, ID, NOW + 99)).state).toBe("active");
   });
-  it("ignores the legacy sessions table", async () => {
-    const d = createGamesTestDb();
-    d.sqlite
-      .prepare("INSERT INTO sessions (id, channel_id, channel_name, access_token, refresh_token, expires_at) VALUES (?, ?, '옛', 'at', 'rt', ?)")
-      .run(ID, FAKE_ADMIN_ID, NOW + 100);
-    expect(await findSession(d.db, ID, NOW)).toEqual({ state: "expired" });
-  });
 });
 
 describe("findSessionChannel", () => {
@@ -157,7 +150,7 @@ describe("createSession", () => {
     expect(parseSessionId(id)).toBe(id);
     const row = d.sqlite.prepare("SELECT * FROM auth_sessions").get();
     expect(row).toMatchObject({ id_hash: sha256(id), channel_id: FAKE_USER_ID, channel_name: "새이름", expires_at: NOW + SESSION_TTL_SECONDS });
-    expect(findStringAnywhere(d, id, ["auth_sessions", "sessions"])).toEqual([]);
+    expect(findStringAnywhere(d, id, ["auth_sessions"])).toEqual([]);
     expect(await findSession(d.db, id, NOW)).toEqual({ state: "active", session: { channelId: FAKE_USER_ID, channelName: "새이름" } });
   });
 });
@@ -197,13 +190,37 @@ describe("cookie strings", () => {
 describe("0010_clear_legacy_sessions", () => {
   it("레거시 sessions 행(치지직 토큰 포함)을 지우고 테이블과 auth_sessions는 남긴다", () => {
     const d = setup();
+    applyMigrations(d, ["0001_sessions.sql"]);
     d.sqlite.prepare(
       "INSERT INTO sessions (id, channel_id, channel_name, access_token, refresh_token, expires_at) VALUES (?, ?, ?, ?, ?, ?)",
     ).run("legacy", FAKE_USER_ID, "표시이름", "old-access", "old-refresh", NOW + 100);
     applyMigrations(d, ["0010_clear_legacy_sessions.sql"]);
     expect(findStringAnywhere(d, "old-refresh", ["sessions"])).toEqual([]);
-    // 옛 callback이 롤백 뒤에도 INSERT할 수 있도록 테이블은 그대로다
+    // 옛 callback이 롤백 뒤에도 INSERT할 수 있도록 테이블은 그대로다(DROP은 0011)
     expect(d.sqlite.prepare("SELECT count(*) n FROM sessions").get()).toEqual({ n: 0 });
     expect(hashes(d)).toHaveLength(2);
+  });
+});
+
+describe("0011_drop_legacy_tables", () => {
+  const tables = (d: ReturnType<typeof setup>) =>
+    d.sqlite
+      .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
+      .all()
+      .map((r) => r.name);
+
+  it("guestbook·sessions만 지우고 games·auth_sessions는 남긴다. 다시 적용해도 안전하다", () => {
+    const d = setup();
+    applyMigrations(d, ["0001_sessions.sql", "0002_guestbook.sql"]);
+    d.sqlite.exec("INSERT INTO guestbook (id, message, channel_id, channel_name) VALUES ('g1', '안녕', 'c', '표시이름')");
+    d.sqlite.exec("INSERT INTO sessions (id, channel_id, channel_name, access_token, refresh_token, expires_at) VALUES ('old', 'c', 'n', 'at', 'rt', 1)");
+    expect(tables(d)).toEqual(["auth_sessions", "game_changes", "game_vods", "games", "guestbook", "sessions"]);
+
+    applyMigrations(d, ["0011_drop_legacy_tables.sql"]);
+    expect(tables(d)).toEqual(["auth_sessions", "game_changes", "game_vods", "games"]);
+    expect(hashes(d)).toHaveLength(2);
+
+    applyMigrations(d, ["0011_drop_legacy_tables.sql"]);
+    expect(tables(d)).toEqual(["auth_sessions", "game_changes", "game_vods", "games"]);
   });
 });
