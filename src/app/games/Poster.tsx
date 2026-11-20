@@ -104,6 +104,7 @@ export default function Poster({
       )}
       {game.status === 'clear' && (
         <ClearStamp
+          no={game.no}
           className={[styles.stamp, !showImage && stampTopWhenEmpty && styles.stampTop, stampAnimate && styles.stampIn].filter(Boolean).join(' ')}
         />
       )}
