@@ -1,10 +1,10 @@
 /* 게임 커버(3:4). 포스터 이미지 또는 "포스터 없음" 카드. 톤은 NO. 기준으로 돌려 쓴다. */
 .cover {
-  --tone-0: #D9C7A3;
-  --tone-1: #C9B48E;
-  --tone-2: #BFC2A4;
-  --tone-3: #D8B9A2;
-  --tone-4: #CDBFA8;
+  --tone-0: #E4D6B9;
+  --tone-1: #DCCBAA;
+  --tone-2: #D5D7BF;
+  --tone-3: #E3CDBC;
+  --tone-4: #DDD1BC;
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
