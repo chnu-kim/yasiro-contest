@@ -17,6 +17,7 @@ export default function Poster({
   eager = false,
   nameWideOnly = false,
   stampTopWhenEmpty = false,
+  stampAnimate = false,
 }: {
   game: IndexedGame;
   showNo?: boolean;
@@ -26,6 +27,8 @@ export default function Poster({
   nameWideOnly?: boolean;
   /** 표본 카드(이미지 없음)에서 도장을 오른쪽 위(발자국 자리)로 옮겨 아래 라벨을 가리지 않게 한다 */
   stampTopWhenEmpty?: boolean;
+  /** 정복 도장을 붙을 때 한 번 '쿵' 찍는다. 상세처럼 한 화면에 도장이 하나뿐인 곳에서만 쓴다 */
+  stampAnimate?: boolean;
 }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const url = game.posterUrl;
@@ -99,7 +102,11 @@ export default function Poster({
           </span>
         </div>
       )}
-      {game.status === 'clear' && <ClearStamp className={showImage || !stampTopWhenEmpty ? styles.stamp : `${styles.stamp} ${styles.stampTop}`} />}
+      {game.status === 'clear' && (
+        <ClearStamp
+          className={[styles.stamp, !showImage && stampTopWhenEmpty && styles.stampTop, stampAnimate && styles.stampIn].filter(Boolean).join(' ')}
+        />
+      )}
     </div>
   );
 }
