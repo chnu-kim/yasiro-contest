@@ -9,6 +9,8 @@ import {
   changedFields,
   changedLabels,
   fieldDomId,
+  formPosterUrl,
+  unlinkKeepsPoster,
   formToInput,
   formToPatch,
   gameToForm,
@@ -285,13 +287,14 @@ export default function GameEditForm({
     patchForm({ vods: form.vods.map((v, j) => (j === i ? { ...v, date } : v)) });
 
   const no = initialBase?.no ?? '—';
+  const posterUrl = formPosterUrl(form);
   const preview: IndexedGame = {
     id: base?.id ?? 'new-game',
     name: form.name.trim() === '' ? '새 게임' : form.name.trim(),
     firstPlayed: null,
     status: form.status,
     vods: [],
-    ...(form.category?.posterUrl ? { posterUrl: form.category.posterUrl } : {}),
+    ...(posterUrl !== null ? { posterUrl } : {}),
     ordinal: initialBase?.ordinal ?? 0,
     no,
   };
@@ -412,7 +415,7 @@ export default function GameEditForm({
             ) : (
               <p className={styles.catId}>
                 <span>치지직 카테고리</span>
-                <span className={styles.catNone}>연결 없음 · 표본 라벨</span>
+                <span className={styles.catNone}>{posterUrl !== null ? '연결 없음' : '연결 없음 · 표본 라벨'}</span>
               </p>
             )}
             {errorText('category')}
@@ -432,7 +435,7 @@ export default function GameEditForm({
             </button>
             {form.category && (
               <button type="button" className={styles.unlink} onClick={() => patchForm({ category: null })}>
-                연결 해제 · 표본 라벨로
+                {unlinkKeepsPoster(form) ? '연결 해제' : '연결 해제 · 표본 라벨로'}
               </button>
             )}
           </div>

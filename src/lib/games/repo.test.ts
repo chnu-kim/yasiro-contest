@@ -5,6 +5,7 @@ import type { Game, GameInput, GamesDb, WriteContext } from "./types.ts";
 
 const POSTER = "https://ssl.pstatic.net/static/a.png";
 const POSTER2 = "https://ssl.pstatic.net/static/b.png";
+const STEAM = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2455920/library_600x900.jpg?t=1766096052";
 const vod = (n: number, date = "2026-10-01") => ({
   title: `${n}화`,
   url: `https://www.youtube.com/watch?v=${String(n).padStart(11, "x")}`,
@@ -62,6 +63,22 @@ describe("allocateGameId / uniqueViolation / applyPatch", () => {
     expect(applyPatch(g, { category: { categoryId: "d", posterUrl: null } })).not.toHaveProperty("posterUrl");
     expect(applyPatch(g, { category: { categoryId: "d", posterUrl: POSTER2 } })).toMatchObject({ posterUrl: POSTER2 });
     expect((applyPatch(g, { vods: [vod(2, "2026-10-05"), vod(3, "2026-10-02")] }) as Game).vods.map((v) => v.title)).toEqual(["3화", "2화"]);
+  });
+
+  it("applyPatch: posterUrl은 category와 따로, category 다음에 적용한다", () => {
+    const g: Game = { id: "g", name: "a", categoryId: "c", posterUrl: POSTER, firstPlayed: null, status: "clear", vods: [] };
+    const bare: Game = { id: "g", name: "a", firstPlayed: null, status: "clear", vods: [] };
+    // 카테고리 없는 게임에 포스터만
+    expect(applyPatch(bare, { posterUrl: STEAM })).toEqual({ ...bare, posterUrl: STEAM });
+    expect(applyPatch(bare, { posterUrl: STEAM })).not.toHaveProperty("categoryId");
+    // null = 포스터만 제거, categoryId는 그대로
+    expect(applyPatch(g, { posterUrl: null })).toEqual({ id: "g", name: "a", categoryId: "c", firstPlayed: null, status: "clear", vods: [] });
+    // 둘 다 있으면 posterUrl이 이긴다
+    expect(applyPatch(g, { category: { categoryId: "d", posterUrl: POSTER2 }, posterUrl: STEAM })).toMatchObject({ categoryId: "d", posterUrl: STEAM });
+    expect(applyPatch(g, { category: { categoryId: "d", posterUrl: POSTER2 }, posterUrl: null })).not.toHaveProperty("posterUrl");
+    const unlinked = applyPatch(g, { category: null, posterUrl: STEAM });
+    expect(unlinked).toMatchObject({ posterUrl: STEAM });
+    expect(unlinked).not.toHaveProperty("categoryId");
   });
 });
 
@@ -174,6 +191,26 @@ describe("updateGame", () => {
   it("다시보기를 건드리지 않으면 다시보기 문장이 없다", async () => {
     const r = await updateGame(d1.db, "elden-ring", { name: "엘든 링 2" }, 1, ctx());
     expect(r.ok && r.game.vods).toHaveLength(2);
+  });
+  it("카테고리 없는 게임에 포스터만 붙이고 떼기: 기록은 '포스터 바뀜'", async () => {
+    await createGame(d1.db, input({ name: "미믹 로직", originalTitle: "Mimic Logic" }), ctx());
+    const r = await updateGame(d1.db, "mimic-logic", { posterUrl: STEAM }, 1, ctx());
+    expect(r).toMatchObject({ ok: true, changed: true, game: { version: 2, posterUrl: STEAM } });
+    expect(r.ok && r.game).not.toHaveProperty("categoryId");
+    expect((await listChanges(d1.db, "mimic-logic")).changes[0].summary).toBe("포스터 바뀜");
+    const again = await updateGame(d1.db, "mimic-logic", { posterUrl: STEAM }, 2, ctx());
+    expect(again).toMatchObject({ ok: true, changed: false });
+    const off = await updateGame(d1.db, "mimic-logic", { posterUrl: null }, 2, ctx());
+    expect(off.ok && off.game).not.toHaveProperty("posterUrl");
+  });
+  it("posterUrl도 isPosterUrl로 검증한다", async () => {
+    const r = await updateGame(d1.db, "elden-ring", { posterUrl: "https://cdn.akamai.steamstatic.com/x.jpg" }, 1, ctx());
+    expect(r).toMatchObject({ ok: false, reason: "invalid", issues: [{ path: "posterUrl" }] });
+  });
+  it("posterUrl null은 categoryId를 남긴다", async () => {
+    const r = await updateGame(d1.db, "elden-ring", { posterUrl: null }, 1, ctx());
+    expect(r.ok && r.game).toMatchObject({ categoryId: "c1" });
+    expect(r.ok && r.game).not.toHaveProperty("posterUrl");
   });
   it("카테고리 해제·원제 제거", async () => {
     const r = await updateGame(d1.db, "elden-ring", { category: null, originalTitle: null }, 1, ctx());

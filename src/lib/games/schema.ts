@@ -69,23 +69,37 @@ function trimmedString(v: unknown, max: number = Number.POSITIVE_INFINITY): stri
   return t.length >= 1 && t.length <= max ? t : null;
 }
 
-/** 포스터 스냅샷 URL: https, 자격 증명 없음, 치지직 이미지 CDN(pstatic.net 또는 그 하위 도메인)만.
+/** Steam 스토어 이미지 호스트(라이브러리 캡슐). steamstatic.com의 다른 하위 도메인은 받지 않는다 */
+const STEAM_POSTER_HOSTS: ReadonlySet<string> = new Set(["shared.akamai.steamstatic.com", "cdn.cloudflare.steamstatic.com"]);
+
+/** 포스터 스냅샷 URL: https, 자격 증명 없음, 호스트는 치지직 이미지 CDN(pstatic.net 또는 그 하위 도메인)이나
+ *  Steam 스토어 이미지 호스트 두 곳(STEAM_POSTER_HOSTS, 정확히 일치)만.
  *  검증(schema)과 CLI 스냅샷(chzzk-category)이 같은 규칙을 쓴다. */
 export function isPosterUrl(v: unknown): v is string {
-  if (typeof v !== "string") return false;
+  const host = posterHost(v);
+  return host !== null && (isPstaticHost(host) || STEAM_POSTER_HOSTS.has(host));
+}
+
+/** 치지직 카테고리 포스터(pstatic.net 또는 그 하위 도메인)인가. Steam 캡슐처럼 카테고리 밖에서 붙은 포스터와 구분한다(patch.ts gameToForm) */
+export function isChzzkPosterUrl(v: unknown): v is string {
+  const host = posterHost(v);
+  return host !== null && isPstaticHost(host);
+}
+
+function isPstaticHost(host: string): boolean {
+  return host === "pstatic.net" || host.endsWith(".pstatic.net");
+}
+
+/** https이고 자격 증명이 없는 URL의 호스트. 아니면 null */
+function posterHost(v: unknown): string | null {
+  if (typeof v !== "string") return null;
   let u: URL;
   try {
     u = new URL(v);
   } catch {
-    return false;
+    return null;
   }
-  const host = u.hostname;
-  return (
-    u.protocol === "https:" &&
-    u.username === "" &&
-    u.password === "" &&
-    (host === "pstatic.net" || host.endsWith(".pstatic.net"))
-  );
+  return u.protocol === "https:" && u.username === "" && u.password === "" ? u.hostname : null;
 }
 
 function validateGame(raw: unknown, i: number, issues: ValidationIssue[]): Game | null {
@@ -125,7 +139,7 @@ function validateGame(raw: unknown, i: number, issues: ValidationIssue[]): Game 
   let posterUrl: string | undefined;
   if ("posterUrl" in raw) {
     if (isPosterUrl(raw.posterUrl)) posterUrl = raw.posterUrl;
-    else add("posterUrl", "치지직 이미지 CDN(pstatic.net)의 https URL이어야 합니다 (없으면 키를 생략)");
+    else add("posterUrl", "치지직 이미지 CDN(pstatic.net)이나 Steam 스토어 이미지(shared.akamai.steamstatic.com, cdn.cloudflare.steamstatic.com)의 https URL이어야 합니다 (없으면 키를 생략)");
   }
 
   const firstPlayed = raw.firstPlayed;

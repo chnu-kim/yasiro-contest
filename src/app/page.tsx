@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMetadata({ path: '/', title: { absolute: H
 
 const CHZZK_LIVE = 'https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3';
 
-// 홈 "최근 탐험": 가장 최근 1편은 썸네일, 나머지는 글자 기록 줄
+// 홈 "최근 탐험": 제목이 그 게임을 가리키는 썸네일이 있는 가장 최근 1편(대표 칸) + 나머지 글자 기록 줄. 합쳐 4개
 const EXPEDITION_COUNT = 4;
 
 // 주소는 /about "야시로 찾아가기"와 같다. 홈에서는 푸터에 둔다
@@ -58,8 +58,9 @@ function Status({ status }: { status: Expedition['status'] }) {
 
 export default async function Home() {
   const home = await getHomeData();
-  const expeditions = home?.expeditions ?? [];
-  const [featured, ...rest] = expeditions;
+  // 대표 칸(썸네일)이 없으면 섹션을 숨긴다
+  const featured = home?.featured ?? null;
+  const rest = home?.rows ?? [];
 
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--text)' }}>

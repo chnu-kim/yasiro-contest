@@ -64,6 +64,9 @@ export function applyPatch(game: Game, patch: GamePatch): unknown {
     if (patch.category.posterUrl === null) delete out.posterUrl;
     else out.posterUrl = patch.category.posterUrl;
   }
+  // category 다음에 적용한다: 둘 다 오면 posterUrl이 이긴다(GamePatch.posterUrl)
+  if (patch.posterUrl === null) delete out.posterUrl;
+  else if (patch.posterUrl !== undefined) out.posterUrl = patch.posterUrl;
   if (patch.firstPlayed !== undefined) out.firstPlayed = patch.firstPlayed;
   if (patch.status !== undefined) out.status = patch.status;
   if (patch.vods !== undefined) out.vods = sortVods(patch.vods);

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   compareCanonical,
   compareName,
+  isChzzkPosterUrl,
   isPosterUrl,
   GamesValidationError,
   isValidIsoDate,
@@ -148,6 +149,10 @@ describe("validateGames: valid input", () => {
     };
     expect(validateGames([g])).toEqual({ ok: true, games: [g] });
   });
+  it("accepts a Steam store library capsule as posterUrl", () => {
+    const g = { ...base(), posterUrl: "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/library_600x900.jpg" };
+    expect(validateGames([g])).toEqual({ ok: true, games: [g] });
+  });
   it("accepts null firstPlayed with any vod date", () => {
     const g = { ...base(), firstPlayed: null, vods: [{ title: "t", url: "https://youtu.be/dQw4w9WgXcQ", date: "1999-01-01" }] };
     expect(validateGames([g]).ok).toBe(true);
@@ -260,6 +265,8 @@ describe("validateGames: top-level and element shape", () => {
       "https://evilpstatic.net/x.jpg",
       "https://user:pw@nng-phinf.pstatic.net/x.jpg",
       "https://user@nng-phinf.pstatic.net/x.jpg",
+      "https://akamai.steamstatic.com/x.jpg",
+      "http://shared.akamai.steamstatic.com/x.jpg",
     ]) {
       expect(paths([{ ...base(), posterUrl }]), String(posterUrl)).toEqual(["[0].posterUrl"]);
     }
@@ -487,6 +494,33 @@ describe("isPosterUrl", () => {
       expect(isPosterUrl(u), u).toBe(true);
     }
   });
+  it("accepts https on the two Steam store asset hosts exactly", () => {
+    for (const u of [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/library_600x900.jpg",
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/library_600x900_2x.jpg?t=1",
+    ]) {
+      expect(isPosterUrl(u), u).toBe(true);
+    }
+  });
+  it("rejects look-alike Steam hosts, other steamstatic subdomains, http and credentials", () => {
+    for (const u of [
+      "https://steamstatic.com/x.jpg",
+      "https://akamai.steamstatic.com/x.jpg",
+      "https://cloudflare.steamstatic.com/x.jpg",
+      "https://cdn.akamai.steamstatic.com/x.jpg",
+      "https://a.shared.akamai.steamstatic.com/x.jpg",
+      "https://x.cdn.cloudflare.steamstatic.com/x.jpg",
+      "https://shared.akamai.steamstatic.com.evil.com/x.jpg",
+      "https://steamstatic.com.evil.com/x.jpg",
+      "https://evilshared.akamai.steamstatic.com/x.jpg",
+      "http://shared.akamai.steamstatic.com/x.jpg",
+      "http://cdn.cloudflare.steamstatic.com/x.jpg",
+      "https://u:p@shared.akamai.steamstatic.com/x.jpg",
+      "https://u@cdn.cloudflare.steamstatic.com/x.jpg",
+    ]) {
+      expect(isPosterUrl(u), u).toBe(false);
+    }
+  });
   it("rejects other hosts, credentials, non-https and non-strings", () => {
     for (const u of [
       "https://example.com/x.png",
@@ -501,6 +535,18 @@ describe("isPosterUrl", () => {
     ]) {
       expect(isPosterUrl(u), String(u)).toBe(false);
     }
+  });
+});
+
+describe("isChzzkPosterUrl", () => {
+  it("치지직 이미지 CDN(pstatic.net) 포스터만 true", () => {
+    expect(isChzzkPosterUrl("https://nng-phinf.pstatic.net/x.png")).toBe(true);
+    expect(isChzzkPosterUrl("https://pstatic.net/x.png")).toBe(true);
+    expect(isChzzkPosterUrl("https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1/library_600x900.jpg")).toBe(false);
+    expect(isChzzkPosterUrl("https://pstatic.net.evil.com/x.png")).toBe(false);
+    expect(isChzzkPosterUrl("http://nng-phinf.pstatic.net/x.png")).toBe(false);
+    expect(isChzzkPosterUrl("not a url")).toBe(false);
+    expect(isChzzkPosterUrl(undefined)).toBe(false);
   });
 });
 

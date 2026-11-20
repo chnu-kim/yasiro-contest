@@ -26,7 +26,7 @@ export interface Game {
   originalTitle?: string;
   /** 치지직 categoryId. 있으면 목록 안에서 고유 */
   categoryId?: string;
-  /** 치지직 포스터 스냅샷. https + pstatic.net(하위 도메인 포함) + 자격 증명 없음 (isPosterUrl) */
+  /** 포스터 스냅샷(치지직 카테고리 우선, 없으면 Steam 라이브러리 캡슐). https + pstatic.net(하위 도메인 포함) 또는 Steam 스토어 이미지 호스트 두 곳 + 자격 증명 없음 (isPosterUrl) */
   posterUrl?: string;
   /** 첫 플레이 날짜 YYYY-MM-DD. null = 날짜 기록 없음 */
   firstPlayed: string | null;
@@ -122,7 +122,7 @@ export interface ChzzkCategory {
   categoryType: "GAME";
   categoryId: string;
   categoryValue: string;
-  /** isPosterUrl(https, pstatic.net, 자격 증명 없음)을 통과하지 못하면 null */
+  /** isPosterUrl(https, pstatic.net 또는 Steam 스토어 이미지 호스트, 자격 증명 없음)을 통과하지 못하면 null */
   posterImageUrl: string | null;
 }
 
@@ -266,6 +266,9 @@ export interface GamePatch {
   originalTitle?: string | null;
   /** null = 연결 해제(categoryId·posterUrl 둘 다 제거 → 표본 라벨) */
   category?: CategoryLink | null;
+  /** 포스터만 바꾸기(카테고리 없는 게임의 Steam 캡슐 등). null = 포스터 제거(categoryId는 그대로).
+   *  category와 함께 오면 category를 먼저 적용하고 그 위에 posterUrl을 덮어쓴다(posterUrl이 이긴다) */
+  posterUrl?: string | null;
   firstPlayed?: string | null;
   status?: GameStatus;
   /** 전체 교체. 순서는 서버가 날짜 오름차순으로 정렬 */
@@ -309,6 +312,11 @@ export interface GameForm {
   originalTitle: string;
   /** null = 치지직 카테고리 연결 없음(표본 라벨) */
   category: CategoryLink | null;
+  /** 카테고리 밖에서 붙은 포스터(Steam 캡슐). 실제 포스터는 category?.posterUrl ?? posterUrl (formPosterUrl).
+   *  게임의 포스터가 치지직 카테고리 포스터(pstatic.net, isChzzkPosterUrl)가 아니거나 카테고리가 없으면 여기에 둔다.
+   *  그래서 카테고리를 바꾸거나 해제해도 남고, 포스터 있는 카테고리를 고르면 카테고리 포스터가 이긴다.
+   *  폼 UI는 이 값을 고치지 않는다(patch.posterUrl·games:edit로 바꾼다) */
+  posterUrl?: string;
   /** YYYY-MM-DD 또는 "" (input[type=date] 값) */
   firstPlayed: string;
   /** "날짜 기록 없음" 체크. true면 firstPlayed는 무시하고 null로 저장 */

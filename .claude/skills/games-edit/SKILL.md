@@ -29,6 +29,7 @@ description: yasiro-stream /games의 운영 D1 게임 기록을 터미널에서 
 [
   { "op": "add", "input": { "name": "파피 플레이타임 - 챕터 5", "originalTitle": "Poppy Playtime - Chapter 5", "categoryId": "…", "posterUrl": "https://…pstatic.net/…", "firstPlayed": "2026-02-19", "status": "unknown", "vods": [{ "title": "…", "url": "https://www.youtube.com/watch?v=…", "date": "2026-02-19" }] } },
   { "op": "update", "id": "윷놀이", "patch": { "firstPlayed": "2026-02-16", "status": "clear", "name": "…", "originalTitle": null, "category": { "categoryId": "…", "posterUrl": null } } },
+  { "op": "update", "id": "mimic-logic", "patch": { "posterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/…/library_600x900.jpg" } },
   { "op": "move-vods", "from": "증바람", "to": "league-of-legends", "hideFrom": true },
   { "op": "move-vods", "from": "윷놀이", "to": "netmarble-yutgame", "dates": ["2025-10-07"] },
   { "op": "move-vods", "from": "a", "to": "b", "urls": ["https://youtu.be/…"] },
@@ -38,6 +39,8 @@ description: yasiro-stream /games의 운영 D1 게임 기록을 터미널에서 
 ```
 
 - `update.patch`: 키 없음 = 그대로, `null` = 비우기. `vods`를 주면 전체 교체.
+- `update.patch.posterUrl`: 포스터만 바꾼다(카테고리 없는 게임에 Steam 라이브러리 캡슐 붙이기 등). `null`은 포스터만 지우고 categoryId는 남긴다. `category`와 같이 주면 posterUrl이 이긴다. 호스트는 `isPosterUrl`(pstatic.net 또는 `shared.akamai.steamstatic.com`·`cdn.cloudflare.steamstatic.com`)만. 요약은 "포스터 바뀜". 치지직 카테고리가 있는 게임은 카테고리 포스터를 그대로 둔다: 코드는 막지 않으므로, 미리보기에 `주의: <id>는 치지직 카테고리(…)가 있어요.` 줄(뒤는 "카테고리 포스터를 덮어써요" 또는 "--apply 전에 확인해 주세요")이 보이면 그 작업을 빼고 다시 미리보기한 뒤 `--apply`한다.
+- Steam 포스터를 운영에 처음 넣을 때는 Steam 호스트를 허용하는 코드가 배포된 뒤에, 그 코드가 머지된 체크아웃에서 실행한다(옛 코드는 그 게임의 수정·export를 거부한다. CLAUDE.md '/games' 포스터 항목).
 - `move-vods`: `dates`·`urls`가 없으면 전부 옮긴다. 대상에 이미 있는 영상은 중복으로 넣지 않는다. `hideFrom`이면 원래 게임을 숨긴다.
 - 하나라도 실패하면 거기서 멈추고 운영에는 아무것도 적용하지 않는다.
 - 추가할 때 카테고리는 `pnpm -s games:edit --search "한국어 검색어"`로 확인한다(영문 검색은 결과가 없다). `categoryId`와 `posterImageUrl`을 그대로 쓴다. 치지직에 없으면 둘 다 빼고 표본 라벨로 둔다.

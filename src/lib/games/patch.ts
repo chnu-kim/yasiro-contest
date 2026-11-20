@@ -1,7 +1,7 @@
 // 수정 모드 폼 로직(클라이언트). 서버(repo.ts)와 같은 validateCandidate·diffGames를 쓴다. 순수 함수.
 import { diffGames, FIELD_LABEL, FIELD_ORDER } from "./diff.ts";
 import { formatDate } from "./query.ts";
-import { CHZZK_VOD_MESSAGE, GAME_STATUSES, isChzzkUrl, isValidIsoDate, validateCandidate } from "./schema.ts";
+import { CHZZK_VOD_MESSAGE, GAME_STATUSES, isChzzkPosterUrl, isChzzkUrl, isValidIsoDate, validateCandidate } from "./schema.ts";
 import type {
   CategoryLink,
   Game,
@@ -24,25 +24,40 @@ export function gameToForm(game: Game | null): GameForm {
   if (game === null) {
     return { name: "", originalTitle: "", category: null, firstPlayed: "", undated: false, status: "unknown", vods: [] };
   }
-  return {
+  // 포스터가 치지직 카테고리 포스터(pstatic.net)면 카테고리 쪽에, 아니면(Steam 캡슐) 카테고리 밖 포스터로 연다.
+  // 카테고리 C + Steam 포스터를 C의 포스터로 열면, 포스터 없는 카테고리로 바꿀 때 Steam 포스터가 지워진다
+  const categoryPoster = game.categoryId !== undefined && isChzzkPosterUrl(game.posterUrl) ? game.posterUrl : null;
+  const form: GameForm = {
     name: game.name,
     originalTitle: game.originalTitle ?? "",
-    category: game.categoryId === undefined ? null : { categoryId: game.categoryId, posterUrl: game.posterUrl ?? null },
+    category: game.categoryId === undefined ? null : { categoryId: game.categoryId, posterUrl: categoryPoster },
     firstPlayed: game.firstPlayed ?? "",
     undated: game.firstPlayed === null,
     status: game.status,
     vods: game.vods.map((v) => ({ title: v.title, url: v.url, date: v.date })),
   };
+  // 카테고리 밖 포스터(Steam)는 따로 들고 있어야 저장·카테고리 변경 때 지워지지 않는다
+  if (game.posterUrl !== undefined && categoryPoster === null) form.posterUrl = game.posterUrl;
+  return form;
+}
+
+/** 폼이 저장할 포스터. 치지직 카테고리 포스터가 우선, 없으면 카테고리 밖 포스터(Steam), 둘 다 없으면 null */
+export function formPosterUrl(form: GameForm): string | null {
+  return form.category?.posterUrl ?? form.posterUrl ?? null;
+}
+
+/** 카테고리 연결을 해제해도 포스터(카테고리 밖 Steam 포스터)가 남는가. 해제 버튼 문구('표본 라벨로' 여부)에 쓴다 */
+export function unlinkKeepsPoster(form: GameForm): boolean {
+  return formPosterUrl({ ...form, category: null }) !== null;
 }
 
 export function formToRaw(id: string, form: GameForm): Record<string, unknown> {
   const raw: Record<string, unknown> = { id, name: form.name.trim() };
   const originalTitle = form.originalTitle.trim();
   if (originalTitle !== "") raw.originalTitle = originalTitle;
-  if (form.category !== null) {
-    raw.categoryId = form.category.categoryId;
-    if (form.category.posterUrl !== null) raw.posterUrl = form.category.posterUrl;
-  }
+  if (form.category !== null) raw.categoryId = form.category.categoryId;
+  const posterUrl = formPosterUrl(form);
+  if (posterUrl !== null) raw.posterUrl = posterUrl;
   raw.firstPlayed = form.undated ? null : form.firstPlayed;
   raw.status = form.status;
   raw.vods = form.vods.map((v) => ({ title: v.title.trim(), url: v.url.trim(), date: v.date }));
@@ -69,9 +84,14 @@ export function formToPatch(base: Game, form: GameForm): GamePatch {
       case "originalTitle":
         patch.originalTitle = raw.originalTitle ?? null;
         break;
-      case "category":
+      case "category": {
         patch.category = form.category === null ? null : { categoryId: form.category.categoryId, posterUrl: form.category.posterUrl };
+        // category만으로 정해지는 포스터와 폼의 포스터가 다르면(카테고리 포스터 없음 + Steam 포스터) posterUrl로 덮는다
+        const fromCategory = patch.category?.posterUrl ?? undefined;
+        // (다르면 raw 쪽은 늘 문자열이다: 카테고리 포스터가 있으면 formPosterUrl이 그 값을 쓴다)
+        if (raw.posterUrl !== fromCategory) patch.posterUrl = raw.posterUrl as string;
         break;
+      }
       case "firstPlayed":
         patch.firstPlayed = raw.firstPlayed;
         break;
@@ -255,6 +275,7 @@ export function parseDraft(raw: string | null): GameDraftStore | null {
     !isStr(f.firstPlayed) ||
     typeof f.undated !== "boolean" ||
     category === undefined ||
+    !(f.posterUrl === undefined || isStr(f.posterUrl)) ||
     vods === null ||
     status === undefined ||
     !(baseVersion === null || (typeof baseVersion === "number" && Number.isInteger(baseVersion))) ||
@@ -263,7 +284,16 @@ export function parseDraft(raw: string | null): GameDraftStore | null {
     return null;
   }
   return {
-    form: { name: f.name, originalTitle: f.originalTitle, category, firstPlayed: f.firstPlayed, undated: f.undated, status, vods },
+    form: {
+      name: f.name,
+      originalTitle: f.originalTitle,
+      category,
+      ...(isStr(f.posterUrl) ? { posterUrl: f.posterUrl } : {}),
+      firstPlayed: f.firstPlayed,
+      undated: f.undated,
+      status,
+      vods,
+    },
     baseVersion,
     savedAt: v.savedAt,
   };
