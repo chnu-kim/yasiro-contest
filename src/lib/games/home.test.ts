@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildHomeData, youtubeThumbnailUrl } from "./home.ts";
+import { buildHomeData } from "./home.ts";
 import type { Game, GameStatus, Vod } from "./types.ts";
 
 const vod = (id: string, date: string, title = `영상 ${id}`): Vod => ({
@@ -11,12 +11,6 @@ const vod = (id: string, date: string, title = `영상 ${id}`): Vod => ({
 function g(id: string, firstPlayed: string | null, vods: Vod[], status: GameStatus = "clear"): Game {
   return { id, name: `이름-${id}`, firstPlayed, status, vods };
 }
-
-describe("youtubeThumbnailUrl", () => {
-  it("hqdefault 썸네일 주소를 만든다", () => {
-    expect(youtubeThumbnailUrl("WAB1r0yczck")).toBe("https://i.ytimg.com/vi/WAB1r0yczck/hqdefault.jpg");
-  });
-});
 
 describe("buildHomeData", () => {
   it("빈 목록이면 숫자 0, 최근 없음, 탐험 없음", () => {
