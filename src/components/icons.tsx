@@ -25,6 +25,12 @@ function Svg({ size = 20, strokeWidth = 1.75, style, children }: IconProps & { c
   );
 }
 
+const ARROWS = {
+  right: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
+  down: <><path d="M12 5v14" /><path d="m6 13 6 6 6-6" /></>,
+  'up-right': <><path d="M7 17 17 7" /><path d="M8.5 7H17v8.5" /></>,
+} as const;
+
 export function ArrowIcon({ direction = 'right', ...props }: IconProps & { direction?: keyof typeof ARROWS }) {
   return <Svg {...props}>{ARROWS[direction]}</Svg>;
 }
