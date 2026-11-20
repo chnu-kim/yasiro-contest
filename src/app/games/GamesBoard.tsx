@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import SectionLabel from '@/components/SectionLabel';
@@ -327,11 +327,11 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
         <dl className={styles.stats}>
           <div className={styles.stat}>
             <dt>기록된 게임</dt>
-            <dd>{stats.total}</dd>
+            <dd><CountUp to={stats.total} /></dd>
           </div>
           <div className={styles.stat}>
             <dt>정복</dt>
-            <dd className={styles.statClear}>{stats.clear}</dd>
+            <dd className={styles.statClear}><CountUp to={stats.clear} /></dd>
           </div>
         </dl>
       </section>
@@ -493,6 +493,22 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
       {isAdmin && (
         <Toast toast={dialogOpen ? null : toast} onDismiss={dismissToast} onHold={setToastHeld} actionRef={toastActionRef} />
       )}
+    </>
+  );
+}
+
+// 페이지에 들어올 때 0부터 한 번 올라가는 숫자. CSS만 쓴다(@property 정수 애니메이션 + counter):
+// 서버가 그린 화면에서 바로 시작하므로 hydration 깜빡임이 없고, 지원하지 않는 브라우저는 최종값만 보인다.
+// 보이는 숫자는 장식(aria-hidden)이고 실제 값은 srOnly 텍스트로 읽힌다.
+function CountUp({ to }: { to: number }) {
+  return (
+    <>
+      <span
+        className={styles.count}
+        style={{ '--to': to, '--digits': String(to).length } as CSSProperties}
+        aria-hidden="true"
+      />
+      <span className={styles.srOnly}>{to}</span>
     </>
   );
 }
