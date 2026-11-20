@@ -79,7 +79,8 @@ body {
   --section-gap: 96px;
   --section-y: 80px;           /* 홈 섹션 위아래 여백 */
   --gutter: 48px;
-  --container: 1200px;
+  --container: 1200px;         /* 콘텐츠 폭(padding 제외). 전체 폭 블록의 좌우 padding은 --page-x */
+  --page-x: max(var(--gutter), calc((100% - var(--container)) / 2));
 
   /* 모서리 */
   --radius-sm: 3px;

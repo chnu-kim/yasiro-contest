@@ -1,8 +1,6 @@
 /* /games 플레이한 게임. 색은 전부 globals.css 토큰. 시안: Main(데스크톱) · MobileDark(≤640px) */
 .page {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: var(--space-8) var(--gutter) 96px;
+  padding: var(--space-8) var(--page-x) 96px;
   color: var(--text);
 }
 

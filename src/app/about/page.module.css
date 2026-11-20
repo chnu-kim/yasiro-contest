@@ -4,9 +4,7 @@
   grid-template-columns: 1fr 1fr;
   gap: var(--space-7);
   align-items: stretch;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: var(--space-7) var(--gutter) var(--section-gap);
+  padding: var(--space-7) var(--page-x) var(--section-gap);
   min-height: calc(100svh - var(--nav-h));
 }
 
@@ -107,9 +105,7 @@
 
 /* ─── 섹션 공통 ─── */
 .section {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 var(--gutter) var(--section-gap);
+  padding: 0 var(--page-x) var(--section-gap);
 }
 
 /* ─── 채널 ─── */
@@ -176,9 +172,7 @@
 
 /* ─── 마무리 ─── */
 .outro {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 var(--gutter) var(--section-gap);
+  padding: 0 var(--page-x) var(--section-gap);
 }
 
 .outroRow {

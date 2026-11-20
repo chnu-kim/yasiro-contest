@@ -13,7 +13,7 @@
   align-items: center;
   gap: var(--space-5);
   height: var(--nav-h);
-  padding: 0 var(--gutter);
+  padding: 0 var(--page-x);
 }
 
 .nav::before {
