@@ -118,9 +118,11 @@
 
 /* 그림: 상자 없이 칸에 세운다. 시트(1600×2277)의 머리는 위에서 약 9.5%, 인물 폭은 시트 폭의 절반.
    높이 1600px이면 인물 폭이 약 550px로 칸(580)을 채운다. 제목 쪽으로 조금 당겨 가운데 빈 폭을 줄인다. 아래는 mask로 바탕에 묻는다 */
+/* mask 상자를 칸 사이 gap까지 넓혀 왼쪽 머리카락이 세로로 잘리지 않게 한다(그림 위치는 그대로) */
 .figure {
   grid-area: figure;
   position: relative;
+  margin-left: calc(var(--space-5) * -1);
   -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 97%);
   mask-image: linear-gradient(to bottom, #000 60%, transparent 97%);
   animation: fadeUp var(--dur-slow) var(--ease-out) 120ms both;
@@ -128,7 +130,7 @@
 
 .char {
   position: absolute;
-  left: 46%;
+  left: calc(46% + var(--space-5) / 2);
   top: var(--space-6);
   height: 1600px;
   width: auto;
@@ -330,8 +332,14 @@
 }
 
 /* ═════ 더 둘러보기 ═════ */
+/* 기록 섹션이 없으면(D1 없음·실패) 카드 섹션이 히어로 아래 경계를 맡는다 */
 .more {
+  border-top: 1px solid var(--border);
+}
+
+.log + .more {
   padding-top: 0;
+  border-top: 0;
 }
 
 .cards {
@@ -462,7 +470,7 @@
 /* ═════ 태블릿 ═════ */
 @media (max-width: 1080px) {
   .char {
-    left: 50%;
+    left: calc(50% + var(--space-5) / 2);
     height: 1250px;
   }
 
@@ -497,6 +505,7 @@
   }
 
   .char {
+    left: 50%;
     top: 0;
     height: 1000px;
     transform: translate(-50%, -9.2%);
@@ -586,5 +595,9 @@
 
   .channels li + li .channel::before {
     display: none;
+  }
+
+  .channels li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
