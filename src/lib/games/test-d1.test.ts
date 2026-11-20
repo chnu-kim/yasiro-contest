@@ -6,10 +6,12 @@ import { applyMigrations, createGamesTestDb, createTestD1, FAKE_ADMIN_ID, findSt
 const insertGame = "INSERT INTO games (id, name) VALUES (?, ?)";
 
 describe("test-d1", () => {
-  it("applies 0001 + 0007 + 0009 and exposes the games and session tables", () => {
+  it("applies 0007 + 0009 and exposes the games and session tables (no legacy tables)", () => {
     const d = createGamesTestDb();
     const names = d.sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all().map((r) => r.name);
-    expect(names).toEqual(expect.arrayContaining(["game_changes", "game_vods", "games", "auth_sessions", "sessions"]));
+    expect(names).toEqual(expect.arrayContaining(["game_changes", "game_vods", "games", "auth_sessions"]));
+    expect(names).not.toContain("sessions");
+    expect(names).not.toContain("guestbook");
   });
   it("first/all/run behave like D1 and return plain objects", async () => {
     const d = createGamesTestDb();
@@ -79,7 +81,7 @@ describe("test-d1", () => {
   });
   it("createTestD1 + applyMigrations with explicit list", () => {
     const d = createTestD1();
-    applyMigrations(d, ["0001_sessions.sql"]);
+    applyMigrations(d, ["0009_auth_sessions.sql"]);
     expect(d.sqlite.prepare("SELECT count(*) n FROM sqlite_master WHERE name = 'games'").get()).toEqual({ n: 0 });
     d.close();
   });

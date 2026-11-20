@@ -165,7 +165,7 @@ describe("handleCallback", () => {
     expect(await findSession(d.db, sessionId, NOW)).toEqual({ state: "active", session: { channelId: FAKE_USER_ID, channelName: "새로그인채널" } });
     await Promise.all(pending);
     for (const needle of [sessionId, TOKENS.accessToken, TOKENS.refreshToken])
-      expect(findStringAnywhere(d, needle, ["auth_sessions", "sessions", "games", "game_changes"])).toEqual([]);
+      expect(findStringAnywhere(d, needle, ["auth_sessions", "games", "game_changes"])).toEqual([]);
   });
 
   it("revokes both chzzk tokens in the background with the spec'd body", async () => {
@@ -219,14 +219,6 @@ describe("handleCallback", () => {
     expect(left).toContain(sha256(keep));
     expect(left).not.toContain(sha256(ID));
     expect(left).not.toContain(sha256(stale));
-  });
-
-  it("does not touch the legacy sessions table", async () => {
-    const d = createGamesTestDb();
-    d.sqlite.exec("INSERT INTO sessions (id, channel_id, channel_name, access_token, refresh_token, expires_at) VALUES ('old', 'c', 'n', 'at', 'rt', 1)");
-    const { deps } = makeDeps(d);
-    await handleCallback(ok(`; session_id=old`), deps);
-    expect(d.sqlite.prepare("SELECT count(*) n FROM sessions").get()).toEqual({ n: 1 });
   });
 
   it("defaults next to / without an oauth_next cookie", async () => {
