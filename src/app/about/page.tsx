@@ -97,7 +97,7 @@ export default function About() {
             id="about-title"
             style={{
               fontFamily: "'Noto Serif KR', serif",
-              fontSize: 'clamp(52px, 8vw, 80px)',
+              fontSize: 'var(--fs-page)',
               fontWeight: 700,
               lineHeight: 1,
               marginBottom: 'var(--space-3)',

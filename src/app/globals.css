@@ -12,6 +12,13 @@ html {
   scroll-padding-top: calc(var(--nav-h) + 8px);
 }
 
+/* 한국어 제목은 어절 단위로 끊고 줄 길이를 고르게(지원 안 하는 브라우저는 지금처럼 보인다) */
+h1, h2, h3 {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -60,9 +67,11 @@ body {
   --fs-base: 16px;             /* 본문 */
   --fs-md: 18px;               /* 리드 문단, Gaegu 하한 */
   --fs-lg: 20px;               /* 부제, 카드 제목 */
-  --fs-xl: 28px;               /* h3 */
-  --fs-2xl: clamp(28px, 4vw, 44px);       /* h2 */
-  --fs-display: clamp(56px, 11vw, 112px); /* 히어로 h1 */
+  /* 제목은 단계마다 약 1.33~1.5배(390→1280 사이에서 clamp로 늘어난다). 홈 '야시로'만 표지 글씨라 체계 밖 */
+  --fs-xl: 28px;               /* h3 · 작은 제목 */
+  --fs-2xl: clamp(28px, 4vw, 44px);       /* 섹션 h2 */
+  --fs-page: clamp(40px, 29.5px + 2.7vw, 64px); /* 페이지 h1 (/games 제목, /about 이름) */
+  --fs-display: clamp(56px, 11vw, 112px); /* 홈 히어로 h1 */
   --lh-tight: 1.15;
   --lh-body: 1.75;
   --tracking-label: 0.14em;    /* Fredoka 대문자 라벨 */
