@@ -22,8 +22,8 @@ const BADGE_PHRASES = ['치지직 버츄얼 스트리머', '호기심 많은 탐
 
 const CHZZK_LIVE = 'https://chzzk.naver.com/live/d6e680f5b17eba0b078f978dd722c0f3';
 
-// 홈 "최근 탐험" 띠에 보이는 다시보기 수. 첫 칸은 크게 보인다
-const EXPEDITION_COUNT = 5;
+// 홈 "최근 탐험" 띠에 보이는 다시보기 수. 같은 크기로 한 줄(모바일 2×2)
+const EXPEDITION_COUNT = 4;
 
 // 주소는 /about "야시로 찾아가기"와 같다
 const CHANNELS = [
@@ -148,7 +148,7 @@ export default async function Home() {
             </div>
             <ol className={styles.vods}>
               {expeditions.map((e, i) => (
-                <li key={e.id} className={i === 0 ? `${styles.vod} ${styles.vodFeature}` : styles.vod}>
+                <li key={e.id} className={styles.vod}>
                   <a href={e.vodUrl} target="_blank" rel="noreferrer" className={styles.vodLink}>
                     <span className={styles.thumb}>
                       {/* 유튜브 썸네일은 next/image 최적화 없이 그대로(/games 포스터와 같은 규칙) */}
@@ -158,7 +158,6 @@ export default async function Home() {
                       <span className={styles.thumbPlay} aria-hidden="true">▶ 다시보기</span>
                     </span>
                     <span className={styles.vodName}>{e.name}</span>
-                    {i === 0 && <span className={styles.vodTitle}>{e.vodTitle}</span>}
                     <span className={styles.vodMeta}>
                       <time dateTime={e.firstPlayed}>{shortDate(e.firstPlayed)}</time>
                       {e.status !== 'unknown' && (
