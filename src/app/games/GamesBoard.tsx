@@ -143,6 +143,7 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   const openGame: BoardGame | undefined = openId === null ? undefined : list.find((g) => g.id === openId);
   const open = openGame === undefined ? null : openGame.id;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const triggerIdRef = useRef<string | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
 
   // 닫힌 뒤(닫기 버튼·Esc·배경 클릭·URL 변경 모두) 포커스를 연 카드로 돌린다.
@@ -150,7 +151,9 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
   useEffect(() => {
     if (open !== null) return;
     const trigger = triggerRef.current;
+    const triggerId = triggerIdRef.current;
     triggerRef.current = null;
+    triggerIdRef.current = null;
     // 숨김으로 닫힌 경우는 카드(이제 목록에 없음)보다 알림의 되돌리기가 먼저다. 링크로 바로 연 상세도 마찬가지
     if (focusUndoRef.current) {
       focusUndoRef.current = false;
@@ -161,7 +164,13 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
       }
     }
     if (trigger === null) return;
-    if (trigger.isConnected) trigger.focus();
+    if (trigger.isConnected) return trigger.focus();
+    // 수정으로 첫 플레이 연도가 바뀌면 카드가 다른 연도 목록으로 옮겨 가며 새로 그려진다. 같은 게임의 제목 버튼을 다시 찾는다
+    const moved =
+      triggerId === null
+        ? null
+        : document.querySelector<HTMLButtonElement>(`button[data-game-id="${CSS.escape(triggerId)}"]`);
+    if (moved !== null) moved.focus();
     else topRef.current?.focus({ preventScroll: true });
   }, [open]);
 
@@ -203,6 +212,7 @@ function Board({ data }: { data: Extract<GamesPageData, { ok: true }> }) {
 
   const onOpen = (game: BoardGame, trigger: HTMLButtonElement, edit = false) => {
     triggerRef.current = trigger;
+    triggerIdRef.current = game.id;
     setEditFor(edit ? game.id : null);
     window.history.pushState({ [DETAIL_ENTRY]: true }, '', detailUrl(game.id));
   };
