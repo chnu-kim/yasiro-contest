@@ -230,6 +230,11 @@
   cursor: pointer;
 }
 
+/* 탭 영역 padding이 글자 시작을 밀어내지 않게 음수 margin으로 시각 정렬 */
+.statusRow .linkBtn {
+  margin-inline: -12px;
+}
+
 /* ─── 카드 그리드 ─── */
 .grid {
   list-style: none;

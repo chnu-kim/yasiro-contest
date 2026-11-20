@@ -207,8 +207,9 @@
   }
 
   .poster {
-    --stamp-size: 80px;
-    --stamp-inset: 10px;
+    /* 모바일 포스터는 96px 폭이라 도장은 절반 이하로 */
+    --stamp-size: 48px;
+    --stamp-inset: 6px;
   }
 
   .facts {

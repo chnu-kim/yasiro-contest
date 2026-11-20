@@ -36,6 +36,9 @@
 .stampTop {
   bottom: auto;
   top: var(--stamp-inset, 8px);
+  /* 사진 속 얼굴·제목 글자를 덜 가리도록 8px 작게 */
+  width: calc(var(--stamp-size, 80px) - 8px);
+  height: calc(var(--stamp-size, 80px) - 8px);
 }
 
 .t0 { --tone: var(--tone-0); }
