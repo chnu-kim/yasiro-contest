@@ -600,7 +600,7 @@
   .hero {
     min-height: unset;
     padding-top: var(--space-6);
-    padding-bottom: var(--space-7);
+    padding-bottom: 0;
   }
 
   .heroInner {
