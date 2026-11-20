@@ -1,6 +1,6 @@
 ---
 name: d1-migration
-description: yasiro-contest의 D1(yasiro-db) 스키마를 바꿀 때 쓴다. 다음 번호의 마이그레이션 파일을 만들고, 로컬 검증 후 원격에 적용한다. 테이블·컬럼 추가, 삭제, 인덱스 변경이 모두 해당한다.
+description: yasiro-stream의 D1(yasiro-db) 스키마를 바꿀 때 쓴다. 다음 번호의 마이그레이션 파일을 만들고, 로컬 검증 후 원격에 적용한다. 테이블·컬럼 추가, 삭제, 인덱스 변경이 모두 해당한다.
 ---
 
 # D1 마이그레이션

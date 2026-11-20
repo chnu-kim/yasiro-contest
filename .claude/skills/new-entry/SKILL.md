@@ -1,6 +1,6 @@
 ---
 name: new-entry
-description: yasiro-contest(야시로 비공식 팬사이트)에 새 페이지(/<name>)를 추가할 때 쓴다. 격리된 page.tsx·page.module.css 생성, Nav 링크 연결, lib 로직과 테스트, 필요하면 API·D1까지 순서대로 진행한다.
+description: yasiro-stream(야시로 비공식 팬사이트)에 새 페이지(/<name>)를 추가할 때 쓴다. 격리된 page.tsx·page.module.css 생성, Nav 링크 연결, lib 로직과 테스트, 필요하면 API·D1까지 순서대로 진행한다.
 ---
 
 # 새 페이지 추가

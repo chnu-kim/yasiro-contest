@@ -1,6 +1,6 @@
 ---
 name: verify
-description: yasiro-contest 변경을 PR·push 전에 검증한다. 테스트·타입 체크·lint를 돌리고, Workers 런타임(로컬 D1 포함)으로 띄워 브라우저에서 라이트/다크·데스크톱/모바일 화면을 확인한다. "확인해 봐", "돌려 봐", PR 직전에 쓴다.
+description: yasiro-stream 변경을 PR·push 전에 검증한다. 테스트·타입 체크·lint를 돌리고, Workers 런타임(로컬 D1 포함)으로 띄워 브라우저에서 라이트/다크·데스크톱/모바일 화면을 확인한다. "확인해 봐", "돌려 봐", PR 직전에 쓴다.
 ---
 
 # 변경 검증

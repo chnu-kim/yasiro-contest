@@ -1,8 +1,8 @@
-# yasiro-contest
+# yasiro-stream
 
 치지직 스트리머 야시로의 비공식 팬사이트. 팬사이트 대회 출품으로 시작했고, 대회가 끝난 2026-11부터 사용자가 운영하는 팬사이트다. 페이지들이 디자인 토큰과 Nav를 공유한다.
 
-- 프로덕션: https://yasiro.stream · 레포: `chnu-kim/yasiro-contest`
+- 프로덕션: https://yasiro.stream · 레포: `chnu-kim/yasiro-stream`(2026-11 `yasiro-contest`에서 개명, 옛 주소는 GitHub가 넘겨 준다)
 - 스택: Next.js 16.2.9 (App Router) · React 19 · TypeScript · pnpm · vitest
 - 배포: Cloudflare Workers (`@opennextjs/cloudflare`) + D1
 
@@ -91,7 +91,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 ## Cloudflare / D1
 
-- Worker `yasiro-contest` · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
+- Worker `yasiro-contest`(레포 개명과 무관하게 그대로 둔다. 바꾸면 새 Worker가 생겨 secret·도메인을 옮겨야 한다) · Account `fc7323801136ae087db0b88ab4d07b53` · 도메인 `yasiro.stream`, `www.yasiro.stream`
 - D1 `yasiro-db` (`69020930-766c-423b-8cbd-85d62eee3e02`) → `env.DB`. 타입은 `src/types/cloudflare.d.ts`
 - 접근: `const { env } = await getCloudflareContext({ async: true })` (`@opennextjs/cloudflare`)
 - 테이블: `auth_sessions`(0009, 아래 '세션'), `games`, `game_vods`, `game_changes`(0007, 시드 0008). 레거시 `guestbook`(0002, 방명록 제거 #38)·`sessions`(0001, 0010에서 행 삭제)는 0011에서 DROP한다(원격 적용 전에는 운영 DB에 아직 있다. 절차는 아래 '0011 배포 순서'. 원격 적용을 확인하면 완료형으로 고친다). 스키마 변경은 `d1-migration` 스킬로 한다.
