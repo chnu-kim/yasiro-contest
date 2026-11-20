@@ -71,7 +71,7 @@ describe("siteDefaults", () => {
 
 describe("SITE_PAGES", () => {
   it("공개 페이지 네 곳을 담고 홈이 맨 앞이다", () => {
-    expect(SITE_PAGES.map((p) => p.path)).toEqual(["/", "/about", "/games", "/to-yasiro"]);
+    expect(SITE_PAGES.map((p) => p.path)).toEqual(["/", "/about", "/games"]);
   });
 });
 

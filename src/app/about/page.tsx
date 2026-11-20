@@ -9,7 +9,7 @@ import RoundStamp from '@/components/RoundStamp';
 import SectionLabel from '@/components/SectionLabel';
 import StitchRule from '@/components/StitchRule';
 import TapeStrip from '@/components/TapeStrip';
-import { ArrowIcon, PenIcon } from '@/components/icons';
+import { ArrowIcon } from '@/components/icons';
 import styles from './page.module.css';
 
 export const metadata: Metadata = pageMetadata({
@@ -178,10 +178,10 @@ export default function About() {
               textWrap: 'balance',
             }}
           >
-            야시로에게 한마디 남겨 주세요
+            야시로가 탐험한 게임도 둘러보세요
           </h2>
-          <Button href="/to-yasiro" size="lg" icon={<PenIcon size={18} />} iconEnd={<ArrowIcon direction="right" size={16} />}>
-            한마디 남기러 가기
+          <Button href="/games" size="lg" iconEnd={<ArrowIcon direction="right" size={16} />}>
+            탐험 기록 보기
           </Button>
         </div>
       </section>

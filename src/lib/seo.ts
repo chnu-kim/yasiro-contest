@@ -7,7 +7,7 @@ export const SITE_NAME = "야시로 팬사이트";
 // 검색어(야시로·치지직·버튜버·버츄얼)를 문장 안에 자연스럽게 넣고, 공식 사이트로 오해하지 않게 '비공식'을 밝힌다.
 export const HOME_TITLE = "야시로 · 치지직 버튜버 비공식 팬사이트";
 export const HOME_DESCRIPTION =
-  "치지직에서 방송하는 버츄얼 스트리머(버튜버) 야시로의 비공식 팬사이트예요. 프로필과 채널, 방송에서 플레이한 게임, 팬들의 한마디를 모았어요.";
+  "치지직에서 방송하는 버츄얼 스트리머(버튜버) 야시로의 비공식 팬사이트예요. 프로필과 채널, 방송에서 플레이한 게임과 다시보기를 모았어요.";
 
 export const OG_IMAGE = { url: "/og.png", width: 1200, height: 630, alt: "야시로 · 치지직 버튜버 비공식 팬사이트" };
 
@@ -15,7 +15,6 @@ export const SITE_PAGES: { path: string; priority: number }[] = [
   { path: "/", priority: 1 },
   { path: "/about", priority: 0.8 },
   { path: "/games", priority: 0.8 },
-  { path: "/to-yasiro", priority: 0.6 },
 ];
 
 // 하위 segment의 openGraph·twitter는 레이아웃 값을 통째로 덮으므로(얕은 병합) 페이지마다 전부 채운다.

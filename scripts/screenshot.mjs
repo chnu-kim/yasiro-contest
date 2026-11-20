@@ -6,7 +6,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
 
-const DEFAULT_PAGES = ['/', '/about', '/to-yasiro'];
+const DEFAULT_PAGES = ['/', '/about', '/games'];
 const THEMES = ['light', 'dark'];
 const WIDTHS = [
   { name: 'desktop', width: 1280, height: 800 },
