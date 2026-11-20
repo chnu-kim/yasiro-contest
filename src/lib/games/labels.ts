@@ -32,7 +32,7 @@ export const SORT_LABEL: Readonly<Record<SortKey, string>> = {
 };
 
 export function yearLabel(year: YearFilter): string {
-  if (year === "all") return "전체";
+  if (year === "all") return "모든 연도"; // 모바일에서 라벨 없이 선택 상자만 보여도 뜻이 통하게
   if (year === "none") return "날짜 기록 없음";
   return year;
 }

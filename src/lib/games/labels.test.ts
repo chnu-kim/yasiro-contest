@@ -42,7 +42,7 @@ describe("라벨 상수", () => {
 
 describe("yearLabel", () => {
   it("all / none / 연도", () => {
-    expect(yearLabel("all")).toBe("전체");
+    expect(yearLabel("all")).toBe("모든 연도");
     expect(yearLabel("none")).toBe("날짜 기록 없음");
     expect(yearLabel("2025")).toBe("2025");
   });
