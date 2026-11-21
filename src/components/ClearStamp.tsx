@@ -43,7 +43,7 @@ export default function ClearStamp({
           <feDisplacementMap in="SourceGraphic" in2="wobble" scale="1.4" xChannelSelector="R" yChannelSelector="G" result="rough" />
           <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves={2} seed={seed + 11} result="grain" />
           {/* 잡음이 아주 밝은 곳만 투명하게: 인주가 군데군데 빠진 자국 */}
-          <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -4.5 0 0 0 3.75" result="holes" />
+          <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -7 0 0 0 6.6" result="holes" />
           <feComposite in="rough" in2="holes" operator="in" />
         </filter>
         <path id={top} d="M 18 50 A 32 32 0 0 1 82 50" />
