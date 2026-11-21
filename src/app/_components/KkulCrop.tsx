@@ -1,6 +1,6 @@
 // kkul.png(꿀붕이 2마리가 한 장에 있는 시트)에서 한 마리만 잘라 보여 준다.
 // front: 정면 꿀붕이 / pot: 꿀단지를 멘 뒷모습. 시트 비율은 1600x1043, 한 마리 영역은 폭 33% x 높이 51%.
-import Image from 'next/image';
+import ArtImage from '@/components/ArtImage';
 import type { CSSProperties } from 'react';
 
 const CROP = {
@@ -40,8 +40,9 @@ export default function KkulCrop({
       aria-label={alt || undefined}
       aria-hidden={alt ? undefined : true}
     >
-      <Image
-        src="/kkul.png"
+      <ArtImage
+        name="kkul"
+        widths={[400, 800]}
         alt=""
         width={1600}
         height={1043}
