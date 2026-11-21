@@ -50,7 +50,7 @@ body {
   --accent-bg: rgba(184, 104, 10, 0.10);
   --brass: #97752F;            /* 링·도트·프레임. 텍스트 금지 (비텍스트 4.10 / 3.45) */
   --route: #7A4A22;            /* 허브 waypoint 점선 경로 전용 */
-  --stamp: #A8452A;            /* 원형 스탬프(RoundStamp, /about 1곳) + 예외: /games 정복 도장(ClearStamp, 정복 게임마다). CLAUDE.md 스타일 참고 (5.67 / 4.77) */
+  --stamp: #D2452E;            /* 원형 스탬프(RoundStamp, /about 1곳) + 예외: /games 정복 도장(ClearStamp, 정복 게임마다). CLAUDE.md 스타일 참고. 비텍스트 전용 (4.34 / 3.65). 도장은 포스터 그림 위에 찍혀 테마와 무관하므로 다크도 같은 값 */
   --eye: #F2B33D;              /* 호박색 포인트. 화면당 3곳 이하, 텍스트 금지 */
   --tape: rgba(196, 164, 102, 0.62);  /* --text 라벨 9.52 */
   --focus: #8A4E08;            /* 포커스 링 (--bg 6.34 / --surface 5.33) */
@@ -148,7 +148,7 @@ body {
   --accent-bg: rgba(242, 169, 59, 0.12);
   --brass: #C9A24E;
   --route: #D9B87A;
-  --stamp: #D9684A;
+  --stamp: #D2452E;            /* 라이트와 같은 인주색 (--bg 4.10 / --surface 3.73) */
   --eye: #FFC857;
   --tape: rgba(201, 165, 92, 0.42);   /* --text 라벨 5.22 이상 */
   --focus: #F2A93B;
