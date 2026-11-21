@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
+import ArtImage from '@/components/ArtImage';
 import Link from 'next/link';
 import { PAGE_TRANSITION } from '@/lib/page-transition';
 import styles from './page.module.css';
@@ -82,8 +82,9 @@ export default async function Home() {
           </dl>
 
           <div className={styles.figure}>
-            <Image
-              src="/yasiro1.png"
+            <ArtImage
+              name="yasiro1"
+              widths={[1600]}
               alt="고글을 이마에 올리고 탐험 장비를 갖춘 야시로 캐릭터 일러스트"
               width={1600}
               height={2277}

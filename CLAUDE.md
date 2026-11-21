@@ -51,7 +51,7 @@ _design/                원본 디자인 핸드오프 (gitignored)
 
 - 정본은 `src/lib/seo.ts`: 홈 제목·설명(야시로·치지직·버튜버·버츄얼, '비공식' 명시), `pageMetadata`, `SITE_PAGES`(sitemap), 홈 JSON-LD(`siteJsonLd`: WebSite + 야시로 Person, 공식 채널 sameAs).
 - 공개 페이지는 `export const metadata = pageMetadata({ path, title, description })`로 쓴다. 하위 metadata는 openGraph·twitter를 통째로 덮어써서(얕은 병합) 제목만 두면 공유 미리보기가 레이아웃 값으로 남는다. 제목 뒤 " | 야시로 팬사이트"는 레이아웃 template이 붙인다.
-- 새 페이지는 `SITE_PAGES`에도 넣는다. 공유 이미지는 `public/og.png`(1200×630).
+- 새 페이지는 `SITE_PAGES`에도 넣는다. 공유 이미지는 `public/og.png`(1200×630, 미리보기 호환을 위해 PNG 유지). 캐릭터 그림은 `ArtImage`(`<picture>` AVIF → WebP, `public/art/v1/{이름}-{폭}.{avif,webp}`, 표시 폭에 맞춰 미리 변환)로 넣는다. `next/image`는 `unoptimized`라 원본 PNG를 그대로 보내므로 쓰지 않는다. `/art/*`는 `public/_headers`로 1년 immutable 캐시라 그림을 고치면 `v2` 폴더로 올린다.
 - 검색엔진 소유 확인: 네이버 서치어드바이저는 `siteDefaults`의 `other['naver-site-verification']`, 구글 서치 콘솔은 메타 태그 없이 등록돼 있다. sitemap은 두 곳에 `https://yasiro.stream/sitemap.xml`로 제출한다.
 
 ## 페이지 규칙

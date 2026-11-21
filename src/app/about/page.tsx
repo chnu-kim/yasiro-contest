@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
 import { pageMetadata } from '@/lib/seo';
-import Image from 'next/image';
+import ArtImage from '@/components/ArtImage';
 import Button from '@/components/Button';
 import { CHANNELS, type ChannelId } from '@/lib/channels';
 import ChannelGlyph, { type ChannelKind } from '@/components/ChannelGlyph';
@@ -68,13 +68,15 @@ export default function About() {
       <section className={styles.hero} aria-labelledby="about-title">
         <div className={styles.stage}>
           <div className={styles.figure}>
-            <Image
-              src="/yasiro4.png"
+            <ArtImage
+              name="yasiro4"
+              widths={[480, 960]}
               alt="스팀펑크 고글을 머리에 얹고 정면을 보는 야시로 전신 일러스트"
-              fill
+              width={1600}
+              height={2277}
               sizes="(max-width: 860px) 340px, 420px"
               priority
-              style={{ objectFit: 'contain' }}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
             />
             <div className={styles.rulerWrap}>
               <HeightRuler headTop={10} feetBottom={4.5} side="left" style={{ right: '100%', marginRight: 6 }} />
